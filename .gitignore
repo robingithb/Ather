@@ -1,18 +1,25 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# Gradle cache
+.gradle/
 
-# Other files and folders
-.settings/
+# Build outputs in any module
+**/build/
 
-# Executables
-*.swf
-*.air
-*.ipa
+# Local Android SDK configuration
+local.properties
+
+# Android Studio local files
+.idea/
+*.iml
+
+# Generated applications
 *.apk
+*.aab
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Signing keys
+*.jks
+*.keystore
+
+# Secrets
+.env
+.env.*
+!.env.example
