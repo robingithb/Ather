@@ -1,0 +1,29 @@
+{
+  "vehicle": {
+    "batteryPercent": 87,
+    "rangeKm": 420,
+    "health": "healthy",
+    "charging": true,
+    "ecoMode": true,
+    "parked": true,
+    "outsideCelsius": null
+  },
+  "climate": {
+    "driverCelsius": 21.0,
+    "minCelsius": 16.0,
+    "maxCelsius": 30.0,
+    "stepCelsius": 0.5,
+    "auto": true,
+    "ac": false,
+    "sync": false,
+    "frontDefrost": false,
+    "rearDefrost": false,
+    "seatHeating": false,
+    "cabinAir": "clean"
+  },
+  "route": {
+    "destination": "Office",
+    "durationMinutes": 12,
+    "distanceKm": 8.4
+  }
+}
