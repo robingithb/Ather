@@ -2,6 +2,8 @@ AETHER — Automotive HMI
 A modern Android digital cockpit concept built with Jetpack Compose, Google Filament, and AndroidX Media3.
 Project status: In development. Screenshots are design concepts; features described below are planned unless marked as implemented.
 
+Implemented in v0.3.1: the shared five-tab landscape shell, Home dashboard, shared mock vehicle state, Climate controls with animated airflow, and same-process Media3 playback. Climate uses the same full-height rail as the other pages, with four evenly spaced airflow cards and no separate airflow pause control. Vehicle 3D rendering, complete Media/Settings designs and AAOS hardware integration remain planned. Climate verification and assets are documented below.
+
 AETHER takes its name from aether, a classical term for the clear upper sky. It represents a clean, immersive, and connected in-vehicle experience. This portfolio project explores how native Android UI, real-time 3D graphics, and automotive-oriented application architecture can work together in a single HMI application.
 Design preview
 AETHER is one application with five screens, connected through a shared navigation rail:
@@ -65,3 +67,5 @@ Why this project?
 AETHER is a personal learning and portfolio project focused on Android Automotive HMI engineering: native UI architecture, real-time rendering, multimedia integration, performance, and vehicle-oriented state handling. It is not affiliated with or endorsed by any vehicle manufacturer.
 License
 License to be decided. Third-party models, images, and audio retain their respective licenses.
+
+Climate design, HVAC behavior, airflow resources and background-edit prompts are documented in [CLIMATE_IMPLEMENTATION.md](docs/CLIMATE_IMPLEMENTATION.md).

@@ -1,0 +1,35 @@
+<resources>
+    <string name="climate_driver">Driver</string>
+    <string name="climate_passenger">Passenger</string>
+    <string name="climate_air_quality">Air Quality</string>
+    <string name="climate_air_good">Good</string>
+    <string name="climate_air_attention">Check air</string>
+    <string name="climate_cabin_filter">Cabin Filter</string>
+    <string name="climate_filter_healthy">Healthy</string>
+    <string name="climate_filter_attention">Check filter</string>
+    <string name="climate_air_unknown">Not available</string>
+    <string name="climate_air_clean">Cabin air is clean</string>
+    <string name="climate_air_check">Check cabin ventilation</string>
+    <string name="climate_face">Face</string>
+    <string name="climate_face_feet">Face + Feet</string>
+    <string name="climate_feet">Feet</string>
+    <string name="climate_defrost">Defrost</string>
+    <string name="climate_fan_speed">Fan Speed</string>
+    <string name="climate_front_defrost">Front Defrost</string>
+    <string name="climate_rear_defrost">Rear Defrost</string>
+    <string name="climate_driver_seat">Driver Seat</string>
+    <string name="climate_passenger_seat">Passenger Seat</string>
+    <string name="climate_heat_level">%1$s heating: %2$d of %3$d. Tap to change.</string>
+    <string name="climate_cool_level">%1$s cooling: %2$d of %3$d. Tap to change.</string>
+    <string name="climate_fan_level">Fan speed %1$d of %2$d</string>
+    <string name="climate_increase_fan">Increase fan speed</string>
+    <string name="climate_decrease_fan">Decrease fan speed</string>
+    <string name="climate_temperature">%1$s temperature %2$s</string>
+    <string name="climate_increase_zone">Increase %1$s temperature</string>
+    <string name="climate_decrease_zone">Decrease %1$s temperature</string>
+    <string name="climate_linked">Linked</string>
+    <string name="climate_temperature_range">%1$s  |  %2$s</string>
+    <string name="climate_demo_air_title">Demo cabin air</string>
+    <string name="climate_demo_air_message">Cabin air quality and filter condition come from the mock vehicle repository. A phone does not provide these vehicle sensors.</string>
+    <string name="climate_air_percent">Cabin air quality %1$d%%</string>
+</resources>

@@ -1,11 +1,15 @@
 package com.aether.hmi.data
 
 import android.content.Context
+import com.aether.hmi.domain.AirflowMode
 import com.aether.hmi.domain.CabinAir
 import com.aether.hmi.domain.ClimateControl
 import com.aether.hmi.domain.ClimateState
+import com.aether.hmi.domain.ClimateZone
 import com.aether.hmi.domain.DataSource
 import com.aether.hmi.domain.RoutePreview
+import com.aether.hmi.domain.SeatComfort
+import com.aether.hmi.domain.SeatZone
 import com.aether.hmi.domain.VehicleHealth
 import com.aether.hmi.domain.VehicleRepository
 import com.aether.hmi.domain.VehicleSnapshot
@@ -22,7 +26,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 
-/** The AAOS adapter can implement the same contract without changing Home. */
+/** The AAOS adapter can implement the same contract without changing Home or Climate. */
 class MockVehicleRepository(context: Context, scope: CoroutineScope) : VehicleRepository {
     private val preferences = context.getSharedPreferences("vehicle_demo", Context.MODE_PRIVATE)
     private val mutableState = MutableStateFlow(VehicleSnapshot())
@@ -54,11 +58,32 @@ class MockVehicleRepository(context: Context, scope: CoroutineScope) : VehicleRe
         val max = climate.getDouble("maxCelsius").toFloat()
         val step = climate.getDouble("stepCelsius").toFloat()
         require(min.isFinite() && max.isFinite() && min < max && step.isFinite() && step > 0)
-        val defaultTemp = climate.getDouble("driverCelsius").toFloat().coerceIn(min, max)
-        require(defaultTemp.isFinite())
-        val savedTemp = preferences.getFloat("temperature", defaultTemp)
-        val temperature = if (savedTemp.isFinite()) savedTemp.coerceIn(min, max) else defaultTemp
+        fun temperature(key: String, preferenceKey: String): Float? {
+            if (climate.isNull(key) || !climate.has(key)) return null
+            val default = climate.getDouble(key).toFloat()
+            require(default.isFinite())
+            val saved = preferences.getFloat(preferenceKey, default)
+            return (if (saved.isFinite()) saved else default).coerceIn(min, max)
+        }
+        val driver = temperature("driverCelsius", "temperature")
+        val passenger = temperature("passengerCelsius", "passengerTemperature")
+        val maxFan = climate.getInt("maxFanSpeed").also { require(it in 1..32) }
+        val maxSeat = climate.getInt("maxSeatLevel").also { require(it in 1..10) }
         fun saved(key: String) = preferences.getBoolean(key, climate.getBoolean(key))
+        val sync = saved("sync") && driver != null && passenger != null
+        fun seatLevel(key: String, legacyDefault: Int = 0): Int = preferences.getInt(
+            key, climate.optInt(key, legacyDefault),
+        ).coerceIn(0, maxSeat)
+        val driverHeat = if (preferences.contains("driverHeatingLevel")) seatLevel("driverHeatingLevel")
+            else if (preferences.getBoolean("seatHeating", climate.optBoolean("seatHeating"))) 1
+            else seatLevel("driverHeatingLevel")
+        val passengerHeat = seatLevel("passengerHeatingLevel")
+        val defaultMode = AirflowMode.entries.firstOrNull {
+            it.name.equals(climate.optString("airflowMode"), ignoreCase = true)
+        } ?: throw IllegalArgumentException("Unsupported configured airflow mode")
+        val mode = AirflowMode.entries.firstOrNull {
+            it.name == preferences.getString("airflowMode", defaultMode.name)
+        } ?: defaultMode
         val route = json.optJSONObject("route")?.let {
             RoutePreview(it.getString("destination"), it.getLong("durationMinutes"), it.getDouble("distanceKm"))
                 .takeIf { value -> value.destination.isNotBlank() && value.durationMinutes > 0 && value.distanceKm > 0 }
@@ -76,44 +101,66 @@ class MockVehicleRepository(context: Context, scope: CoroutineScope) : VehicleRe
                 charging = vehicle.optionalBoolean("charging"),
                 ecoMode = vehicle.optionalBoolean("ecoMode"),
                 parked = vehicle.optionalBoolean("parked"),
-                outsideCelsius = if (vehicle.isNull("outsideCelsius")) null else vehicle.getDouble("outsideCelsius"),
+                outsideCelsius = vehicle.optDouble("outsideCelsius", Double.NaN).takeIf { it.isFinite() },
             ),
             climate = ClimateState(
-                available = true, driverCelsius = temperature, minCelsius = min, maxCelsius = max,
-                stepCelsius = step, auto = saved("auto"), ac = saved("ac"), sync = saved("sync"),
+                available = true, driverCelsius = driver, minCelsius = min, maxCelsius = max,
+                stepCelsius = step, auto = saved("auto"), ac = saved("ac"), sync = sync,
                 frontDefrost = saved("frontDefrost"), rearDefrost = saved("rearDefrost"),
-                seatHeating = saved("seatHeating"),
+                seatHeating = driverHeat > 0,
                 cabinAir = if (climate.optString("cabinAir") == "clean") CabinAir.Clean else CabinAir.Unknown,
+                passengerCelsius = if (sync) driver else passenger,
+                fanSpeed = preferences.getInt("fanSpeed", climate.getInt("fanSpeed")).coerceIn(0, maxFan),
+                maxFanSpeed = maxFan,
+                airflowMode = mode,
+                driverHeatingLevel = driverHeat,
+                driverCoolingLevel = if (driverHeat > 0) 0 else seatLevel("driverCoolingLevel"),
+                passengerHeatingLevel = passengerHeat,
+                passengerCoolingLevel = if (passengerHeat > 0) 0 else seatLevel("passengerCoolingLevel"),
+                maxSeatLevel = maxSeat,
+                cabinAirQualityPercent = climate.optInt("cabinAirQualityPercent", -1).takeIf { it in 0..100 },
+                cabinFilterHealthy = climate.optionalBoolean("cabinFilterHealthy"),
             ),
             route = route,
         )
     }
 
     override suspend fun adjustDriverTemperature(steps: Int) = update { current ->
-        current.copy(driverCelsius = current.adjustedTemperature(steps))
+        current.withTemperatureAdjustment(ClimateZone.Driver, steps)
     }
 
-    override suspend fun toggle(control: ClimateControl) = update { current ->
-        when (control) {
-            ClimateControl.Auto -> current.copy(auto = !current.auto)
-            ClimateControl.Ac -> current.copy(ac = !current.ac)
-            ClimateControl.Sync -> current.copy(sync = !current.sync)
-            ClimateControl.FrontDefrost -> current.copy(frontDefrost = !current.frontDefrost)
-            ClimateControl.RearDefrost -> current.copy(rearDefrost = !current.rearDefrost)
-            ClimateControl.SeatHeating -> current.copy(seatHeating = !current.seatHeating)
-        }
+    override suspend fun adjustPassengerTemperature(steps: Int) = update { current ->
+        current.withTemperatureAdjustment(ClimateZone.Passenger, steps)
     }
+
+    override suspend fun adjustFanSpeed(steps: Int) = update { it.withFanAdjustment(steps) }
+
+    override suspend fun setAirflowMode(mode: AirflowMode) = update { it.withAirflowMode(mode) }
+
+    override suspend fun cycleSeatLevel(zone: SeatZone, comfort: SeatComfort) =
+        update { it.withCycledSeatLevel(zone, comfort) }
+
+    override suspend fun toggle(control: ClimateControl) = update { it.withToggledControl(control) }
 
     private suspend fun update(transform: (ClimateState) -> ClimateState) = withContext(Dispatchers.IO) {
         mutex.withLock {
             val previous = mutableState.value
             if (!previous.climate.available) return@withLock
             val next = transform(previous.climate)
-            val saved = preferences.edit()
-                .putFloat("temperature", requireNotNull(next.driverCelsius))
+            if (next == previous.climate) return@withLock
+            val editor = preferences.edit()
                 .putBoolean("auto", next.auto).putBoolean("ac", next.ac).putBoolean("sync", next.sync)
                 .putBoolean("frontDefrost", next.frontDefrost).putBoolean("rearDefrost", next.rearDefrost)
-                .putBoolean("seatHeating", next.seatHeating).commit()
+                .putBoolean("seatHeating", next.seatHeating)
+                .putInt("fanSpeed", next.fanSpeed).putString("airflowMode", next.airflowMode.name)
+                .putInt("driverHeatingLevel", next.driverHeatingLevel)
+                .putInt("driverCoolingLevel", next.driverCoolingLevel)
+                .putInt("passengerHeatingLevel", next.passengerHeatingLevel)
+                .putInt("passengerCoolingLevel", next.passengerCoolingLevel)
+            next.driverCelsius?.let { editor.putFloat("temperature", it) } ?: editor.remove("temperature")
+            next.passengerCelsius?.let { editor.putFloat("passengerTemperature", it) }
+                ?: editor.remove("passengerTemperature")
+            val saved = editor.commit()
             if (!saved) throw IOException("Unable to persist climate state")
             mutableState.value = previous.copy(climate = next)
         }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Airflow geometry for the supplied 1672 x 941 cabin artwork. Coordinates are
+    normalized to the source image, not to the screen. Crop with horizontal
+    alignment 0.5 and vertical alignment 0.32 (BiasAlignment(0f, -0.36f)) preserves
+    vent alignment on every landscape size. Each stream is a cubic Bezier curve.
+-->
+<airflow sourceWidth="1672" sourceHeight="941">
+    <!-- Upper dashboard and side vents: toward occupants' faces. -->
+    <stream route="face" startX="0.409" startY="0.313" control1X="0.396" control1Y="0.365" control2X="0.365" control2Y="0.443" endX="0.326" endY="0.487" width="0.0020" />
+    <stream route="face" startX="0.417" startY="0.313" control1X="0.403" control1Y="0.375" control2X="0.386" control2Y="0.448" endX="0.360" endY="0.506" width="0.0024" />
+    <stream route="face" startX="0.425" startY="0.313" control1X="0.421" control1Y="0.380" control2X="0.409" control2Y="0.455" endX="0.397" endY="0.521" width="0.0018" />
+    <stream route="face" startX="0.566" startY="0.313" control1X="0.574" control1Y="0.372" control2X="0.595" control2Y="0.452" endX="0.621" endY="0.513" width="0.0020" />
+    <stream route="face" startX="0.574" startY="0.313" control1X="0.589" control1Y="0.375" control2X="0.621" control2Y="0.448" endX="0.663" endY="0.499" width="0.0024" />
+    <stream route="face" startX="0.582" startY="0.313" control1X="0.603" control1Y="0.363" control2X="0.642" control2Y="0.436" endX="0.696" endY="0.477" width="0.0018" />
+    <stream route="face" startX="0.109" startY="0.350" control1X="0.094" control1Y="0.401" control2X="0.085" control2Y="0.472" endX="0.095" endY="0.529" width="0.0022" />
+    <stream route="face" startX="0.856" startY="0.350" control1X="0.880" control1Y="0.401" control2X="0.911" control2Y="0.469" endX="0.932" endY="0.528" width="0.0022" />
+
+    <!-- Lower center outlets: curved down into both footwells. -->
+    <stream route="feet" startX="0.448" startY="0.435" control1X="0.431" control1Y="0.507" control2X="0.404" control2Y="0.597" endX="0.343" endY="0.675" width="0.0022" />
+    <stream route="feet" startX="0.455" startY="0.435" control1X="0.444" control1Y="0.519" control2X="0.429" control2Y="0.610" endX="0.397" endY="0.690" width="0.0026" />
+    <stream route="feet" startX="0.461" startY="0.435" control1X="0.456" control1Y="0.517" control2X="0.454" control2Y="0.611" endX="0.449" endY="0.685" width="0.0018" />
+    <stream route="feet" startX="0.530" startY="0.435" control1X="0.539" control1Y="0.517" control2X="0.549" control2Y="0.612" endX="0.574" endY="0.685" width="0.0018" />
+    <stream route="feet" startX="0.537" startY="0.435" control1X="0.555" control1Y="0.516" control2X="0.585" control2Y="0.610" endX="0.628" endY="0.687" width="0.0026" />
+    <stream route="feet" startX="0.544" startY="0.435" control1X="0.569" control1Y="0.501" control2X="0.611" control2Y="0.595" endX="0.684" endY="0.672" width="0.0022" />
+
+    <!-- Windshield outlets: climb the glass rather than pointing at occupants. -->
+    <stream route="defrost" startX="0.347" startY="0.302" control1X="0.336" control1Y="0.279" control2X="0.315" control2Y="0.247" endX="0.295" endY="0.223" width="0.0023" />
+    <stream route="defrost" startX="0.413" startY="0.295" control1X="0.406" control1Y="0.268" control2X="0.395" control2Y="0.238" endX="0.383" endY="0.212" width="0.0020" />
+    <stream route="defrost" startX="0.490" startY="0.291" control1X="0.490" control1Y="0.265" control2X="0.490" control2Y="0.235" endX="0.491" endY="0.207" width="0.0024" />
+    <stream route="defrost" startX="0.567" startY="0.295" control1X="0.575" control1Y="0.269" control2X="0.586" control2Y="0.239" endX="0.600" endY="0.212" width="0.0020" />
+    <stream route="defrost" startX="0.644" startY="0.302" control1X="0.657" control1Y="0.279" control2X="0.680" control2Y="0.247" endX="0.706" endY="0.223" width="0.0023" />
+</airflow>
