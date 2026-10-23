@@ -21,8 +21,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.Text
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -46,6 +52,9 @@ import com.aether.hmi.domain.RoutePreview
 import com.aether.hmi.domain.VehicleHealth
 import com.aether.hmi.domain.VehicleSnapshot
 import com.aether.hmi.domain.VehicleState
+import com.aether.hmi.feature.climate.ClimateActions
+import com.aether.hmi.feature.climate.ClimateScreen
+import com.aether.hmi.feature.home.ClimateMediaBar
 import com.aether.hmi.feature.home.ClimateUpdate
 import com.aether.hmi.feature.home.DashboardDock
 import com.aether.hmi.feature.home.DashboardHeader
@@ -91,7 +100,9 @@ fun AetherApp() {
         openMedia = { selectedTab = AetherTab.Media }, chooseAudio = { audioPicker.launch(arrayOf("audio/*")) },
     )
     AetherShell(selectedTab, { selectedTab = it }, state, media, playback.position, actions, update,
-        dashboard::adjustTemperature, dashboard::toggle, playback::playIndex)
+        dashboard::adjustTemperature, dashboard::toggle, playback::playIndex,
+        climateActions = ClimateActions(dashboard::adjustTemperature, dashboard::adjustPassengerTemperature,
+            dashboard::adjustFanSpeed, dashboard::setAirflowMode, dashboard::toggle, dashboard::cycleSeatLevel))
     if (showQueue) QueueDialog(media, { showQueue = false }, {
         showQueue = false
         audioPicker.launch(arrayOf("audio/*"))
@@ -111,8 +122,10 @@ fun AetherShell(
     onClimateToggle: (ClimateControl) -> Unit,
     onPlayIndex: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    climateActions: ClimateActions = ClimateActions({}, {}, {}, {}, {}, { _, _ -> }),
 ) {
     var highlightedIndicators by rememberSaveable { mutableIntStateOf(0) }
+    val screenStates = rememberSaveableStateHolder()
     Box(modifier.fillMaxSize().background(AetherColors.Background).drawWithCache {
         val ambient = Brush.radialGradient(listOf(AetherColors.Panel.copy(alpha = 0.5f), AetherColors.Background),
             center = Offset(size.width * 0.35f, size.height * 0.5f), radius = size.width * 0.8f)
@@ -124,18 +137,38 @@ fun AetherShell(
                 val compact = maxWidth < 680.dp || maxHeight < 350.dp
                 val screenLabel = stringResource(R.string.screen_label, stringResource(selectedTab.labelRes))
                 Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 8.dp)) {
-                    DashboardHeader(state, compact = compact)
+                    Box {
+                        DashboardHeader(state, compact = compact)
+                        if (selectedTab == AetherTab.Climate && climateUpdate != ClimateUpdate.Idle) {
+                            val feedback = stringResource(when (climateUpdate) {
+                                ClimateUpdate.Pending -> R.string.climate_updating
+                                ClimateUpdate.Confirmed -> R.string.climate_saved
+                                ClimateUpdate.Failed -> R.string.climate_failed
+                                ClimateUpdate.Idle -> R.string.unavailable_value
+                            })
+                            Text(feedback, color = if (climateUpdate == ClimateUpdate.Failed) AetherColors.Warning else AetherColors.TextSecondary,
+                                fontSize = 9.sp, lineHeight = 11.sp, modifier = Modifier.align(Alignment.Center)
+                                    .semantics { liveRegion = LiveRegionMode.Polite })
+                        }
+                    }
                     Box(Modifier.weight(1f).semantics { paneTitle = screenLabel }) {
                         when (selectedTab) {
                             AetherTab.Home -> HomeScreen(state, media, onTabSelected, Modifier.fillMaxSize())
+                            AetherTab.Climate -> screenStates.SaveableStateProvider("climate") {
+                                ClimateScreen(state.snapshot.climate, climateActions, Modifier.fillMaxSize())
+                            }
                             AetherTab.Media -> MediaLibrary(media, playbackActions.chooseAudio, onPlayIndex, Modifier.fillMaxSize())
                             else -> Unit // Other feature layouts await their own design phase.
                         }
                     }
                     if (selectedTab == AetherTab.Home) StatusChips(state, highlightedIndicators,
                         { index -> highlightedIndicators = highlightedIndicators xor (1 shl index) })
-                    if (selectedTab != AetherTab.Settings) DashboardDock(media, position, playbackActions,
-                        state.snapshot.climate, climateUpdate, onAdjustTemperature, onClimateToggle)
+                    when (selectedTab) {
+                        AetherTab.Climate -> ClimateMediaBar(media, position, playbackActions)
+                        AetherTab.Settings -> Unit
+                        else -> DashboardDock(media, position, playbackActions,
+                            state.snapshot.climate, climateUpdate, onAdjustTemperature, onClimateToggle)
+                    }
                 }
             }
         }

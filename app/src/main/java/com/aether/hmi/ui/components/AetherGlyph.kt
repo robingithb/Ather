@@ -20,6 +20,8 @@ enum class Glyph(val path: String, val filled: Boolean = false) {
     Gps("M22,2 L15,23 L11,13 L1,9 Z", true),
     SignalBars("M2,17 L5,17 L5,23 L2,23 Z M8,12 L11,12 L11,23 L8,23 Z M14,7 L17,7 L17,23 L14,23 Z M20,2 L23,2 L23,23 L20,23 Z", true),
     Eco("M21,2 Q4,3 4,17 Q10,19 15,13 Q19,8 21,2 Z M2,23 L3,23 L17,6 L16,6 Z", true),
+    Expand("M5,15 L12,8 L19,15"),
+    Collapse("M5,8 L12,15 L19,8"),
     Chevron("M9,5 L16,12 L9,19"),
     Check("M5,12 L10,17 L20,6"),
     Plus("M12,4 L12,20 M4,12 L20,12"),

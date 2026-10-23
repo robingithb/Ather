@@ -69,18 +69,19 @@ internal fun AetherNavigationRail(
             .border(0.8.dp, AetherColors.RailBorder, RoundedCornerShape(22.dp)),
     ) {
         val compact = maxHeight < 380.dp
-        val labelSize = if (compact) 13.sp else 15.sp
-        val iconSize = if (compact) 24.dp else 28.dp
+        val veryCompact = maxHeight < 280.dp
+        val labelSize = if (veryCompact) 11.sp else if (compact) 13.sp else 15.sp
+        val iconSize = if (veryCompact) 19.dp else if (compact) 24.dp else 28.dp
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 5.dp, vertical = 10.dp),
+                .padding(horizontal = 5.dp, vertical = if (veryCompact) 6.dp else 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             RailClock(
                 now = now,
-                modifier = Modifier.padding(bottom = if (compact) 8.dp else 16.dp),
+                modifier = Modifier.padding(bottom = if (veryCompact) 4.dp else if (compact) 8.dp else 16.dp),
                 compact = compact,
             )
             Column(
@@ -89,7 +90,7 @@ internal fun AetherNavigationRail(
                     .fillMaxWidth()
                     .selectableGroup()
                     .semantics { contentDescription = navigationLabel },
-                verticalArrangement = Arrangement.spacedBy(if (compact) 3.dp else 6.dp),
+                verticalArrangement = Arrangement.spacedBy(if (veryCompact) 2.dp else if (compact) 3.dp else 6.dp),
             ) {
                 AetherTab.entries.forEach { tab ->
                     val selected = selectedTab == tab
@@ -99,7 +100,7 @@ internal fun AetherNavigationRail(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
-                            .heightIn(min = 48.dp)
+                            .heightIn(min = if (veryCompact) 34.dp else 48.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .then(if (selected) Modifier.selectedTabSurface() else Modifier)
                             .selectable(
@@ -111,10 +112,10 @@ internal fun AetherNavigationRail(
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(if (compact) 3.dp else 5.dp),
+                            verticalArrangement = Arrangement.spacedBy(if (veryCompact) 2.dp else if (compact) 3.dp else 5.dp),
                         ) {
                             Icon(
-                                painter = painterResource(tab.iconRes),
+                                painter = painterResource(if (tab == AetherTab.Climate && selectedTab == tab) R.drawable.ic_climate_filled else tab.iconRes),
                                 contentDescription = null,
                                 tint = tint,
                                 modifier = Modifier.size(iconSize),
@@ -123,7 +124,7 @@ internal fun AetherNavigationRail(
                                 text = label,
                                 color = tint,
                                 fontSize = labelSize,
-                                lineHeight = if (compact) 16.sp else 19.sp,
+                                lineHeight = if (veryCompact) 13.sp else if (compact) 16.sp else 19.sp,
                                 fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal,
                                 textAlign = TextAlign.Center,
                                 maxLines = 1,

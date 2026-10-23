@@ -1,0 +1,61 @@
+{
+  "passed": [
+    "Complete Climate layout and media bar visible at landscape",
+    "Airflow moves, pauses, and pause preference survives tab changes",
+    "Four airflow modes are exclusive and render corresponding streams",
+    "Rapid airflow selection preserves the final mode",
+    "Independent zone temperatures, Sync locking, and shared Home/dock state verified",
+    "Manual fan exits Auto; A/C, both defrosters and seat heat/cool cycling work",
+    "Shared media queue and collapse/expand affordance work",
+    "Mode and HVAC changes survive process restart",
+    "Complete Climate layout and media bar visible at compact",
+    "System reduced-motion setting produces stationary streams and normal scale resumes motion",
+    "Real local WAV playback continues Climate to Home to Climate; pause works and only one app PID is present"
+  ],
+  "emulator": {
+    "api": 33,
+    "avd": "AetherClimateQA",
+    "sizesDp": [
+      "880x400",
+      "640x320"
+    ],
+    "graphics": "host",
+    "notes": "Disposable emulator only. Nonessential Google apps and heads-up banners disabled to avoid startup stalls and capture overlays. No app ANR or crash observed during the passing suite."
+  },
+  "build": {
+    "version": "0.3.0",
+    "versionCode": 4,
+    "unitTests": 16,
+    "lintErrors": 0,
+    "lintWarnings": 3,
+    "apkBytes": 25948524,
+    "apkSha256": "222e08ec387712387333e8340c057c806f0e9c81a4ea57a6a87db35d83537ac1"
+  },
+  "airflowVideo": "screenshots/climate-airflow.mp4",
+  "video": {
+    "durationSeconds": 11.153,
+    "width": 1280,
+    "height": 576,
+    "frameCount": 71
+  },
+  "playback": {
+    "source": "Generated local 90-second WAV selected through Android document picker; not bundled",
+    "before": {
+      "state": 3,
+      "positionMs": 45476
+    },
+    "home": {
+      "state": 3,
+      "positionMs": 54466
+    },
+    "after": {
+      "state": 3,
+      "positionMs": 63442
+    },
+    "paused": {
+      "state": 2,
+      "positionMs": 83003
+    },
+    "appProcessCount": 1
+  }
+}

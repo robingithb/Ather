@@ -24,6 +24,9 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -255,4 +258,34 @@ private fun Modifier.accentGlow(shape: Shape) = clip(shape).background(AetherCol
     val glow = Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = 0.03f), AetherColors.Accent.copy(alpha = 0.22f)),
         radius = size.maxDimension * 0.65f)
     onDrawBehind { drawRect(glow) }
+}
+
+
+/** The Climate screen uses the same player/session with its own media-only bar. */
+@Composable
+fun ClimateMediaBar(state: PlaybackState, position: StateFlow<Long>, actions: PlaybackActions, modifier: Modifier = Modifier) {
+    var collapsed by rememberSaveable { mutableStateOf(false) }
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        val compact = maxWidth < 650.dp
+        DashboardSurface(Modifier.fillMaxWidth().height(if (collapsed) 34.dp else if (compact) 58.dp else 72.dp)) {
+            Row(Modifier.fillMaxSize().padding(horizontal = 10.dp, vertical = if (collapsed) 3.dp else 6.dp),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (collapsed) {
+                    Text(state.title ?: stringResource(if (state.hasMedia) R.string.unknown_title else R.string.nothing_playing),
+                        color = AetherColors.TextPrimary, fontSize = 11.sp, lineHeight = 14.sp,
+                        maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                    DockButton(if (state.playing) Glyph.Pause else Glyph.Play,
+                        stringResource(if (!state.hasMedia) R.string.choose_audio else if (state.playing) R.string.pause else R.string.play),
+                        if (state.hasMedia) actions.toggle else actions.chooseAudio, Modifier.size(28.dp), enabled = state.connected)
+                    DockButton(Glyph.Queue, stringResource(R.string.queue), actions.openQueue, Modifier.size(28.dp))
+                } else {
+                    MediaDock(state, position, actions, compact, Modifier.weight(0.73f).fillMaxHeight())
+                    Spacer(Modifier.weight(0.27f))
+                }
+                DockButton(if (collapsed) Glyph.Expand else Glyph.Collapse,
+                    stringResource(if (collapsed) R.string.expand_media_bar else R.string.collapse_media_bar),
+                    { collapsed = !collapsed }, Modifier.size(if (collapsed) 28.dp else 32.dp))
+            }
+        }
+    }
 }
