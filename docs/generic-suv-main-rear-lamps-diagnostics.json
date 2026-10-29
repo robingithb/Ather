@@ -1,0 +1,198 @@
+{
+  "bundled": {
+    "sha256": "054acf26d43ef939022898aa9325fafa2f97224efe625c37dcfa10b5b6cbe6f2",
+    "bytes": 14185288,
+    "counts": {
+      "nodes": 128,
+      "meshes": 122,
+      "materials": 117,
+      "vertices": 406853,
+      "triangles": 327594,
+      "primitives": 204,
+      "lights": 3,
+      "animations": 0,
+      "skins": 0
+    },
+    "world_bounds": {
+      "min": [
+        -1.0196088552474976,
+        -4.172325134277344e-07,
+        -2.2049098014831543
+      ],
+      "max": [
+        1.0196088552474976,
+        1.6640492677688599,
+        2.2049193382263184
+      ]
+    }
+  },
+  "original_source_hashes": {
+    "new": "683fe7cced45054ffa6d9e6e61f5c362d317684c51c26add45a0a6c603694145",
+    "old_donor": "446c9f6291d4b53c0513b5a05bdb901ab3776167eb7c5a9db5868a9ac9557336"
+  },
+  "both_original_files_and_new_source_bin_prefix_verified_unchanged": true,
+  "before_recessed_emitters": {
+    "tail": {
+      "samples": 96,
+      "blocked": 96,
+      "nearest_depth_range_meters": [
+        0.012149310415363395,
+        0.020180781682332064
+      ],
+      "blocking_nodes": [
+        "Door_Trunk red lens",
+        "Door_Trunk paint",
+        "REAR_TAIL_BAR red lens",
+        "TAILLAMP_L/R red lens",
+        "BODY cladding"
+      ]
+    },
+    "brake": {
+      "samples": 81,
+      "blocked": 81,
+      "nearest_depth_range_meters": [
+        0.002599536988254105,
+        0.028295934323060483
+      ],
+      "blocking_nodes": [
+        "Door_Trunk red lens",
+        "Door_Trunk paint",
+        "TAILLAMP_L/R red lens",
+        "BODY cladding"
+      ]
+    },
+    "limits": "Rearward rays sampled outward-facing triangle centers, not every camera view"
+  },
+  "actual_exterior_lens_context": {
+    "trunk": {
+      "samples": 81,
+      "blocked": 19,
+      "blockers": "Separate inset amber or reverse OFF lenses; expected local occlusion, main red front surface itself remains exterior"
+    },
+    "outer_left": {
+      "samples": 32,
+      "blocked": 7,
+      "blocker": "Cladding at symmetric wrapped edges"
+    },
+    "outer_right": {
+      "samples": 32,
+      "blocked": 7,
+      "blocker": "Cladding at symmetric wrapped edges"
+    },
+    "bar": {
+      "samples": 120,
+      "blocked": 3,
+      "blocker": "Existing trunk red lens at a few overlapping edge samples"
+    }
+  },
+  "final_surface_groups": [
+    {
+      "off": "REAR_TAIL_TRUNK_OFF",
+      "tail_on": "REAR_TAIL_ON",
+      "brake_on": "REAR_BRAKE_ON",
+      "parent": "Door_Trunk",
+      "triangles_per_state": 7776,
+      "triangle_surface_area_m2": 0.1644843313157751,
+      "rear_facing_projected_area_m2": 0.08621913086722433,
+      "source_vertex_attributes_shared": true,
+      "normal_depth_test": true
+    },
+    {
+      "off": "TAILLAMP_L",
+      "tail_on": "REAR_TAIL_L_ON",
+      "brake_on": "REAR_BRAKE_L_ON",
+      "parent": null,
+      "triangles_per_state": 240,
+      "triangle_surface_area_m2": 0.07147553290728163,
+      "rear_facing_projected_area_m2": 0.0005727490166727023,
+      "source_vertex_attributes_shared": true,
+      "normal_depth_test": true
+    },
+    {
+      "off": "TAILLAMP_R",
+      "tail_on": "REAR_TAIL_R_ON",
+      "brake_on": "REAR_BRAKE_R_ON",
+      "parent": null,
+      "triangles_per_state": 240,
+      "triangle_surface_area_m2": 0.07147553290728166,
+      "rear_facing_projected_area_m2": 0.0005727490166727023,
+      "source_vertex_attributes_shared": true,
+      "normal_depth_test": true
+    },
+    {
+      "off": "REAR_TAIL_BAR",
+      "tail_on": "REAR_TAIL_BAR_ON",
+      "brake_on": "REAR_BRAKE_BAR_ON",
+      "parent": "Door_Trunk",
+      "triangles_per_state": 484,
+      "triangle_surface_area_m2": 0.06666516913061998,
+      "rear_facing_projected_area_m2": 0.026400089657308,
+      "source_vertex_attributes_shared": true,
+      "normal_depth_test": true
+    }
+  ],
+  "surface_verification": {
+    "off_lens_groups": 4,
+    "tail_on_groups": 4,
+    "brake_on_groups": 4,
+    "world_triangles_and_winding_match": true,
+    "physical_movement_parents_verified": true,
+    "independent_tail_brake_and_upper_stop_materials": true,
+    "normal_depth_tests_and_opaque_rendering_preserved": true,
+    "runtime_state_contract": "brake overrides tail; OFF only when neither is active"
+  },
+  "state_contract": "Brake overrides dim tail; OFF only while neither active; trunk and bar groups follow trunk and quarter groups stay fixed",
+  "main_tail_material": {
+    "index": 60,
+    "name": "Generic_main_tail_LED_red_dim"
+  },
+  "main_brake_material": {
+    "index": 61,
+    "name": "Generic_main_brake_LED_red"
+  },
+  "upper_stop_material_indices": [
+    56
+  ],
+  "upper_stop_original_material_unchanged": true,
+  "main_lens_triangle_surface_area_m2": 0.3741005662609584,
+  "upper_stop_triangle_surface_area_m2": 0.008548706055853188,
+  "tyre_verification": {
+    "four_tyre_partitions_verified": true,
+    "source_vertices_normals_uvs_and_winding_preserved": true,
+    "normal_rubber_is_opaque_dielectric": true,
+    "silver_wheel_materials_unchanged": true,
+    "additional_texture_samples": 0,
+    "additional_triangles": 0
+  },
+  "prior_contracts": {
+    "amber": {
+      "off_lens_groups": 8,
+      "on_emitter_groups": 16,
+      "world_triangles_and_winding_match": true,
+      "ordinary_opaque_amber_led_materials": true
+    },
+    "headlamp": {
+      "off_projectors": 2,
+      "on_projectors": 2,
+      "world_triangles_and_winding_match": true,
+      "ordinary_opaque_white_led_materials": true,
+      "drl_geometry_unchanged": true
+    },
+    "reverse": {
+      "off_lenses": 2,
+      "on_emitters": 2,
+      "world_triangles_and_winding_match": true,
+      "ordinary_opaque_white_led_materials": true,
+      "red_shells_preserved": true
+    },
+    "interior": {
+      "renderable_groups": 6,
+      "interior_triangles": 67902,
+      "source_attributes_indices_materials_and_world_transforms_preserved": true,
+      "no_generic_black_plastic_or_exterior_materials_moved": true
+    }
+  },
+  "modelpoints_missing": [],
+  "verification_limits": "This model task did not build or use a device; root performs separate build and physical checks",
+  "final_emission_calibration": "generic-suv-main-red-emission-calibration.json"
+}

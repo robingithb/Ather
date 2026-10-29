@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.aether.hmi.ui.theme.AetherColors
 
 enum class Glyph(val path: String, val filled: Boolean = false) {
+    OverviewCamera("M3,6 L7,6 L9,3 L15,3 L17,6 L21,6 L21,21 L3,21 Z M16,13 A4,4 0,1 1,8,13 A4,4 0,1 1,16,13"),
     Arrow("M12,2 L22,22 L12,17 L2,22 Z", true),
     Gps("M22,2 L15,23 L11,13 L1,9 Z", true),
     SignalBars("M2,17 L5,17 L5,23 L2,23 Z M8,12 L11,12 L11,23 L8,23 Z M14,7 L17,7 L17,23 L14,23 Z M20,2 L23,2 L23,23 L20,23 Z", true),

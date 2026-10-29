@@ -11,8 +11,12 @@ android {
         applicationId = "com.aether.hmi"
         minSdk = 26
         targetSdk = 37
-        versionCode = 5
-        versionName = "0.3.1"
+        versionCode = 8
+        versionName = "0.5.1"
+
+        ndk {
+            abiFilters += setOf("arm64-v8a", "x86_64")
+        }
     }
 
     buildFeatures {
@@ -42,6 +46,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation("androidx.media3:media3-exoplayer:1.8.0")
     implementation("androidx.media3:media3-session:1.8.0")
+    implementation("com.google.android.filament:filament-android:1.69.5")
+    implementation("com.google.android.filament:gltfio-android:1.69.5")
     implementation(platform("androidx.compose:compose-bom:2026.02.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.foundation:foundation")

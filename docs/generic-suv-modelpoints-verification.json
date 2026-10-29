@@ -1,0 +1,1706 @@
+{
+  "modelpoints": "/home/robin/Pictures/AETHER/modelpoints.txt",
+  "modelpoints_sha256": "3c5c1aa0a53fdfa0efd9efa8afecc76068f247f55ca1fe2ad52c43cb15287beb",
+  "new_source": {
+    "expected_count": 107,
+    "missing": [
+      "REAR_REVERSE_OFF_R",
+      "REAR_TURN_R_GLOW_ON_2",
+      "REAR_TURN_L_ON_2",
+      "REAR_REVERSE_GLOW_ON_R",
+      "REAR_TURN_L_ON_3",
+      "REAR_TURN_R_GLOW_ON_3",
+      "REAR_TURN_R_ON_1",
+      "FRONT_INDICATOR_R_ON",
+      "REAR_BRAKE_ON",
+      "REAR_TURN_L_GLOW_ON_3",
+      "REAR_REVERSE_OFF_L",
+      "REAR_TURN_R_ON_3",
+      "REAR_TURN_R_ON_2",
+      "REAR_TURN_R_GLOW_ON_4",
+      "REAR_TAIL_ON",
+      "MIRROR_INDICATOR_R_ON",
+      "REAR_TAIL_BAR",
+      "REAR_TURN_L_ON_4",
+      "REAR_TURN_L_GLOW_ON_1",
+      "REAR_REVERSE_ON_R",
+      "REAR_BRAKE_GLOW_ON",
+      "HIGH_STOP_OFF",
+      "REAR_TURN_R_ON_4",
+      "REAR_REVERSE_GLOW_ON_L",
+      "FRONT_INDICATOR_R_GLOW_ON",
+      "MIRROR_INDICATOR_L_ON",
+      "MIRROR_LEFT",
+      "FRONT_INDICATOR_L_GLOW_ON",
+      "REAR_REVERSE_ON_L",
+      "REAR_TURN_L_ON_1",
+      "REAR_TURN_L_GLOW_ON_4",
+      "FRONT_INDICATOR_L_ON",
+      "REAR_TURN_L_GLOW_ON_2",
+      "HIGH_STOP_ON",
+      "MIRROR_RIGHT",
+      "REAR_TURN_R_GLOW_ON_1",
+      "HIGH_STOP_GLOW_ON",
+      "HEADLAMP_R_LIGHT",
+      "HEADLAMP_L_LIGHT",
+      "REAR_BRAKE_LIGHT"
+    ],
+    "extra": [
+      "SUNROOF.001"
+    ],
+    "components": [
+      {
+        "name": "CHARGE_PORT_RING_ON_BLUE",
+        "node": 10,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_OFF_R",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "AMBIENT_STRIP_ON_Xn",
+        "node": 2,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_L_ON",
+        "node": 31,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_2",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "Door_FL",
+        "node": 17,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_6",
+        "node": 56,
+        "kind": "renderable"
+      },
+      {
+        "name": "STEERING_WHEEL",
+        "node": 59,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_2",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "Wheel_FL",
+        "node": 66,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_R_ON",
+        "node": 34,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_GLOW_ON_R",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "CHARGE_PORT_SOCKET",
+        "node": 13,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_3",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "FENDER_INDICATOR_L",
+        "node": 29,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_BATTERY",
+        "node": 20,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_3",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_FR",
+        "node": 25,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REFLECTOR_R",
+        "node": 48,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_HOUSING",
+        "node": 8,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_1",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "Door_FR",
+        "node": 18,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_FL",
+        "node": 24,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_R_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_REFLECTOR_L",
+        "node": 47,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_STRIP_ON_Yn",
+        "node": 3,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT",
+        "node": 7,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_RING_ON_WHITE",
+        "node": 12,
+        "kind": "renderable"
+      },
+      {
+        "name": "GRILLE_FRONT",
+        "node": 37,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_BRAKE_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_3",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_REVERSE_OFF_L",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "Wheel_FR",
+        "node": 67,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_5",
+        "node": 57,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_3",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_TURN_OFF_R",
+        "node": 54,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_2",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "TAILLAMP_L",
+        "node": 62,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_4",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "Wheel_BL",
+        "node": 64,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TAIL_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "MIRROR_INDICATOR_R_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_BUMPER_PATCH",
+        "node": 44,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_RING_OFF",
+        "node": 9,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TAIL_BAR",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_TURN_L_ON_6",
+        "node": 52,
+        "kind": "renderable"
+      },
+      {
+        "name": "Wheel_BR",
+        "node": 65,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_L_GLOW_ON",
+        "node": 30,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R",
+        "node": 41,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R_GLOW_ON",
+        "node": 42,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_L",
+        "node": 38,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_RR",
+        "node": 27,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_4",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_1",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_5",
+        "node": 55,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_5",
+        "node": 49,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_ON_R",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "FENDER_INDICATOR_R",
+        "node": 32,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_BRAKE_GLOW_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "HIGH_STOP_OFF",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "DRIVETRAIN_INVERTER",
+        "node": 21,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_BR",
+        "node": 16,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_L_ON",
+        "node": 40,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_4",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_RL",
+        "node": 26,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_LAMP_CLUSTER_R",
+        "node": 46,
+        "kind": "logical_group"
+      },
+      {
+        "name": "REAR_REVERSE_GLOW_ON_L",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "Door_BL",
+        "node": 15,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_6",
+        "node": 58,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_MOTOR_FRONT",
+        "node": 22,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R_ON",
+        "node": 43,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_STRIP_ON_Zp",
+        "node": 4,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_Trunk",
+        "node": 19,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_OFF_L",
+        "node": 53,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_R_GLOW_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "MIRROR_INDICATOR_L_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "TAILLAMP_R",
+        "node": 63,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_R_GLOW_ON",
+        "node": 33,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_GLOW_ON_Xn",
+        "node": 0,
+        "kind": "renderable"
+      },
+      {
+        "name": "MIRROR_LEFT",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_6",
+        "node": 50,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_L_GLOW_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "BODY",
+        "node": 5,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_ON_L",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "DRL_BAR",
+        "node": 28,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_GLOW_ON_Zp",
+        "node": 1,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_1",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "DASH_KEYS",
+        "node": 14,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_4",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_TURN_L_ON_5",
+        "node": 51,
+        "kind": "renderable"
+      },
+      {
+        "name": "BONNET",
+        "node": 6,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_L_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_2",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "DRIVETRAIN_MOTOR_REAR",
+        "node": 23,
+        "kind": "renderable"
+      },
+      {
+        "name": "HIGH_STOP_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "MIRROR_RIGHT",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "HEADLAMP_L_GLOW_ON",
+        "node": 39,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_R",
+        "node": 36,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_RING_ON_GREEN",
+        "node": 11,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_LAMP_CLUSTER_L",
+        "node": 45,
+        "kind": "logical_group"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_1",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "HIGH_STOP_GLOW_ON",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "SUNROOF",
+        "node": 60,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_L",
+        "node": 35,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R_LIGHT",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "HEADLAMP_L_LIGHT",
+        "node": null,
+        "kind": "missing"
+      },
+      {
+        "name": "REAR_BRAKE_LIGHT",
+        "node": null,
+        "kind": "missing"
+      }
+    ],
+    "counts_by_kind": {
+      "renderable": 65,
+      "punctual_light": 0,
+      "logical_group": 2,
+      "missing": 40
+    }
+  },
+  "legacy_source": {
+    "expected_count": 107,
+    "missing": [],
+    "extra": [],
+    "components": [
+      {
+        "name": "CHARGE_PORT_RING_ON_BLUE",
+        "node": 12,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_OFF_R",
+        "node": 68,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_STRIP_ON_Xn",
+        "node": 2,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_L_ON",
+        "node": 34,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_2",
+        "node": 88,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_FL",
+        "node": 19,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_6",
+        "node": 92,
+        "kind": "renderable"
+      },
+      {
+        "name": "STEERING_WHEEL",
+        "node": 99,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_2",
+        "node": 80,
+        "kind": "renderable"
+      },
+      {
+        "name": "Wheel_FL",
+        "node": 105,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_R_ON",
+        "node": 37,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_GLOW_ON_R",
+        "node": 66,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_SOCKET",
+        "node": 15,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_3",
+        "node": 81,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_L",
+        "node": 32,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_BATTERY",
+        "node": 23,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_3",
+        "node": 89,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_FR",
+        "node": 28,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REFLECTOR_R",
+        "node": 64,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_HOUSING",
+        "node": 10,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_1",
+        "node": 93,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_FR",
+        "node": 20,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_FL",
+        "node": 27,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_R_ON",
+        "node": 43,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REFLECTOR_L",
+        "node": 63,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_STRIP_ON_Yn",
+        "node": 3,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT",
+        "node": 9,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_RING_ON_WHITE",
+        "node": 14,
+        "kind": "renderable"
+      },
+      {
+        "name": "GRILLE_FRONT",
+        "node": 44,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_BRAKE_ON",
+        "node": 59,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_3",
+        "node": 75,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_OFF_L",
+        "node": 67,
+        "kind": "renderable"
+      },
+      {
+        "name": "Wheel_FR",
+        "node": 106,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_5",
+        "node": 97,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_3",
+        "node": 95,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_OFF_R",
+        "node": 86,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_2",
+        "node": 94,
+        "kind": "renderable"
+      },
+      {
+        "name": "TAILLAMP_L",
+        "node": 101,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_4",
+        "node": 90,
+        "kind": "renderable"
+      },
+      {
+        "name": "Wheel_BL",
+        "node": 103,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TAIL_ON",
+        "node": 72,
+        "kind": "renderable"
+      },
+      {
+        "name": "MIRROR_INDICATOR_R_ON",
+        "node": 55,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_BUMPER_PATCH",
+        "node": 60,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_RING_OFF",
+        "node": 11,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TAIL_BAR",
+        "node": 71,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_6",
+        "node": 84,
+        "kind": "renderable"
+      },
+      {
+        "name": "Wheel_BR",
+        "node": 104,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_L_GLOW_ON",
+        "node": 33,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R",
+        "node": 48,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R_GLOW_ON",
+        "node": 49,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_L",
+        "node": 45,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_RR",
+        "node": 30,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_4",
+        "node": 82,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_1",
+        "node": 73,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_5",
+        "node": 91,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_5",
+        "node": 77,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_ON_R",
+        "node": 70,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_R",
+        "node": 35,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_BRAKE_GLOW_ON",
+        "node": 58,
+        "kind": "renderable"
+      },
+      {
+        "name": "HIGH_STOP_OFF",
+        "node": 52,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_INVERTER",
+        "node": 24,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_BR",
+        "node": 18,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_L_ON",
+        "node": 47,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_4",
+        "node": 96,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_RL",
+        "node": 29,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_LAMP_CLUSTER_R",
+        "node": 62,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_GLOW_ON_L",
+        "node": 65,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_BL",
+        "node": 17,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_6",
+        "node": 98,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_MOTOR_FRONT",
+        "node": 25,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R_ON",
+        "node": 50,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_STRIP_ON_Zp",
+        "node": 4,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_Trunk",
+        "node": 22,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_OFF_L",
+        "node": 85,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_R_GLOW_ON",
+        "node": 42,
+        "kind": "renderable"
+      },
+      {
+        "name": "MIRROR_INDICATOR_L_ON",
+        "node": 54,
+        "kind": "renderable"
+      },
+      {
+        "name": "TAILLAMP_R",
+        "node": 102,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_R_GLOW_ON",
+        "node": 36,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_GLOW_ON_Xn",
+        "node": 0,
+        "kind": "renderable"
+      },
+      {
+        "name": "MIRROR_LEFT",
+        "node": 56,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_6",
+        "node": 78,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_L_GLOW_ON",
+        "node": 39,
+        "kind": "renderable"
+      },
+      {
+        "name": "BODY",
+        "node": 7,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_ON_L",
+        "node": 69,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRL_BAR",
+        "node": 31,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_GLOW_ON_Zp",
+        "node": 1,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_1",
+        "node": 79,
+        "kind": "renderable"
+      },
+      {
+        "name": "DASH_KEYS",
+        "node": 16,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_4",
+        "node": 76,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_5",
+        "node": 83,
+        "kind": "renderable"
+      },
+      {
+        "name": "BONNET",
+        "node": 8,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_L_ON",
+        "node": 40,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_2",
+        "node": 74,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_MOTOR_REAR",
+        "node": 26,
+        "kind": "renderable"
+      },
+      {
+        "name": "HIGH_STOP_ON",
+        "node": 53,
+        "kind": "renderable"
+      },
+      {
+        "name": "MIRROR_RIGHT",
+        "node": 57,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_L_GLOW_ON",
+        "node": 46,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_R",
+        "node": 41,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_RING_ON_GREEN",
+        "node": 13,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_LAMP_CLUSTER_L",
+        "node": 61,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_1",
+        "node": 87,
+        "kind": "renderable"
+      },
+      {
+        "name": "HIGH_STOP_GLOW_ON",
+        "node": 51,
+        "kind": "renderable"
+      },
+      {
+        "name": "SUNROOF",
+        "node": 100,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_L",
+        "node": 38,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R_LIGHT",
+        "node": 6,
+        "kind": "punctual_light"
+      },
+      {
+        "name": "HEADLAMP_L_LIGHT",
+        "node": 5,
+        "kind": "punctual_light"
+      },
+      {
+        "name": "REAR_BRAKE_LIGHT",
+        "node": 21,
+        "kind": "punctual_light"
+      }
+    ],
+    "counts_by_kind": {
+      "renderable": 104,
+      "punctual_light": 3,
+      "logical_group": 0,
+      "missing": 0
+    }
+  },
+  "bundled": {
+    "expected_count": 107,
+    "missing": [],
+    "extra": [
+      "BODY_INTERIOR",
+      "Door_BL_INTERIOR",
+      "Door_BR_INTERIOR",
+      "Door_FL_INTERIOR",
+      "Door_FR_INTERIOR",
+      "Door_Trunk_INTERIOR",
+      "HEADLAMP_L_OFF",
+      "HEADLAMP_R_OFF",
+      "MIRROR_INDICATOR_L_OFF",
+      "MIRROR_INDICATOR_R_OFF",
+      "REAR_TURN_INNER_OFF_L",
+      "REAR_TURN_INNER_OFF_R",
+      "SUNROOF.001",
+      "SUNROOF_REAR_FIXED"
+    ],
+    "components": [
+      {
+        "name": "CHARGE_PORT_RING_ON_BLUE",
+        "node": 10,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_OFF_R",
+        "node": 74,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_STRIP_ON_Xn",
+        "node": 2,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_L_ON",
+        "node": 31,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_2",
+        "node": 75,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_FL",
+        "node": 17,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_6",
+        "node": 56,
+        "kind": "renderable"
+      },
+      {
+        "name": "STEERING_WHEEL",
+        "node": 59,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_2",
+        "node": 76,
+        "kind": "renderable"
+      },
+      {
+        "name": "Wheel_FL",
+        "node": 66,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_R_ON",
+        "node": 34,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_GLOW_ON_R",
+        "node": 77,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_SOCKET",
+        "node": 13,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_3",
+        "node": 78,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_L",
+        "node": 29,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_BATTERY",
+        "node": 20,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_3",
+        "node": 79,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_FR",
+        "node": 25,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REFLECTOR_R",
+        "node": 48,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_HOUSING",
+        "node": 8,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_1",
+        "node": 80,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_FR",
+        "node": 18,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_FL",
+        "node": 24,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_R_ON",
+        "node": 81,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REFLECTOR_L",
+        "node": 47,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_STRIP_ON_Yn",
+        "node": 3,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT",
+        "node": 7,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_RING_ON_WHITE",
+        "node": 12,
+        "kind": "renderable"
+      },
+      {
+        "name": "GRILLE_FRONT",
+        "node": 37,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_BRAKE_ON",
+        "node": 82,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_3",
+        "node": 83,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_OFF_L",
+        "node": 73,
+        "kind": "renderable"
+      },
+      {
+        "name": "Wheel_FR",
+        "node": 67,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_5",
+        "node": 57,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_3",
+        "node": 84,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_OFF_R",
+        "node": 54,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_2",
+        "node": 85,
+        "kind": "renderable"
+      },
+      {
+        "name": "TAILLAMP_L",
+        "node": 62,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_4",
+        "node": 86,
+        "kind": "renderable"
+      },
+      {
+        "name": "Wheel_BL",
+        "node": 64,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TAIL_ON",
+        "node": 87,
+        "kind": "renderable"
+      },
+      {
+        "name": "MIRROR_INDICATOR_R_ON",
+        "node": 88,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_BUMPER_PATCH",
+        "node": 44,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_RING_OFF",
+        "node": 9,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TAIL_BAR",
+        "node": 89,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_6",
+        "node": 52,
+        "kind": "renderable"
+      },
+      {
+        "name": "Wheel_BR",
+        "node": 65,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_L_GLOW_ON",
+        "node": 30,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R",
+        "node": 41,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R_GLOW_ON",
+        "node": 42,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_L",
+        "node": 38,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_RR",
+        "node": 27,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_4",
+        "node": 90,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_1",
+        "node": 91,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_5",
+        "node": 55,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_5",
+        "node": 49,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_ON_R",
+        "node": 92,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_R",
+        "node": 32,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_BRAKE_GLOW_ON",
+        "node": 93,
+        "kind": "renderable"
+      },
+      {
+        "name": "HIGH_STOP_OFF",
+        "node": 70,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_INVERTER",
+        "node": 21,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_BR",
+        "node": 16,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_L_ON",
+        "node": 40,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_4",
+        "node": 94,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_SHAFT_RL",
+        "node": 26,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_LAMP_CLUSTER_R",
+        "node": 46,
+        "kind": "logical_group"
+      },
+      {
+        "name": "REAR_REVERSE_GLOW_ON_L",
+        "node": 95,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_BL",
+        "node": 15,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_R_ON_6",
+        "node": 58,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_MOTOR_FRONT",
+        "node": 22,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R_ON",
+        "node": 43,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_STRIP_ON_Zp",
+        "node": 4,
+        "kind": "renderable"
+      },
+      {
+        "name": "Door_Trunk",
+        "node": 19,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_OFF_L",
+        "node": 53,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_R_GLOW_ON",
+        "node": 96,
+        "kind": "renderable"
+      },
+      {
+        "name": "MIRROR_INDICATOR_L_ON",
+        "node": 97,
+        "kind": "renderable"
+      },
+      {
+        "name": "TAILLAMP_R",
+        "node": 63,
+        "kind": "renderable"
+      },
+      {
+        "name": "FENDER_INDICATOR_R_GLOW_ON",
+        "node": 33,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_GLOW_ON_Xn",
+        "node": 0,
+        "kind": "renderable"
+      },
+      {
+        "name": "MIRROR_LEFT",
+        "node": 68,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_6",
+        "node": 50,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_L_GLOW_ON",
+        "node": 98,
+        "kind": "renderable"
+      },
+      {
+        "name": "BODY",
+        "node": 5,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_REVERSE_ON_L",
+        "node": 99,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRL_BAR",
+        "node": 28,
+        "kind": "renderable"
+      },
+      {
+        "name": "AMBIENT_GLOW_ON_Zp",
+        "node": 1,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_1",
+        "node": 100,
+        "kind": "renderable"
+      },
+      {
+        "name": "DASH_KEYS",
+        "node": 14,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_4",
+        "node": 101,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_ON_5",
+        "node": 51,
+        "kind": "renderable"
+      },
+      {
+        "name": "BONNET",
+        "node": 6,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_L_ON",
+        "node": 102,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_TURN_L_GLOW_ON_2",
+        "node": 103,
+        "kind": "renderable"
+      },
+      {
+        "name": "DRIVETRAIN_MOTOR_REAR",
+        "node": 23,
+        "kind": "renderable"
+      },
+      {
+        "name": "HIGH_STOP_ON",
+        "node": 104,
+        "kind": "renderable"
+      },
+      {
+        "name": "MIRROR_RIGHT",
+        "node": 69,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_L_GLOW_ON",
+        "node": 39,
+        "kind": "renderable"
+      },
+      {
+        "name": "FRONT_INDICATOR_R",
+        "node": 36,
+        "kind": "renderable"
+      },
+      {
+        "name": "CHARGE_PORT_RING_ON_GREEN",
+        "node": 11,
+        "kind": "renderable"
+      },
+      {
+        "name": "REAR_LAMP_CLUSTER_L",
+        "node": 45,
+        "kind": "logical_group"
+      },
+      {
+        "name": "REAR_TURN_R_GLOW_ON_1",
+        "node": 105,
+        "kind": "renderable"
+      },
+      {
+        "name": "HIGH_STOP_GLOW_ON",
+        "node": 106,
+        "kind": "renderable"
+      },
+      {
+        "name": "SUNROOF",
+        "node": 60,
+        "kind": "logical_group"
+      },
+      {
+        "name": "FRONT_INDICATOR_L",
+        "node": 35,
+        "kind": "renderable"
+      },
+      {
+        "name": "HEADLAMP_R_LIGHT",
+        "node": 108,
+        "kind": "punctual_light"
+      },
+      {
+        "name": "HEADLAMP_L_LIGHT",
+        "node": 107,
+        "kind": "punctual_light"
+      },
+      {
+        "name": "REAR_BRAKE_LIGHT",
+        "node": 109,
+        "kind": "punctual_light"
+      }
+    ],
+    "counts_by_kind": {
+      "renderable": 101,
+      "punctual_light": 3,
+      "logical_group": 3,
+      "missing": 0
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Kolkata",
+  "project": "/home/robin/AndroidStudioProjects/AetherHMI",
+  "build": "BUILD SUCCESSFUL",
+  "build_pass_durations": [
+    "7m 58s",
+    "1m 47s"
+  ],
+  "command": "JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ./gradlew --offline --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:lintDebug --console=plain",
+  "tests": {
+    "tests": 85,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "Error": 0,
+    "Warning": 9
+  },
+  "apk_sha256": "cc62103a477ae532fcea5bee386b025a66e0397fa5b4a0953cfc1838ca29371c",
+  "model": {
+    "sha256": "054acf26d43ef939022898aa9325fafa2f97224efe625c37dcfa10b5b6cbe6f2",
+    "bytes": 14185288,
+    "counts": {
+      "nodes": 128,
+      "meshes": 122,
+      "materials": 117,
+      "vertices": 406853,
+      "triangles": 327594,
+      "primitives": 204,
+      "lights": 3,
+      "animations": 0,
+      "skins": 0
+    },
+    "world_bounds": {
+      "min": [
+        -1.0196088552474976,
+        -4.172325134277344e-07,
+        -2.2049098014831543
+      ],
+      "max": [
+        1.0196088552474976,
+        1.6640492677688599,
+        2.2049193382263184
+      ]
+    }
+  },
+  "modelpoints_resolved": 107,
+  "original_glbs_unchanged": true,
+  "changes": {
+    "charging_transparency": 0.85,
+    "charging_opacity": 0.15,
+    "emission_gains": {
+      "headlamp": 6,
+      "reverse": 4,
+      "drl": 2,
+      "main_tail": 6,
+      "main_brake": 10,
+      "upper_stop_unchanged": 18000,
+      "amber_unchanged": 24000
+    },
+    "main_tail_material_emission_fraction": 0.35,
+    "main_tail_emissive_factor": [
+      0.0175,
+      3.5e-05,
+      1.75e-05
+    ],
+    "main_brake_emissive_factor": [
+      0.05,
+      0.0001,
+      5e-05
+    ],
+    "headlamp_spot_intensity": 240,
+    "bloom_and_exposure": "unchanged; glTF emissive exposure bypass accounted for; accepted red upper-stop glow unchanged",
+    "main_rear_lamps": "four exterior lens regions, exclusive OFF/tail/brake states; brake priority; correct physical moving parents; independent main/upper-stop materials",
+    "tyres": {
+      "sidewall_rgb_linear": [
+        0.018,
+        0.019,
+        0.02
+      ],
+      "sidewall_roughness": 0.72,
+      "tread_rgb_linear": [
+        0.012,
+        0.013,
+        0.014
+      ],
+      "tread_roughness": 0.9,
+      "metallic": 0,
+      "clearcoat": 0,
+      "added_triangles": 0,
+      "added_texture_samples": 0,
+      "added_draw_primitives": 4,
+      "added_index_bytes": 284160,
+      "silver_wheel_materials_unchanged": true
+    }
+  },
+  "device": {
+    "model": "Samsung SM_G990E",
+    "android": "16",
+    "emulator_used": false,
+    "readback": {
+      "serial": "RZCT902Y60B",
+      "devices_at_final_readback": "List of devices attached\nRZCT902Y60B            device usb:1-1 product:r9sxxx model:SM_G990E device:r9s transport_id:2",
+      "baseline_file": "vehicle-state-final-baseline.xml",
+      "demo_preferences_restored": true,
+      "logcat_pid": "20465",
+      "fatal_matches": [],
+      "installed_apk_sha256": "cc62103a477ae532fcea5bee386b025a66e0397fa5b4a0953cfc1838ca29371c",
+      "renderer_error_matches": [],
+      "final_readback": "completed"
+    },
+    "charging_frame_sample": {
+      "frames": 127,
+      "fps": 30.074101842247256,
+      "median_ms": 33.256019,
+      "p95_ms": 49.914923
+    },
+    "sample_limit": "Short SurfaceFlinger presentation sample near the 30 fps cap; not sustained thermal/GPU profiling.",
+    "visual_checks_passed": [
+      "subdued front white glow",
+      "visible main red tail lamps",
+      "visible brighter main brake lamps and preserved upper stop",
+      "white reverse lamps alongside active red brake lamps",
+      "reverse white lamps off in Drive",
+      "rear lamps attached correctly while trunk opens",
+      "charcoal sidewalls and rougher tread with silver wheels preserved",
+      "85-percent charging transparency and repeating green battery sweep"
+    ]
+  },
+  "artifacts": [
+    "headlights-soft-glow.png",
+    "headlights-soft-glow.mp4",
+    "rear-tail-lamps.png",
+    "rear-brake-lamps.png",
+    "reverse-and-brake.png",
+    "reverse-soft-glow.png",
+    "reverse-soft-glow.mp4",
+    "rear-all-off.png",
+    "rear-brake-trunk-open.png",
+    "rear-brake-trunk-open.mp4",
+    "tyres-refined.png",
+    "charging-85-percent.png",
+    "charging-85-percent.mp4"
+  ]
+}

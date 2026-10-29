@@ -47,14 +47,18 @@ import com.aether.hmi.domain.DataSource
 import com.aether.hmi.domain.Greeting
 import com.aether.hmi.domain.NetworkTransport
 import com.aether.hmi.domain.RoutePreview
-import com.aether.hmi.domain.VehicleHealth
-import com.aether.hmi.domain.VehicleState
+import com.aether.hmi.domain.VehicleAttentionSeverity
+import com.aether.hmi.domain.VehicleSnapshot
 import com.aether.hmi.domain.greetingAt
+import com.aether.hmi.domain.vehicleAttention
 import com.aether.hmi.feature.media.PlaybackState
 import com.aether.hmi.ui.components.AetherGlyph
 import com.aether.hmi.ui.components.DashboardSurface
 import com.aether.hmi.ui.components.Glyph
 import com.aether.hmi.ui.components.MediaArtwork
+import com.aether.hmi.ui.components.VehicleStatusBadge
+import com.aether.hmi.ui.components.vehicleStatusColor
+import com.aether.hmi.ui.components.vehicleStatusText
 import com.aether.hmi.ui.navigation.AetherTab
 import com.aether.hmi.ui.theme.AetherColors
 import java.text.NumberFormat
@@ -97,7 +101,7 @@ fun HomeScreen(
                 Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(gap)) {
                     NavigationCard(state, showIcons, { showRoute = true },
                         Modifier.fillMaxWidth().weight(0.34f))
-                    VehicleCard(state.snapshot.vehicle, showIcons, { onNavigate(AetherTab.Vehicle) },
+                    VehicleCard(state.snapshot, showIcons, { onNavigate(AetherTab.Vehicle) },
                         Modifier.fillMaxWidth().weight(0.30f))
                     Row(Modifier.fillMaxWidth().weight(0.36f), horizontalArrangement = Arrangement.spacedBy(gap)) {
                         ClimateCard(state, { onNavigate(AetherTab.Climate) }, Modifier.weight(1f).fillMaxHeight())
@@ -166,7 +170,9 @@ private fun NavigationCard(state: DashboardState, showIcons: Boolean, onClick: (
 }
 
 @Composable
-private fun VehicleCard(state: VehicleState, showIcons: Boolean, onClick: () -> Unit, modifier: Modifier) {
+private fun VehicleCard(snapshot: VehicleSnapshot, showIcons: Boolean, onClick: () -> Unit, modifier: Modifier) {
+    val state = snapshot.vehicle
+    val attention = snapshot.vehicleAttention()
     DashboardSurface(modifier, onClick) {
         Row(Modifier.fillMaxSize().padding(horizontal = 10.dp, vertical = if (showIcons) 5.dp else 3.dp), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -174,11 +180,8 @@ private fun VehicleCard(state: VehicleState, showIcons: Boolean, onClick: () -> 
                 modifier = Modifier.size(29.dp)) }
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
                 SmallLabel(stringResource(if (state.source == DataSource.Demo) R.string.vehicle_demo_title else R.string.tab_vehicle))
-                Text(stringResource(when (state.health) {
-                    VehicleHealth.Healthy -> R.string.systems_good
-                    VehicleHealth.Attention -> R.string.systems_attention
-                    VehicleHealth.Unavailable -> R.string.systems_unavailable
-                }), fontSize = if (showIcons) 16.sp else 13.sp, lineHeight = if (showIcons) 19.sp else 15.sp, color = AetherColors.TextPrimary,
+                Text(vehicleStatusText(attention), fontSize = if (showIcons) 16.sp else 13.sp,
+                    lineHeight = if (showIcons) 19.sp else 15.sp, color = vehicleStatusColor(attention),
                     fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 val format = numberFormat(0)
                 Text(stringResource(R.string.vehicle_summary,
@@ -186,10 +189,8 @@ private fun VehicleCard(state: VehicleState, showIcons: Boolean, onClick: () -> 
                     state.batteryPercent?.let { stringResource(R.string.battery_percent, it) } ?: stringResource(R.string.unavailable_value)),
                     color = AetherColors.TextSecondary, fontSize = 10.sp, lineHeight = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
-            if (showIcons && state.health == VehicleHealth.Healthy) {
-                Box(Modifier.size(22.dp).background(AetherColors.Good, CircleShape), contentAlignment = Alignment.Center) {
-                    AetherGlyph(Glyph.Check, size = 15.dp, color = AetherColors.Background)
-                }
+            if (showIcons || attention.severity != VehicleAttentionSeverity.Good) {
+                VehicleStatusBadge(attention, Modifier.size(if (showIcons) 22.dp else 17.dp))
             }
             AetherGlyph(Glyph.Chevron, size = 12.dp, color = AetherColors.TextPrimary)
         }

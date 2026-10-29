@@ -1,0 +1,131 @@
+{
+  "version": "0.5.1",
+  "versionCode": 8,
+  "date": "2026-10-26",
+  "build": "assembleDebug succeeded",
+  "command": "JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ./gradlew --offline --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:lintDebug --console=plain",
+  "tests": [
+    {
+      "suite": "com.aether.hmi.domain.ClimateBehaviorTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.aether.hmi.domain.DashboardBehaviorTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.aether.hmi.domain.VehicleControlsBehaviorTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.aether.hmi.feature.vehicle.VehicleLampPolicyTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.aether.hmi.feature.vehicle.VehicleSceneMathTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "testTotal": 51,
+  "lint": {
+    "errors": 0,
+    "warnings": 9,
+    "warningIds": {
+      "AndroidGradlePluginVersion": 1,
+      "NewerVersionAvailable": 3,
+      "DiscouragedApi": 1,
+      "UseKtx": 3,
+      "ClickableViewAccessibility": 1
+    }
+  },
+  "apk": {
+    "path": "/home/robin/AndroidStudioProjects/AetherHMI/app/build/outputs/apk/debug/app-debug.apk",
+    "bytes": 48246490,
+    "sha256": "7bc0e55080591b1282903545833dbd0f818f43079d94bff66652abf2d8d32bcb",
+    "abis": [
+      "arm64-v8a",
+      "x86_64"
+    ],
+    "signature": "APK Signature Scheme v2 verifies"
+  },
+  "model": {
+    "name": "GenericSUV.glb",
+    "packagedSha256": "8ed4b56ef7f7b0b83a709d59a93d6a1dc144061728c656c3194c0abaf8ec93a5",
+    "packagedBytes": 13460716,
+    "counts": {
+      "nodes": 107,
+      "meshes": 104,
+      "materials": 111,
+      "vertices": 305703,
+      "triangles": 315964,
+      "primitives": 193,
+      "lights": 3,
+      "animations": 0,
+      "skins": 0
+    },
+    "offlineAudit": "passed; deterministic preparation and all193 primitive variant mappings checked; packaged GLB matches",
+    "hingeChecks": 8,
+    "sourceFileUntouched": true,
+    "sourceSha256": "446c9f6291d4b53c0513b5a05bdb901ab3776167eb7c5a9db5868a9ac9557336",
+    "geometryAndTexturesUnchanged": true,
+    "authoredWorldRestTransformsPreserved": true,
+    "accessoryParentsCorrected": 32,
+    "materialVariants": [
+      "Normal",
+      "BatteryXray"
+    ],
+    "normalOriginalMaterials": {
+      "OPAQUE": 52,
+      "BLEND": 8
+    },
+    "sourceTopViewPngUnchanged": true,
+    "xrayBlendClones": 51
+  },
+  "androidRuntimeVerification": {
+    "emulatorUsed": false,
+    "deviceUsed": true,
+    "deviceModel": "Samsung SM_G990E",
+    "adbSerial": "RZCT902Y60B",
+    "androidVersion": "16",
+    "installedVersion": "0.5.1 (8)",
+    "backend": "Filament OpenGL ES 3.2 / Mali-G78",
+    "gpuAppearanceVerified": true,
+    "touchSmoothnessBenchmarked": false,
+    "frameRateBenchmarked": false,
+    "nativeMemoryProfiled": false,
+    "cameraFrustumMathVerified": true,
+    "offAxisProjectionMathVerified": true,
+    "checksPassed": [
+      "complete opaque body/wheels/lenses in Normal view",
+      "pic5 top-view image and shared page backdrop",
+      "scenery and model move together on orbit",
+      "level presets and elevated Sunroof view",
+      "bonnet and trunk opening/closing",
+      "sunroof opening/closing, original state restored",
+      "Park-only charging gate",
+      "battery-only opaque x-ray",
+      "stop charging restores opaque material variant and closes port",
+      "prior Drive state restored",
+      "Home-to-Vehicle native viewport reattachment",
+      "no matching renderer/FATAL errors in captured app-only logs"
+    ],
+    "evidenceDirectory": "/home/robin/AndroidStudioProjects/AetherHMI/docs/verification/vehicle-v0.5.1",
+    "manualChecklist": "VEHICLE_IMPLEMENTATION.md#verification-and-device-handoff",
+    "remainingScope": "No exhaustive lighting/picking regression, sustained FPS, native-memory profiling or other-phone testing in this pass."
+  }
+}

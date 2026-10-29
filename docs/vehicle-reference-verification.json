@@ -1,0 +1,172 @@
+{
+  "date": "2026-10-27",
+  "timezone": "Asia/Kolkata",
+  "project": "/home/robin/AndroidStudioProjects/AetherHMI",
+  "gradle": {
+    "result": "BUILD SUCCESSFUL",
+    "command": "JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ./gradlew --offline --no-daemon :app:compileDebugKotlin :app:compileDebugJavaWithJavac :app:mergeDebugAssets :app:testDebugUnitTest :app:lintDebug --console=plain",
+    "apk_packaging_tasks_executed": false
+  },
+  "unit_tests": {
+    "total": 62,
+    "failures": 0,
+    "errors": 0,
+    "suites": [
+      {
+        "name": "com.aether.hmi.domain.ClimateBehaviorTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.aether.hmi.domain.DashboardBehaviorTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.aether.hmi.domain.VehicleAttentionTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.aether.hmi.domain.VehicleControlsBehaviorTest",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.aether.hmi.feature.vehicle.VehicleLampPolicyTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.aether.hmi.feature.vehicle.VehicleSceneMathTest",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 9,
+    "findings": [
+      {
+        "id": "AndroidGradlePluginVersion",
+        "level": "warning",
+        "message": "A newer version of Gradle than 9.6.0 is available: 9.8.2"
+      },
+      {
+        "id": "NewerVersionAvailable",
+        "level": "warning",
+        "message": "A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-android than 1.9.0 is available: 1.11.0"
+      },
+      {
+        "id": "NewerVersionAvailable",
+        "level": "warning",
+        "message": "A newer version of com.google.android.filament:filament-android than 1.69.5 is available: 1.77.3"
+      },
+      {
+        "id": "NewerVersionAvailable",
+        "level": "warning",
+        "message": "A newer version of com.google.android.filament:gltfio-android than 1.69.5 is available: 1.77.3"
+      },
+      {
+        "id": "DiscouragedApi",
+        "level": "warning",
+        "message": "Fixed screen orientations will be ignored in most cases, starting from Android 16. Android is moving toward a model where apps are expected to adapt to various orientations, display sizes, and aspect ratios."
+      },
+      {
+        "id": "UseKtx",
+        "level": "warning",
+        "message": "Use the KTX extension function SharedPreferences.edit instead?"
+      },
+      {
+        "id": "UseKtx",
+        "level": "warning",
+        "message": "Use the KTX extension function SharedPreferences.edit instead?"
+      },
+      {
+        "id": "UseKtx",
+        "level": "warning",
+        "message": "Use the KTX extension function Bitmap.get instead?"
+      },
+      {
+        "id": "ClickableViewAccessibility",
+        "level": "warning",
+        "message": "Custom view `TextureView` has setOnTouchListener called on it but does not override performClick"
+      }
+    ]
+  },
+  "component_names": {
+    "expected": 107,
+    "missing": [],
+    "counts_by_kind": {
+      "renderable": 101,
+      "punctual_light": 3,
+      "logical_group": 3,
+      "missing": 0
+    }
+  },
+  "model": {
+    "sha256": "cb9c3862c643997618fc55ddeb8cfe63be674715f87762e3fc46e789d6cd5236",
+    "bytes": 13874088,
+    "counts": {
+      "nodes": 111,
+      "meshes": 105,
+      "materials": 111,
+      "vertices": 325528,
+      "triangles": 316041,
+      "primitives": 194,
+      "lights": 3,
+      "animations": 0,
+      "skins": 0
+    },
+    "world_bounds": {
+      "min": [
+        -1.0196088552474976,
+        -4.172325134277344e-07,
+        -2.2049098014831543
+      ],
+      "max": [
+        1.0196088552474976,
+        1.6640492677688599,
+        2.2049193382263184
+      ]
+    }
+  },
+  "verification": {
+    "source_models_unchanged": true,
+    "merged_asset_equals_audited_model": true,
+    "all_preexisting_apk_outputs_unchanged": true,
+    "emulator_used": false,
+    "device_used": false,
+    "runtime_visual_test": "left to user"
+  },
+  "material_checks": {
+    "new_source_binary_prefix_unchanged": true,
+    "source_textures_unchanged": true,
+    "both_user_source_files_untouched": true,
+    "source_alpha_modes_and_values_preserved": true,
+    "source_rest_transforms_preserved_except_documented_lamp_alignment": true,
+    "merged_triangle_partitions_conserve_source_geometry": true,
+    "all_donor_triangles_absent_from_updated_source": true,
+    "prepared_triangles_equal_source_plus_declared_donor_additions": true,
+    "all_modelpoints_names_resolved": true,
+    "all_primitives_have_normal_and_xray_mappings": true,
+    "emulator_or_device_run": "not performed"
+  },
+  "known_visual_limitations": [
+    "Appearance needs user device/emulator review; no rendered screenshot comparison was performed.",
+    "Remaining body-spanning brake/tail overlays are hidden while trunk is open."
+  ]
+}

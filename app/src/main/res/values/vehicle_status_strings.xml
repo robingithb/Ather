@@ -1,0 +1,11 @@
+<resources>
+    <string name="vehicle_status_part_open">%1$s open</string>
+    <string name="vehicle_status_window_open">%1$s window open</string>
+    <string name="vehicle_status_more">%1$s +%2$d</string>
+    <string name="vehicle_signal_status">Turn signals: %1$s</string>
+    <string name="vehicle_headlight_status">Headlights: %1$s</string>
+    <string name="vehicle_park_hazard_active">Park · Hazards flashing</string>
+    <string name="vehicle_reverse_white_active">Reverse · White lamps on</string>
+    <string name="vehicle_park_signal_hint">Park automatically flashes all amber indicators, including the mirrors. Select Drive or Reverse for manual turn signals.</string>
+    <string name="vehicle_signal_charging_hint">Indicators remain visible in the battery view. Other exterior lights are hidden.</string>
+</resources>

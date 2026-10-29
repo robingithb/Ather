@@ -81,6 +81,9 @@
     <string name="hmi_gps_active">GPS Active</string>
     <string name="hmi_5g">5G</string>
     <string name="hmi_indicator_description">%1$s — HMI selection only</string>
+    <string name="home_indicator_unavailable">Vehicle status unavailable</string>
+    <string name="home_not_charging">Not charging</string>
     <string name="expand_media_bar">Expand media player</string>
     <string name="collapse_media_bar">Collapse media player</string>
+    <string name="home_gear_status">Gear: %1$s</string>
 </resources>

@@ -1,0 +1,29 @@
+[
+  {
+    "title": "Status verification request",
+    "position": "After the initial Home-page request",
+    "text": "is it done? please verif it and give  me status",
+    "attachments": []
+  },
+  {
+    "title": "Home cards and dock correction",
+    "position": "After the initial Home implementation, before Climate",
+    "text": "there is need some fix in the current version of home page\nI give you the design in this picture\n1)threre is some missing of the cards,7 cards are missed here,just add the hmi parts only like the icons text, if it presed then it needed to highlighted, that only and second screenshot is design\n2)Also i added the design of the music cards and climate cards I need, current implmentation have some different than original\n3)If size is not fit for add all, so adjust the size of otheres, if you need to small it, then small it but give me the exact design production grae impllementation",
+    "attachments": ["/tmp/codex-clipboard-1e1ab535-6ff5-478f-8ae4-1f99e4cb79ba.png", "/tmp/codex-clipboard-322b8619-2d6e-49d4-a795-f4fd9c74e388.png", "/tmp/codex-clipboard-8ea9a1b4-3189-4d46-9d69-8be49c14179b.png"],
+    "reference_context": "Full Home reference, seven-chip strip, and close-up media/climate dock. The existing home.png design embedded in the gallery also shows these elements."
+  },
+  {
+    "title": "Climate screen and procedural airflow request",
+    "position": "After Home corrections, before the Climate layout correction",
+    "text": "Now we move on to the next screen Climate screen\n1) I give you the design in name of climate_screen and the image used in that design is with name climate\n2)you know the global designs rule , previously i gived you\n3)I need a suggestion, is it possible to animate the air flow, like there is card like face, face+feet,feet,defrost, so when we click the buttons, can you animate the corresponding flow in the design, but i dont habve any animated file, you need to create it and add in the res folder, can you do that",
+    "attachments": ["/home/robin/Pictures/AETHER/Design/climate_screen.png", "/home/robin/Pictures/AETHER/Assets/ChatGPT Image 16 Oct 2026, 00_33_.png", "/tmp/codex-clipboard-3004c965-d59a-4128-b5d0-be654db5a49d.png"],
+    "reference_context": "Climate design and cabin artwork are embedded. The missing document screenshot specified independently controlled zones except Sync, fan 0..configured max, exclusive flow modes, A/C/Sync/defrost and seat heat/cool controls, mock provenance and shared HVAC state. It recommended moving paths/particles rather than alpha-only pulsing."
+  },
+  {
+    "title": "Climate rail, card centering and removal of flow pause",
+    "position": "Before the recorded Climate v0.3.1 completion and the Jeep Vehicle phase",
+    "text": "there is small changes\n1)i just give you updated design. there is five tabs in left side, so look that it is common for mu all pages, so i need like that\n2)the 4 crads like face , face_feet,feet and defrost , these cards need to be center, see there is some gap in the right side in the output\n3)There is a airflow pause, flow pause in the image, i domt need it three, the flow should controled by the 4 cards\n4)please dont test in my emulator because its very slow, so just imlement it and i will test it",
+    "attachments": ["/tmp/codex-clipboard-96967d94-bcc6-4faa-90a9-e7a67c366179.png"],
+    "reference_context": "Updated Climate arrangement: full-height common rail, centered mode row, no separate flow-pause overlay. Although the picture contains an extra Drive entry, the explicit request says five common tabs. The exact clipboard file is no longer present."
+  }
+]
