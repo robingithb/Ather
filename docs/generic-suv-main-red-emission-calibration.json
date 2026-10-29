@@ -1,0 +1,134 @@
+{
+  "previous_asset_sha256": "e5eef8fe2ab29e1a50c2e7ab4e9ef09736d485f4bff96a1d0fcfeee0c35833b7",
+  "previous_calibration_profiles": [
+    {
+      "index": 60,
+      "name": "Generic_main_tail_LED_red_dim",
+      "emissiveFactor": [
+        0.0525,
+        0.000105,
+        5.25e-05
+      ]
+    },
+    {
+      "index": 61,
+      "name": "Generic_main_brake_LED_red",
+      "emissiveFactor": [
+        0.15,
+        0.0003,
+        0.00015
+      ]
+    },
+    {
+      "index": 114,
+      "name": "Generic_main_tail_LED_red_dim__BatteryXray",
+      "emissiveFactor": [
+        0.0525,
+        0.000105,
+        5.25e-05
+      ]
+    },
+    {
+      "index": 115,
+      "name": "Generic_main_brake_LED_red__BatteryXray",
+      "emissiveFactor": [
+        0.15,
+        0.0003,
+        0.00015
+      ]
+    }
+  ],
+  "bundled": {
+    "sha256": "054acf26d43ef939022898aa9325fafa2f97224efe625c37dcfa10b5b6cbe6f2",
+    "bytes": 14185288,
+    "counts": {
+      "nodes": 128,
+      "meshes": 122,
+      "materials": 117,
+      "vertices": 406853,
+      "triangles": 327594,
+      "primitives": 204,
+      "lights": 3,
+      "animations": 0,
+      "skins": 0
+    },
+    "world_bounds": {
+      "min": [
+        -1.0196088552474976,
+        -4.172325134277344e-07,
+        -2.2049098014831543
+      ],
+      "max": [
+        1.0196088552474976,
+        1.6640492677688599,
+        2.2049193382263184
+      ]
+    }
+  },
+  "main_material_emission_profiles": [
+    {
+      "index": 60,
+      "name": "Generic_main_tail_LED_red_dim",
+      "emissiveFactor": [
+        0.0175,
+        3.5e-05,
+        1.75e-05
+      ]
+    },
+    {
+      "index": 61,
+      "name": "Generic_main_brake_LED_red",
+      "emissiveFactor": [
+        0.05,
+        0.0001,
+        5e-05
+      ]
+    },
+    {
+      "index": 114,
+      "name": "Generic_main_tail_LED_red_dim__BatteryXray",
+      "emissiveFactor": [
+        0.0175,
+        3.5e-05,
+        1.75e-05
+      ]
+    },
+    {
+      "index": 115,
+      "name": "Generic_main_brake_LED_red__BatteryXray",
+      "emissiveFactor": [
+        0.05,
+        0.0001,
+        5e-05
+      ]
+    }
+  ],
+  "entire_binary_sha256": "691136c856f81e249a6a7d2f21a65a41b40bb885ad6a4a21961c4de9c79d205e",
+  "only_targeted_emissive_factors_changed": true,
+  "entire_binary_unchanged": true,
+  "all_other_gltf_properties_including_PBR_roughness_geometry_upper_stop_and_variants_unchanged": true,
+  "both_original_source_files_unchanged": true,
+  "main_rear_verification": {
+    "off_lens_groups": 4,
+    "tail_on_groups": 4,
+    "brake_on_groups": 4,
+    "world_triangles_and_winding_match": true,
+    "physical_movement_parents_verified": true,
+    "independent_tail_brake_and_upper_stop_materials": true,
+    "normal_depth_tests_and_opaque_rendering_preserved": true,
+    "calibrated_emissive_factors": {
+      "tail": [
+        0.0175,
+        3.5e-05,
+        1.75e-05
+      ],
+      "brake": [
+        0.05,
+        0.0001,
+        5e-05
+      ]
+    },
+    "runtime_state_contract": "brake overrides tail; OFF only when neither is active"
+  },
+  "all_107_modelpoints_resolved": true
+}

@@ -1,5 +1,7 @@
 # Gradle cache
 .gradle/
+.kotlin/
+**/__pycache__/
 
 # Build outputs in any module
 **/build/

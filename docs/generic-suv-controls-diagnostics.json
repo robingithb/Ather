@@ -1,0 +1,114 @@
+{
+  "source_new_sha256": "683fe7cced45054ffa6d9e6e61f5c362d317684c51c26add45a0a6c603694145",
+  "donor_old_sha256": "446c9f6291d4b53c0513b5a05bdb901ab3776167eb7c5a9db5868a9ac9557336",
+  "bundled_sha256": "7fdd63858eb9b8d037e8e44038f502a77ca75a4b2a276e635b45da409fc5ca28",
+  "both_original_source_hashes_verified_unchanged": true,
+  "new_source_binary_prefix_unchanged": true,
+  "reverse_before": {
+    "outward_direction": [
+      0,
+      0,
+      -1
+    ],
+    "left_samples": 36,
+    "left_blocked": 36,
+    "right_samples": 36,
+    "right_blocked": 36,
+    "blocker": "Door_Trunk/Generic_tail_lens_red_OFF",
+    "nearest_blocker_depth_meters": [
+      0.004648368524259901,
+      0.007191495028844026
+    ]
+  },
+  "reverse_actual_exterior_off": {
+    "left_samples": 38,
+    "left_blocked": 0,
+    "right_samples": 38,
+    "right_blocked": 0
+  },
+  "reverse_fix_verification": {
+    "off_lenses": 2,
+    "on_emitters": 2,
+    "world_triangles_and_winding_match": true,
+    "ordinary_opaque_white_led_materials": true,
+    "red_shells_preserved": true
+  },
+  "interior_shadow_groups": [
+    {
+      "name": "BODY_INTERIOR",
+      "parent": "BODY",
+      "shadowRole": "interior",
+      "materials": [
+        "Generic_interior_fabric",
+        "Generic_interior_atlas",
+        "Generic_dash_trim_silver",
+        "Generic_dash_LED_ambient_OFF"
+      ],
+      "triangles": 48424,
+      "source_attributes_indices_and_winding_preserved": true
+    },
+    {
+      "name": "Door_FL_INTERIOR",
+      "parent": "Door_FL",
+      "shadowRole": "interior",
+      "materials": [
+        "Generic_interior_fabric",
+        "Generic_interior_atlas"
+      ],
+      "triangles": 5413,
+      "source_attributes_indices_and_winding_preserved": true
+    },
+    {
+      "name": "Door_FR_INTERIOR",
+      "parent": "Door_FR",
+      "shadowRole": "interior",
+      "materials": [
+        "Generic_interior_fabric",
+        "Generic_interior_atlas"
+      ],
+      "triangles": 4541,
+      "source_attributes_indices_and_winding_preserved": true
+    },
+    {
+      "name": "Door_BL_INTERIOR",
+      "parent": "Door_BL",
+      "shadowRole": "interior",
+      "materials": [
+        "Generic_interior_fabric",
+        "Generic_interior_atlas"
+      ],
+      "triangles": 4586,
+      "source_attributes_indices_and_winding_preserved": true
+    },
+    {
+      "name": "Door_BR_INTERIOR",
+      "parent": "Door_BR",
+      "shadowRole": "interior",
+      "materials": [
+        "Generic_interior_fabric",
+        "Generic_interior_atlas"
+      ],
+      "triangles": 4586,
+      "source_attributes_indices_and_winding_preserved": true
+    },
+    {
+      "name": "Door_Trunk_INTERIOR",
+      "parent": "Door_Trunk",
+      "shadowRole": "interior",
+      "materials": [
+        "Generic_interior_atlas"
+      ],
+      "triangles": 352,
+      "source_attributes_indices_and_winding_preserved": true
+    }
+  ],
+  "interior_split_verification": {
+    "renderable_groups": 6,
+    "interior_triangles": 67902,
+    "source_attributes_indices_materials_and_world_transforms_preserved": true,
+    "no_generic_black_plastic_or_exterior_materials_moved": true
+  },
+  "renderer_contract": "Disable casting for *_INTERIOR or extras.shadowRole=interior. Explicit DRIVETRAIN_*, STEERING_WHEEL and DASH_KEYS can also be noncasting. Keep exterior paint/cladding/wheels casting.",
+  "modelpoints_missing": [],
+  "device_verification": "Not performed by model-preparation task"
+}

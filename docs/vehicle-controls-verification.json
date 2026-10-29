@@ -1,0 +1,356 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Kolkata",
+  "project": "/home/robin/AndroidStudioProjects/AetherHMI",
+  "gradle_command": "JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ./gradlew --offline --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:lintDebug --console=plain",
+  "gradle_result": "BUILD SUCCESSFUL in 1m 47s",
+  "tests": {
+    "tests": 82,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "Error": 0,
+    "Warning": 9
+  },
+  "apk_sha256": "d9b6a721f77b072d3c09580ab470af13bddb8c52b478fb694a789685b6d511e4",
+  "bundled_model": {
+    "sha256": "7fdd63858eb9b8d037e8e44038f502a77ca75a4b2a276e635b45da409fc5ca28",
+    "bytes": 13894468,
+    "counts": {
+      "nodes": 121,
+      "meshes": 115,
+      "materials": 111,
+      "vertices": 338258,
+      "triangles": 316210,
+      "primitives": 194,
+      "lights": 3,
+      "animations": 0,
+      "skins": 0
+    },
+    "world_bounds": {
+      "min": [
+        -1.0196088552474976,
+        -4.172325134277344e-07,
+        -2.2049098014831543
+      ],
+      "max": [
+        1.0196088552474976,
+        1.6640492677688599,
+        2.2049193382263184
+      ]
+    }
+  },
+  "original_source_glbs_unchanged": true,
+  "modelpoints_resolved": 107,
+  "changes": {
+    "headlamps": {
+      "previous_emission_gain": 14400,
+      "emission_gain": 7200,
+      "previous_spot_intensity": 960,
+      "spot_intensity": 480
+    },
+    "interior_shadows": {
+      "cast_and_receive_disabled": true,
+      "separated_interior_triangles": 67902,
+      "groups": 6,
+      "also_excluded": [
+        "DRIVETRAIN_*",
+        "STEERING_WHEEL",
+        "DASH_KEYS"
+      ],
+      "exterior_floor_shadows_preserved": true
+    },
+    "reverse_lamps": "ON emitters reuse the real exterior white OFF lens geometry and winding; opaque red housing preserved; ON only in Reverse",
+    "home_status": "Parked derives available shared gear=Park; Charging derives shared charging=true; both read-only",
+    "charging_transparency": {
+      "transparency": 0.7,
+      "remaining_opacity": 0.3
+    },
+    "battery_sweep": {
+      "fill_seconds": 2.2,
+      "hold_seconds": 0.8,
+      "repeat_seconds": 3.0,
+      "from": 0,
+      "to": "actual state of charge",
+      "observed_soc_percent": 87,
+      "reduced_motion": "static actual charge",
+      "numeric_telemetry_unchanged": true
+    }
+  },
+  "device": {
+    "model": "Samsung SM_G990E",
+    "android": "16",
+    "serial": "RZCT902Y60B",
+    "installed_with_data_preserved": true,
+    "emulator_used": false,
+    "passed": [
+      "headlamp On/Off",
+      "reverse white ON in Reverse",
+      "reverse white OFF in Park",
+      "Park amber hazards",
+      "all five Home state cases",
+      "70-percent-transparent charging body",
+      "repeating green fill to reported 87 percent"
+    ],
+    "home_checks": {
+      "charging-park": {
+        "Parked": {
+          "selected_border": true,
+          "border_rgb": [
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ]
+          ],
+          "clickable": "false"
+        },
+        "Charging": {
+          "selected_border": true,
+          "border_rgb": [
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ]
+          ],
+          "clickable": "false"
+        }
+      },
+      "park-idle": {
+        "Parked": {
+          "selected_border": true,
+          "border_rgb": [
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ]
+          ],
+          "clickable": "false"
+        },
+        "Charging": {
+          "selected_border": false,
+          "border_rgb": [
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ]
+          ],
+          "clickable": "false"
+        }
+      },
+      "reverse": {
+        "Parked": {
+          "selected_border": false,
+          "border_rgb": [
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ]
+          ],
+          "clickable": "false"
+        },
+        "Charging": {
+          "selected_border": false,
+          "border_rgb": [
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ]
+          ],
+          "clickable": "false"
+        }
+      },
+      "drive": {
+        "Parked": {
+          "selected_border": false,
+          "border_rgb": [
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ]
+          ],
+          "clickable": "false"
+        },
+        "Charging": {
+          "selected_border": false,
+          "border_rgb": [
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ],
+            [
+              28,
+              83,
+              111
+            ]
+          ],
+          "clickable": "false"
+        }
+      },
+      "charging-restored": {
+        "Parked": {
+          "selected_border": true,
+          "border_rgb": [
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ]
+          ],
+          "clickable": "false"
+        },
+        "Charging": {
+          "selected_border": true,
+          "border_rgb": [
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ],
+            [
+              0,
+              223,
+              255
+            ]
+          ],
+          "clickable": "false"
+        }
+      }
+    },
+    "charging_presentation_sample": {
+      "frames": 126,
+      "fps": 30.082914275630014,
+      "median_ms": 33.238769,
+      "p95_ms": 33.5465
+    },
+    "timing_limit": "Short settled SurfaceFlinger presentation sample around the app 30 fps cap, not a sustained performance benchmark. Navigation-paused timing history excluded.",
+    "demo_controls_returned": {
+      "gear": "Park",
+      "charging": true,
+      "charge_port": "Open",
+      "headlights": "Off",
+      "stored_turn_signal": "Off"
+    },
+    "final_readback": {
+      "serial": "RZCT902Y60B",
+      "devices_at_final_readback": "List of devices attached",
+      "final_readback": "unavailable; ADB disconnected after successful visual protocol and settled timing sample"
+    }
+  },
+  "evidence": [
+    "headlights-half.png",
+    "headlights-half.mp4",
+    "reverse-lamps.png",
+    "reverse-lamps.mp4",
+    "park-no-reverse.png",
+    "park-no-reverse.mp4",
+    "charging-70-percent.png",
+    "charging-70-percent-sweep.mp4",
+    "charging-sweep-contact-sheet.jpg",
+    "home-charging-park.png",
+    "home-park-idle.png",
+    "home-reverse.png",
+    "home-drive.png",
+    "home-charging-restored.png",
+    "gradle-verification.log"
+  ]
+}

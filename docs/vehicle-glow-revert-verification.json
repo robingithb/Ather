@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-30",
+  "timezone": "Asia/Kolkata",
+  "project": "/home/robin/AndroidStudioProjects/AetherHMI",
+  "build": "BUILD SUCCESSFUL",
+  "build_duration": "1m 47s",
+  "command": "JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ./gradlew --offline --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:lintDebug --console=plain",
+  "tests": {
+    "tests": 86,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "Error": 0,
+    "Warning": 9
+  },
+  "apk_sha256": "3c31dd2a6708fa605e10ba8031d9b373bd90df0150e3107bd0bebdaed16021d3",
+  "model": {
+    "sha256": "f3c1124e8788f78ff0085d3cddcec3e2d5c2f3f5e3f38f5204738bf303b58d5d",
+    "bytes": 14181240,
+    "counts": {
+      "nodes": 121,
+      "meshes": 115,
+      "materials": 113,
+      "vertices": 402637,
+      "triangles": 316210,
+      "primitives": 198,
+      "lights": 3,
+      "animations": 0,
+      "skins": 0
+    },
+    "world_bounds": {
+      "min": [
+        -1.0196088552474976,
+        -4.172325134277344e-07,
+        -2.2049098014831543
+      ],
+      "max": [
+        1.0196088552474976,
+        1.6640492677688599,
+        2.2049193382263184
+      ]
+    }
+  },
+  "changes": {
+    "main_rear": "Full-cluster red lamp remap and its auxiliary nodes/materials removed; exact iteration-2 rear geometry and original policy restored",
+    "upper_stop_glow": "unchanged; original material and gain 18000",
+    "headlight_projector_gain": {
+      "before": 6,
+      "after": 128
+    },
+    "drl_gain": "unchanged at 2; wide bar is not boosted with the projectors",
+    "reverse_gain": {
+      "before": 4,
+      "after": 4.8,
+      "increase_percent": 20
+    },
+    "reverse_request_interpretation": "20 glowness interpreted as 20 percent more than the previous emission setting",
+    "glow_method": "existing native Filament bloom, same path as upper brake light; no billboard glows or new render passes",
+    "retained": [
+      "85 percent charging transparency",
+      "repeating green battery sweep",
+      "accepted tyre sidewall/tread materials",
+      "interior shadow exclusions",
+      "2x MSAA plus FXAA"
+    ]
+  },
+  "model_verification": {
+    "rear_comparison_differences": 0,
+    "tyre_comparison_differences": 0,
+    "upper_stop_original_material_preserved": true,
+    "modelpoints_resolved": 107,
+    "original_glbs_unchanged": true,
+    "entire_bin_unchanged_from_accepted_tyre_asset": true
+  },
+  "device": {
+    "model": "Samsung SM_G990E",
+    "android": "16",
+    "emulator_used": false,
+    "readback": {
+      "serial": "RZCT902Y60B",
+      "devices_at_final_readback": "List of devices attached\nRZCT902Y60B            device usb:1-1 product:r9sxxx model:SM_G990E device:r9s transport_id:1",
+      "baseline_file": "vehicle-state-final-baseline.xml",
+      "demo_preferences_restored": true,
+      "logcat_pid": "28941",
+      "fatal_matches": [],
+      "installed_apk_sha256": "3c31dd2a6708fa605e10ba8031d9b373bd90df0150e3107bd0bebdaed16021d3",
+      "renderer_error_matches": [],
+      "final_readback": "completed"
+    },
+    "visual_checks": [
+      "headlight projector halo visible with restrained DRL",
+      "original rear appearance restored and upper stop glow preserved",
+      "reverse white lamps active only in Reverse",
+      "tested controls restored; sunroof and HVAC settings preserved"
+    ]
+  },
+  "artifacts": [
+    "headlights-off.png",
+    "headlight-projector-glow.png",
+    "headlight-projector-glow.mp4",
+    "upper-brake-reverted-main.png",
+    "upper-brake-reverted-main.mp4",
+    "reverse-glow.png",
+    "reverse-glow.mp4",
+    "reverse-off-drive.png"
+  ]
+}

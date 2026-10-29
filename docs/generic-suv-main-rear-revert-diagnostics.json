@@ -1,0 +1,111 @@
+{
+  "bundled": {
+    "sha256": "f3c1124e8788f78ff0085d3cddcec3e2d5c2f3f5e3f38f5204738bf303b58d5d",
+    "bytes": 14181240,
+    "counts": {
+      "nodes": 121,
+      "meshes": 115,
+      "materials": 113,
+      "vertices": 402637,
+      "triangles": 316210,
+      "primitives": 198,
+      "lights": 3,
+      "animations": 0,
+      "skins": 0
+    },
+    "world_bounds": {
+      "min": [
+        -1.0196088552474976,
+        -4.172325134277344e-07,
+        -2.2049098014831543
+      ],
+      "max": [
+        1.0196088552474976,
+        1.6640492677688599,
+        2.2049193382263184
+      ]
+    }
+  },
+  "revert_scope": "Main full-cluster red surfaces, auxiliary nodes, independent materials and emission calibration removed; original iteration-2 rear source/donor layout restored",
+  "comparison_result": {
+    "pass": true,
+    "difference_count": 0,
+    "rear_nodes_compared": [
+      "Door_Trunk",
+      "TAILLAMP_L",
+      "TAILLAMP_R",
+      "REAR_TAIL_BAR",
+      "REAR_BRAKE_ON",
+      "REAR_TAIL_ON",
+      "HIGH_STOP_ON",
+      "HIGH_STOP_OFF"
+    ],
+    "rear_iteration2_source_sha256": "7fdd63858eb9b8d037e8e44038f502a77ca75a4b2a276e635b45da409fc5ca28",
+    "tyre_nodes_compared": [
+      "Wheel_BL",
+      "Wheel_BR",
+      "Wheel_FL",
+      "Wheel_FR"
+    ],
+    "accepted_tyre_source_sha256": "054acf26d43ef939022898aa9325fafa2f97224efe625c37dcfa10b5b6cbe6f2",
+    "comparison_contract": "Exact attribute values/accessor schema, index order/winding/multiplicity, material/variant contents, hierarchy and local/world transforms independent of resource indices"
+  },
+  "full_cluster_auxiliary_nodes_absent": true,
+  "independent_main_red_materials_and_calibration_absent": true,
+  "upper_stop_material_unchanged_from_original_donor": true,
+  "upper_stop_materials": [
+    {
+      "index": 56,
+      "name": "Generic_tail_LED_red"
+    }
+  ],
+  "all_107_modelpoints_resolved": true,
+  "both_original_source_files_unchanged": true,
+  "source_new_sha256": "683fe7cced45054ffa6d9e6e61f5c362d317684c51c26add45a0a6c603694145",
+  "donor_sha256": "446c9f6291d4b53c0513b5a05bdb901ab3776167eb7c5a9db5868a9ac9557336",
+  "entire_binary_sha256": "691136c856f81e249a6a7d2f21a65a41b40bb885ad6a4a21961c4de9c79d205e",
+  "entire_binary_unchanged_from_accepted_tyre_asset": true,
+  "new_source_binary_prefix_unchanged": true,
+  "retained_contracts": {
+    "amber": {
+      "off_lens_groups": 8,
+      "on_emitter_groups": 16,
+      "world_triangles_and_winding_match": true,
+      "ordinary_opaque_amber_led_materials": true
+    },
+    "headlamp": {
+      "off_projectors": 2,
+      "on_projectors": 2,
+      "world_triangles_and_winding_match": true,
+      "ordinary_opaque_white_led_materials": true,
+      "drl_geometry_unchanged": true
+    },
+    "reverse": {
+      "off_lenses": 2,
+      "on_emitters": 2,
+      "world_triangles_and_winding_match": true,
+      "ordinary_opaque_white_led_materials": true,
+      "red_shells_preserved": true
+    },
+    "interior": {
+      "renderable_groups": 6,
+      "interior_triangles": 67902,
+      "source_attributes_indices_materials_and_world_transforms_preserved": true,
+      "no_generic_black_plastic_or_exterior_materials_moved": true
+    },
+    "tyres": {
+      "four_tyre_partitions_verified": true,
+      "source_vertices_normals_uvs_and_winding_preserved": true,
+      "normal_rubber_is_opaque_dielectric": true,
+      "silver_wheel_materials_unchanged": true,
+      "additional_texture_samples": 0,
+      "additional_triangles": 0
+    }
+  },
+  "restored_mixed_trunk_suppression_nodes": [
+    "REAR_BRAKE_ON",
+    "REAR_BRAKE_GLOW_ON",
+    "REAR_TAIL_ON"
+  ],
+  "verification_limits": "No Kotlin, build or device actions by model task"
+}

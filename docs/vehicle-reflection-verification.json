@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-30",
+  "build": {
+    "gradle_success": true,
+    "jvm": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lint": {
+      "Error": 0,
+      "Warning": 8,
+      "Fatal": 0
+    },
+    "apk_sha256": "f6f36be28e61ee7f57abc3a122c7c1ef6992b910c7538d077fb17d98d9ec2a1c"
+  },
+  "phone": {
+    "serial": "RZCT902Y60B",
+    "devices_at_final_readback": "List of devices attached\nRZCT902Y60B            device usb:1-1 product:r9sxxx model:SM_G990E device:r9s transport_id:2",
+    "baseline_file": "vehicle-state-final-baseline.xml",
+    "demo_preferences_restored": true,
+    "logcat_pid": "6088",
+    "fatal_matches": [],
+    "installed_apk_sha256": "f6f36be28e61ee7f57abc3a122c7c1ef6992b910c7538d077fb17d98d9ec2a1c",
+    "renderer_error_matches": [],
+    "final_readback": "completed"
+  },
+  "active_orbit_presentation_sample": {
+    "layer": "com.aether.hmi/com.aether.hmi.MainActivity$_6088#2018",
+    "frames": 99,
+    "fps": 30.215084823381094,
+    "median_ms": 33.2751155,
+    "p95_ms": 50.068961
+  },
+  "charging_presentation_fps": 30.054283696178004,
+  "timing_limit": "Short SurfaceFlinger presentation samples, not a sustained GPU/thermal benchmark. The idle normal-view sample includes intentional gaps and is excluded.",
+  "source_glb_sha256": {
+    "/home/robin/Pictures/AETHER/GenericSUV_new.glb": "683fe7cced45054ffa6d9e6e61f5c362d317684c51c26add45a0a6c603694145",
+    "/home/robin/Pictures/AETHER/GenericSUV.glb": "446c9f6291d4b53c0513b5a05bdb901ab3776167eb7c5a9db5868a9ac9557336"
+  },
+  "bundled_asset_sha256": "88e4c72f9ff1ef8a2d2a760b73e1f5cca063bb1b1fba441bd25edfd875d79883",
+  "reflection_probe": {
+    "face_size": 128,
+    "mip_levels": 8,
+    "indirect_intensity": 22000,
+    "key_peak": 3.5,
+    "fill_peak": 1.5,
+    "overhead_peak": 2,
+    "extra_per_frame_render_passes": 0,
+    "approx_gpu_bytes": 786420
+  },
+  "shadow_policy": "Exterior casts onto shadow-receiving floor; interior shadow work excluded; existing tyre/body contact footprint and low-quality half-resolution AO retained.",
+  "usb_stay_awake_restored": true,
+  "all_107_modelpoints_resolved": true,
+  "source_BIN_and_all_non_declared_gltf_properties_unchanged": true
+}

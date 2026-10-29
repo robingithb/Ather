@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-30",
+  "timezone": "Asia/Kolkata",
+  "build": "BUILD SUCCESSFUL",
+  "build_duration": "1m 43s",
+  "tests": {
+    "tests": 86,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "Error": 0,
+    "Warning": 9
+  },
+  "apk_sha256": "cff6916f58b5fd6fda8562d2e10c23f3f5c0af1df29a8e5cbbf03dee9ddd1f45",
+  "model_sha256_unchanged": "f3c1124e8788f78ff0085d3cddcec3e2d5c2f3f5e3f38f5204738bf303b58d5d",
+  "headlight_projector_gain": {
+    "before": 128,
+    "after": 4096,
+    "multiplier": 32
+  },
+  "drl_gain_unchanged": 2,
+  "reverse_gain_unchanged": 4.8,
+  "upper_stop_gain_unchanged": 18000,
+  "rendering": "Existing native bloom; no added render passes, geometry, textures or lights",
+  "regression_check": "Projector linear emissive luminance remains comparable to accepted upper stop; wide DRL stays restrained",
+  "device": {
+    "model": "Samsung SM_G990E",
+    "android": "16",
+    "readback": {
+      "serial": "RZCT902Y60B",
+      "devices_at_final_readback": "List of devices attached\nRZCT902Y60B            device usb:1-1 product:r9sxxx model:SM_G990E device:r9s transport_id:1",
+      "baseline_file": "vehicle-state-final-baseline.xml",
+      "demo_preferences_restored": true,
+      "logcat_pid": "32201",
+      "fatal_matches": [],
+      "installed_apk_sha256": "cff6916f58b5fd6fda8562d2e10c23f3f5c0af1df29a8e5cbbf03dee9ddd1f45",
+      "renderer_error_matches": [],
+      "final_readback": "completed"
+    },
+    "checks": [
+      "headlights Off",
+      "clearly visible headlight halo On",
+      "halo visible from second orbit angle",
+      "front strip and grille retain definition",
+      "current user settings restored"
+    ],
+    "emulator_used": false
+  },
+  "artifacts": [
+    "headlight-glow-comparison.png",
+    "headlight-visible-halo.png",
+    "headlight-visible-halo.mp4",
+    "headlight-halo-angle.png",
+    "headlight-halo-angle.mp4",
+    "headlights-off.png",
+    "gradle-verification.log"
+  ]
+}

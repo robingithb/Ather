@@ -1,0 +1,188 @@
+{
+  "recording": {
+    "path": "/home/robin/Desktop/Screen_recording_20261027_233645.mp4",
+    "sha256": "f9086b667e4180d9acd50676de3e6c734666920a0a8de3c67bde74afcc1e2d8f"
+  },
+  "analyzed_previous_asset_sha256": "cb9c3862c643997618fc55ddeb8cfe63be674715f87762e3fc46e789d6cd5236",
+  "corrected_asset_sha256": "9a93435e76c1c1d66c9bc43cbbcb2d67c7fc757d3d343f2525deef2afc984797",
+  "observations": [
+    {
+      "frame_seconds": 6,
+      "finding": "Entire BODY surfaces transiently missing after charging stops, while bonnet and some other parts remain; renderer variant/depth transition issue"
+    },
+    {
+      "frame_seconds": 14,
+      "finding": "Diagonal repeated dark bands across driver-side doors; consistent with self-shadow acne"
+    },
+    {
+      "finding": "Fender indicator visible; front, mirror and rear recessed emitters have distinct geometry alignment/occlusion defects"
+    }
+  ],
+  "indicator_geometry_before": {
+    "front_left_on_recess_meters": 0.02,
+    "front_right_on_sideways_misalignment_meters": 0.02,
+    "mirror_on_inward_misalignment_meters": 0.03,
+    "rear_segment_2_red_lens_blocking": {
+      "outward_ray_direction": [
+        0,
+        0,
+        -1
+      ],
+      "front_facing_samples": 26,
+      "blocked_samples": 5,
+      "blocker_node": "Door_Trunk",
+      "blocker_material": "Generic_tail_lens_red_OFF",
+      "blocker_depth_range_meters": [
+        0.0044540030923872495,
+        0.007544719181791408
+      ]
+    },
+    "actual_amber_off_surface_outward_rays": [
+      {
+        "name": "FRONT_INDICATOR_L",
+        "samples": 6,
+        "blocked": 0
+      },
+      {
+        "name": "FRONT_INDICATOR_R",
+        "samples": 6,
+        "blocked": 0
+      },
+      {
+        "name": "MIRROR_LEFT amber primitive",
+        "samples": 16,
+        "blocked": 0
+      },
+      {
+        "name": "MIRROR_RIGHT amber primitive",
+        "samples": 16,
+        "blocked": 0
+      },
+      {
+        "name": "REAR_TURN_INNER_OFF_L",
+        "samples": 60,
+        "red_shell_blocked": 0
+      },
+      {
+        "name": "REAR_TURN_OFF_L",
+        "samples": 50,
+        "red_shell_blocked": 0
+      }
+    ],
+    "limits": "Bounded exterior-ray samples demonstrate recessed geometry and exposed replacement surfaces, not an exhaustive visibility proof for every camera angle"
+  },
+  "indicator_fix": {
+    "on_groups": 16,
+    "off_groups": 8,
+    "method": "Exact source exterior amber lens world triangles shared between mutually exclusive opaque OFF/ON states",
+    "normal_depth_tests": true,
+    "red_lens_shells_removed": false,
+    "fender_geometry_changed": false,
+    "world_triangles_and_winding_match_verified": true
+  },
+  "paint_audit": {
+    "nodes": [
+      "BODY",
+      "Door_FL",
+      "Door_FR",
+      "Door_BL",
+      "Door_BR"
+    ],
+    "negative_normal_vs_winding_triangles": 0,
+    "normal_lengths_range_approximately": [
+      0.9999999,
+      1.0000002
+    ],
+    "shared_opaque_material": "Generic_body_paint",
+    "paint_texture": false,
+    "vertex_colors": false,
+    "central_exterior_front_door_ray_samples": {
+      "Door_FL": 108,
+      "Door_FR": 109
+    },
+    "central_front_door_overlying_opaque_surfaces_within_15mm": 0,
+    "rear_door_boundary_hits": "Two trim/plastic hits on each side, symmetric",
+    "geometry_changed": false,
+    "inference": "Repeated diagonal bands likely arise from shadow-map self-reception, so renderer must address shadow acne"
+  },
+  "battery_geometry": {
+    "connected_packs": 1,
+    "authored_cell_modules": 0,
+    "vertices": 214,
+    "triangles": 108,
+    "bounds": {
+      "min": [
+        -0.54,
+        0.318,
+        -0.92
+      ],
+      "max": [
+        0.54,
+        0.458,
+        0.72
+      ]
+    },
+    "flat_top_plate": {
+      "triangles": 2,
+      "y": 0.458,
+      "min_xz": [
+        -0.528,
+        -0.908
+      ],
+      "max_xz": [
+        0.528,
+        0.708
+      ]
+    },
+    "suggested_soc_overlay_y": 0.4585,
+    "note": "Keep opaque pack case; SOC bands are a display gauge, not authored physical cells"
+  },
+  "verification_limits": "No APK/emulator/device run or rendered preview by this model task; final appearance still needs user testing",
+  "headlamp_geometry_followup": {
+    "before": {
+      "powered_projector_recess_meters": 0.08,
+      "left_samples": 32,
+      "right_samples": 32,
+      "blocked_left": 32,
+      "blocked_right": 32,
+      "blocker_materials": [
+        "Generic_headlamp_housing",
+        "Generic_trim_cladding"
+      ],
+      "nearest_blocker_depth_meters": [
+        0.003,
+        0.0285
+      ]
+    },
+    "actual_off_projectors": {
+      "left_samples": 32,
+      "right_samples": 32,
+      "blocked_left": 0,
+      "blocked_right": 0
+    },
+    "fix": {
+      "off_nodes": [
+        "HEADLAMP_L_OFF",
+        "HEADLAMP_R_OFF"
+      ],
+      "on_nodes": [
+        "HEADLAMP_L_ON",
+        "HEADLAMP_R_ON"
+      ],
+      "method": "Exact exterior OFF projector surface reuse with existing opaque white LED material and mutually exclusive state visibility",
+      "world_triangles_and_winding_verified": true,
+      "clear_glass_and_housings_preserved": true,
+      "emission_gain_changed": false
+    },
+    "drl": {
+      "geometry_changed": false,
+      "outward_ray_samples": {
+        "forward": 80,
+        "left_quarter": 81,
+        "right_quarter": 81
+      },
+      "opaque_blockers": 0,
+      "limits": "Bounded geometry sampling only; visible brightness requires steady-on device verification"
+    }
+  }
+}

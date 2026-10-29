@@ -156,6 +156,7 @@ data class VehicleSnapshot(
     val vehicle: VehicleState = VehicleState(),
     val climate: ClimateState = ClimateState(),
     val route: RoutePreview? = null,
+    val controls: VehicleControlsState = VehicleControlsState(),
 )
 
 data class ConnectivityState(
@@ -178,4 +179,14 @@ interface VehicleRepository {
     suspend fun setAirflowMode(mode: AirflowMode)
     suspend fun cycleSeatLevel(zone: SeatZone, comfort: SeatComfort)
     suspend fun toggle(control: ClimateControl)
+    suspend fun toggleVehiclePart(part: VehiclePart)
+    suspend fun setVehicleLocked(locked: Boolean)
+    suspend fun setHeadlightMode(mode: HeadlightMode)
+    suspend fun setWindowPosition(window: VehicleWindow, percent: Int)
+    suspend fun toggleParkingBrake()
+    suspend fun setCharging(enabled: Boolean)
+    suspend fun setTurnSignal(signal: TurnSignal)
+    suspend fun setVehicleGear(gear: VehicleGear)
+    suspend fun setBrakeLights(enabled: Boolean)
+    suspend fun setAmbientLights(enabled: Boolean)
 }

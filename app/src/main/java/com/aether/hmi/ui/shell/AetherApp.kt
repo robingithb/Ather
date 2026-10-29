@@ -67,6 +67,8 @@ import com.aether.hmi.feature.media.MediaLibrary
 import com.aether.hmi.feature.media.PlaybackState
 import com.aether.hmi.feature.media.PlaybackViewModel
 import com.aether.hmi.feature.media.QueueDialog
+import com.aether.hmi.feature.vehicle.VehicleActions
+import com.aether.hmi.feature.vehicle.VehicleScreen
 import com.aether.hmi.ui.navigation.AetherTab
 import com.aether.hmi.ui.theme.AetherColors
 import com.aether.hmi.ui.theme.AetherTheme
@@ -102,7 +104,10 @@ fun AetherApp() {
     AetherShell(selectedTab, { selectedTab = it }, state, media, playback.position, actions, update,
         dashboard::adjustTemperature, dashboard::toggle, playback::playIndex,
         climateActions = ClimateActions(dashboard::adjustTemperature, dashboard::adjustPassengerTemperature,
-            dashboard::adjustFanSpeed, dashboard::setAirflowMode, dashboard::toggle, dashboard::cycleSeatLevel))
+            dashboard::adjustFanSpeed, dashboard::setAirflowMode, dashboard::toggle, dashboard::cycleSeatLevel),
+        vehicleActions = VehicleActions(dashboard::toggleVehiclePart, dashboard::setVehicleLocked,
+            dashboard::setHeadlightMode, dashboard::setWindowPosition, dashboard::toggleParkingBrake, dashboard::setCharging,
+            dashboard::setTurnSignal, dashboard::setVehicleGear, dashboard::setBrakeLights, dashboard::setAmbientLights))
     if (showQueue) QueueDialog(media, { showQueue = false }, {
         showQueue = false
         audioPicker.launch(arrayOf("audio/*"))
@@ -123,6 +128,7 @@ fun AetherShell(
     onPlayIndex: (Int) -> Unit,
     modifier: Modifier = Modifier,
     climateActions: ClimateActions = ClimateActions({}, {}, {}, {}, {}, { _, _ -> }),
+    vehicleActions: VehicleActions = VehicleActions({}, {}, {}, { _, _ -> }, {}, {}),
 ) {
     var highlightedIndicators by rememberSaveable { mutableIntStateOf(0) }
     val screenStates = rememberSaveableStateHolder()
@@ -139,7 +145,7 @@ fun AetherShell(
                 Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 8.dp)) {
                     Box {
                         DashboardHeader(state, compact = compact)
-                        if (selectedTab == AetherTab.Climate && climateUpdate != ClimateUpdate.Idle) {
+                        if ((selectedTab == AetherTab.Climate || selectedTab == AetherTab.Vehicle) && climateUpdate != ClimateUpdate.Idle) {
                             val feedback = stringResource(when (climateUpdate) {
                                 ClimateUpdate.Pending -> R.string.climate_updating
                                 ClimateUpdate.Confirmed -> R.string.climate_saved
@@ -157,6 +163,9 @@ fun AetherShell(
                             AetherTab.Climate -> screenStates.SaveableStateProvider("climate") {
                                 ClimateScreen(state.snapshot.climate, climateActions, Modifier.fillMaxSize())
                             }
+                            AetherTab.Vehicle -> screenStates.SaveableStateProvider("vehicle") {
+                                VehicleScreen(state.snapshot, vehicleActions, climateActions, Modifier.fillMaxSize())
+                            }
                             AetherTab.Media -> MediaLibrary(media, playbackActions.chooseAudio, onPlayIndex, Modifier.fillMaxSize())
                             else -> Unit // Other feature layouts await their own design phase.
                         }
@@ -164,8 +173,8 @@ fun AetherShell(
                     if (selectedTab == AetherTab.Home) StatusChips(state, highlightedIndicators,
                         { index -> highlightedIndicators = highlightedIndicators xor (1 shl index) })
                     when (selectedTab) {
-                        AetherTab.Climate -> ClimateMediaBar(media, position, playbackActions)
-                        AetherTab.Settings -> Unit
+                            AetherTab.Climate -> ClimateMediaBar(media, position, playbackActions)
+                            AetherTab.Settings, AetherTab.Vehicle -> Unit
                         else -> DashboardDock(media, position, playbackActions,
                             state.snapshot.climate, climateUpdate, onAdjustTemperature, onClimateToggle)
                     }

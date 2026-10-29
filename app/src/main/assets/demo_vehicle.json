@@ -8,6 +8,24 @@
     "parked": true,
     "outsideCelsius": null
   },
+  "vehicleControls": {
+    "available": true,
+    "locked": true,
+    "openParts": [],
+    "headlightMode": "Auto",
+    "demoAutoHeadlightsOn": true,
+    "parkingBrakeEngaged": true,
+    "turnSignal": "Off",
+    "gear": "Park",
+    "brakeLightsOn": false,
+    "ambientLightsOn": false,
+    "windowOpenPercent": {
+      "FrontLeft": 0,
+      "FrontRight": 0,
+      "RearLeft": 0,
+      "RearRight": 0
+    }
+  },
   "climate": {
     "driverCelsius": 21.0,
     "passengerCelsius": 20.5,

@@ -1,0 +1,173 @@
+{
+  "operation": "Detach two isolated left-side triangles from Door_FR into static BodyPatch_DoorFR",
+  "source": {
+    "file": "JeepCompass.glb",
+    "sha256": "70bd0482e3905d681a50031d2fcd0a7179fe9ef3623d5f6a1805fd1272f7723b",
+    "bytes": 14253796,
+    "unchanged": true
+  },
+  "bundled": {
+    "file": "app/src/main/assets/models/JeepCompass.glb",
+    "sha256": "29af2da892ccc65064540d8fee764953f9e5b6c917260b288bbe0c802755e431",
+    "bytes": 14321264
+  },
+  "moved_source_triangles_zero_based": [
+    0,
+    1
+  ],
+  "moved_source_vertices_zero_based": [
+    0,
+    1405,
+    1412,
+    1438
+  ],
+  "new_static_node": {
+    "name": "BodyPatch_DoorFR",
+    "node": 51,
+    "mesh": 38,
+    "parent": 49,
+    "vertices": 4,
+    "triangles": 2
+  },
+  "counts_before": {
+    "nodes": 51,
+    "meshes": 38,
+    "materials": 20,
+    "primitives": 84,
+    "vertices_in_primitives": 280951,
+    "triangles": 333439,
+    "animations": 0,
+    "skins": 0
+  },
+  "counts_after": {
+    "nodes": 52,
+    "meshes": 39,
+    "materials": 20,
+    "primitives": 85,
+    "vertices_in_primitives": 280951,
+    "triangles": 333439,
+    "animations": 0,
+    "skins": 0
+  },
+  "lighting_components": {
+    "node": "Object_36",
+    "mesh": 30,
+    "primitive": 0,
+    "material": 13,
+    "position_accessor": 272,
+    "index_accessor": 275,
+    "components": {
+      "front_left": {
+        "vertices": 197,
+        "triangles": 346,
+        "triangle_ordinal_runs_inclusive": [
+          [
+            0,
+            1
+          ],
+          [
+            484,
+            827
+          ]
+        ],
+        "bounds": {
+          "min": [
+            0.5105760097503662,
+            0.8444684147834778,
+            1.63081955909729
+          ],
+          "max": [
+            0.8279229998588562,
+            1.0063002109527588,
+            2.0736892223358154
+          ]
+        }
+      },
+      "front_right": {
+        "vertices": 197,
+        "triangles": 346,
+        "triangle_ordinal_runs_inclusive": [
+          [
+            2,
+            3
+          ],
+          [
+            828,
+            1171
+          ]
+        ],
+        "bounds": {
+          "min": [
+            -0.8279229998588562,
+            0.8444684147834778,
+            1.63081955909729
+          ],
+          "max": [
+            -0.5105760097503662,
+            1.0063002109527588,
+            2.0736892223358154
+          ]
+        }
+      },
+      "rear_left": {
+        "vertices": 146,
+        "triangles": 240,
+        "triangle_ordinal_runs_inclusive": [
+          [
+            4,
+            243
+          ]
+        ],
+        "bounds": {
+          "min": [
+            0.6121479868888855,
+            0.9741342067718506,
+            -2.0689096450805664
+          ],
+          "max": [
+            0.8082020282745361,
+            1.1573392152786255,
+            -1.7376500368118286
+          ]
+        }
+      },
+      "rear_right": {
+        "vertices": 146,
+        "triangles": 240,
+        "triangle_ordinal_runs_inclusive": [
+          [
+            244,
+            483
+          ]
+        ],
+        "bounds": {
+          "min": [
+            -0.8082020282745361,
+            0.9741342067718506,
+            -2.0689096450805664
+          ],
+          "max": [
+            -0.6121479868888855,
+            1.1573392152786255,
+            -1.7376500368118286
+          ]
+        }
+      }
+    },
+    "note": "One primitive/material contains all four lamp lenses; changing its emission also changes rear lenses"
+  },
+  "checks": {
+    "source_untouched": true,
+    "all_original_binary_prefix_bytes_preserved": true,
+    "materials_textures_and_original_buffer_views_unchanged": true,
+    "triangle_attribute_values_and_winding_preserved": true,
+    "total_triangles_and_vertices_unchanged": true,
+    "global_bounds_unchanged": true,
+    "five_moving_nodes_and_identity_transforms_preserved": true,
+    "door_fr_wrong_side_warning_removed": true,
+    "five_hinge_numerical_checks": "pass",
+    "emulator_or_device_run": "not performed",
+    "independent_second_run_identical_sha256": true
+  },
+  "note": "Compacted replacement accessors are used by the door and patch; old now-unreferenced bytes remain in BIN to preserve unrelated data"
+}

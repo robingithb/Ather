@@ -1,0 +1,149 @@
+{
+  "bundled": {
+    "sha256": "88e4c72f9ff1ef8a2d2a760b73e1f5cca063bb1b1fba441bd25edfd875d79883",
+    "bytes": 14181152,
+    "counts": {
+      "nodes": 121,
+      "meshes": 115,
+      "materials": 113,
+      "vertices": 402637,
+      "triangles": 316210,
+      "primitives": 198,
+      "lights": 3,
+      "animations": 0,
+      "skins": 0
+    },
+    "world_bounds": {
+      "min": [
+        -1.0196088552474976,
+        -4.172325134277344e-07,
+        -2.2049098014831543
+      ],
+      "max": [
+        1.0196088552474976,
+        1.6640492677688599,
+        2.2049193382263184
+      ]
+    }
+  },
+  "previous_asset_sha256": "f3c1124e8788f78ff0085d3cddcec3e2d5c2f3f5e3f38f5204738bf303b58d5d",
+  "declared_changes": {
+    "Generic_body_paint": {
+      "pbrMetallicRoughness/roughnessFactor": {
+        "before_actual": 0.28,
+        "after": 0.235
+      }
+    },
+    "Generic_body_paint__BatteryXray": {
+      "pbrMetallicRoughness/roughnessFactor": {
+        "before_actual": 0.28,
+        "after": 0.235
+      }
+    },
+    "Generic_gloss_black_trim": {
+      "pbrMetallicRoughness/roughnessFactor": {
+        "before_actual": 0.18000000715255737,
+        "after": 0.16
+      },
+      "extensions/KHR_materials_clearcoat/clearcoatRoughnessFactor": {
+        "before_actual": 0.03999999910593033,
+        "after": 0.06
+      }
+    },
+    "Generic_gloss_black_trim__BatteryXray": {
+      "pbrMetallicRoughness/roughnessFactor": {
+        "before_actual": 0.18000000715255737,
+        "after": 0.16
+      },
+      "extensions/KHR_materials_clearcoat/clearcoatRoughnessFactor": {
+        "before_actual": 0.03999999910593033,
+        "after": 0.06
+      }
+    },
+    "Generic_grille_gloss_black": {
+      "pbrMetallicRoughness/roughnessFactor": {
+        "before_actual": 0.11999999731779099,
+        "after": 0.11
+      }
+    },
+    "Generic_grille_gloss_black__BatteryXray": {
+      "pbrMetallicRoughness/roughnessFactor": {
+        "before_actual": 0.11999999731779099,
+        "after": 0.11
+      }
+    }
+  },
+  "scope_verification": {
+    "pass": true,
+    "asset_path": "/home/robin/Documents/Codex/2026-10-27/read-the-aethercontext-file-and-x20/work/AetherHMI-reflections/app/src/main/assets/models/GenericSUV.glb",
+    "asset_sha256": "88e4c72f9ff1ef8a2d2a760b73e1f5cca063bb1b1fba441bd25edfd875d79883",
+    "bin_sha256": "691136c856f81e249a6a7d2f21a65a41b40bb885ad6a4a21961c4de9c79d205e",
+    "normalized_gltf_sha256": "cc502b9f240fd33afd8577b8468cc20b720d856875acc9f1d50155468c3a03c0",
+    "declared_values": {
+      "Generic_body_paint": {
+        "pbrMetallicRoughness/roughnessFactor": 0.235
+      },
+      "Generic_body_paint__BatteryXray": {
+        "pbrMetallicRoughness/roughnessFactor": 0.235
+      },
+      "Generic_gloss_black_trim": {
+        "pbrMetallicRoughness/roughnessFactor": 0.16,
+        "extensions/KHR_materials_clearcoat/clearcoatRoughnessFactor": 0.06
+      },
+      "Generic_gloss_black_trim__BatteryXray": {
+        "pbrMetallicRoughness/roughnessFactor": 0.16,
+        "extensions/KHR_materials_clearcoat/clearcoatRoughnessFactor": 0.06
+      },
+      "Generic_grille_gloss_black": {
+        "pbrMetallicRoughness/roughnessFactor": 0.11
+      },
+      "Generic_grille_gloss_black__BatteryXray": {
+        "pbrMetallicRoughness/roughnessFactor": 0.11
+      }
+    },
+    "differences": []
+  },
+  "only_declared_PBR_numeric_fields_changed": true,
+  "entire_BIN_unchanged": true,
+  "all_other_gltf_properties_unchanged": true,
+  "protected_properties": "All colours, alpha values/modes, material names, glass, lamps, chrome/silver wheels, tyre profiles/partitions, geometry, indices, textures, variants and the main-rear revert match the previous asset",
+  "both_original_source_files_unchanged": true,
+  "all_107_modelpoints_resolved": true,
+  "retained_contracts": {
+    "amber": {
+      "off_lens_groups": 8,
+      "on_emitter_groups": 16,
+      "world_triangles_and_winding_match": true,
+      "ordinary_opaque_amber_led_materials": true
+    },
+    "headlamp": {
+      "off_projectors": 2,
+      "on_projectors": 2,
+      "world_triangles_and_winding_match": true,
+      "ordinary_opaque_white_led_materials": true,
+      "drl_geometry_unchanged": true
+    },
+    "reverse": {
+      "off_lenses": 2,
+      "on_emitters": 2,
+      "world_triangles_and_winding_match": true,
+      "ordinary_opaque_white_led_materials": true,
+      "red_shells_preserved": true
+    },
+    "interior": {
+      "renderable_groups": 6,
+      "interior_triangles": 67902,
+      "source_attributes_indices_materials_and_world_transforms_preserved": true,
+      "no_generic_black_plastic_or_exterior_materials_moved": true
+    },
+    "tyres": {
+      "four_tyre_partitions_verified": true,
+      "source_vertices_normals_uvs_and_winding_preserved": true,
+      "normal_rubber_is_opaque_dielectric": true,
+      "silver_wheel_materials_unchanged": true,
+      "additional_texture_samples": 0,
+      "additional_triangles": 0
+    }
+  },
+  "verification_limits": "Material/source verification only; no Kotlin/build/device actions by this task"
+}
