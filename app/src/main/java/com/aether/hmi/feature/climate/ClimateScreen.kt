@@ -25,6 +25,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,7 +33,8 @@ import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,6 +55,7 @@ import com.aether.hmi.domain.SeatZone
 import com.aether.hmi.ui.components.AetherGlyph
 import com.aether.hmi.ui.components.Glyph
 import com.aether.hmi.ui.theme.AetherColors
+import com.aether.hmi.ui.theme.LocalAetherPalette
 
 data class ClimateActions(
     val onAdjustDriver: (Int) -> Unit,
@@ -72,6 +75,9 @@ fun ClimateScreen(
     reducedMotion: Boolean = false,
 ) {
     var showAirInfo by rememberSaveable { mutableStateOf(false) }
+    val palette = LocalAetherPalette.current
+    val appearance = remember(palette) { climateAppearance(palette) }
+    val cabinFilter = remember { ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(.40f) }) }
     BoxWithConstraints(modifier) {
         val compact = maxWidth < 650.dp || maxHeight < 260.dp
         val gap = if (compact) 4.dp else 6.dp
@@ -79,8 +85,10 @@ fun ClimateScreen(
             Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(gap)) {
                 Box(Modifier.weight(.8f).fillMaxHeight().clip(RoundedCornerShape(10.dp))) {
                     Image(painterResource(R.drawable.climate_cabin_clean_v2), contentDescription = null,
-                        contentScale = ContentScale.Crop, alignment = BiasAlignment(0f, -.36f), modifier = Modifier.fillMaxSize())
-                    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color(0x60020A14)))))
+                        contentScale = ContentScale.Crop, alignment = BiasAlignment(0f, -.36f),
+                        colorFilter = cabinFilter, modifier = Modifier.fillMaxSize())
+                    Box(Modifier.fillMaxSize().background(appearance.cabinTint))
+                    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(appearance.cabinScrimTop, appearance.cabinScrimBottom))))
                     CabinAirflowOverlay(mode = state.airflowMode, fanSpeed = state.fanSpeed,
                         maxFanSpeed = state.maxFanSpeed, available = state.available,
                         reducedMotion = reducedMotion, modifier = Modifier.fillMaxSize())
@@ -175,7 +183,7 @@ private fun AirQualityCard(state: ClimateState, compact: Boolean, onClick: () ->
                 else -> R.string.climate_air_check
             }), fontSize = if (compact) 8.sp else 10.sp, lineHeight = if (compact) 10.sp else 12.sp,
                 color = AetherColors.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Box(Modifier.fillMaxWidth().height(if (compact) 5.dp else 7.dp).clip(RoundedCornerShape(10.dp)).background(Color(0xFF142C3F))
+            Box(Modifier.fillMaxWidth().height(if (compact) 5.dp else 7.dp).clip(RoundedCornerShape(10.dp)).background(AetherColors.RailBorder)
                 .semantics { contentDescription = airDescription }) {
                 state.cabinAirQualityPercent?.let { quality ->
                     Box(Modifier.fillMaxWidth(quality.coerceIn(0, 100) / 100f).fillMaxHeight().background(AetherColors.Good))

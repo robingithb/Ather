@@ -1,10 +1,12 @@
 AETHER — Automotive HMI
 
-Current source and device update (30 October 2026): the SUV now has scene-aligned reflections, soft highlights and refined paint/trim roughness for a more realistic car finish. Ground contact and exterior shadows, the accepted headlight halo, rear-light revert, tyre finishes and 85% charging transparency are preserved. Gradle, all 89 JVM tests and lint pass with zero errors (eight existing warnings). Verified on the physical Samsung SM_G990E, including charging and short active rotation samples around 30 fps; current settings restored. See [current reflection and shadow verification](docs/VEHICLE_REFLECTION_UPDATE.md). Previous reports below describe historical revisions.
+Current source update (30 October 2026): Settings now provides Midnight, Arctic, Sport and Minimal themes with persistent app-wide palettes, supplied scenic previews, app brightness/playback volume, connectivity links, navigation preferences and cabin/accent previews. The vehicle GLB is unchanged; only the separate scenery and ground ring receive theme colors. See [Settings implementation and verification](docs/SETTINGS_IMPLEMENTATION.md).
+
+Previous source and device update (30 October 2026): the SUV now has scene-aligned reflections, soft highlights and refined paint/trim roughness for a more realistic car finish. Ground contact and exterior shadows, the accepted headlight halo, rear-light revert, tyre finishes and 85% charging transparency are preserved. Gradle, all 89 JVM tests and lint pass with zero errors (eight existing warnings). Verified on the physical Samsung SM_G990E, including charging and short active rotation samples around 30 fps; current settings restored. See [reflection and shadow verification](docs/VEHICLE_REFLECTION_UPDATE.md). Previous reports below describe historical revisions.
 A modern Android digital cockpit concept built with Jetpack Compose, Google Filament, and AndroidX Media3.
 Project status: In development. Reference designs and runtime verification are documented separately; implemented features are listed below.
 
-Implemented in v0.5.1: the shared five-tab landscape shell, Home dashboard, Climate controls with animated airflow, the Filament GenericSUV Vehicle screen, shared mock vehicle controls and same-process Media3 playback. Vehicle has six control panels, model rotation/zoom, door/bonnet/trunk/sunroof motion, signal and reverse lamps, a charging battery view, and a shared HVAC dock. Complete Media/Settings designs and AAOS hardware integration remain planned.
+Implemented in v0.5.1 and subsequent source updates: the shared five-tab landscape shell, Home dashboard, Climate controls with animated airflow, the Filament GenericSUV Vehicle screen, shared mock vehicle controls, same-process Media3 playback and persistent Settings/themes. Vehicle has six control panels, model rotation/zoom, door/bonnet/trunk/sunroof motion, signal and reverse lamps, a charging battery view, and a shared HVAC dock. The complete Media design and AAOS hardware integration remain planned.
 
 The v0.5.1 Vehicle fixes restore source opaque materials in the normal view and use explicit `Normal`/`BatteryXray` variants for charging. The normal model retains 52 OPAQUE and eight BLEND materials; 51 additional x-ray clones bring the prepared asset to 111 definitions. A native panoramic cylinder, floor, platform ring and contact-shadow meshes share the car's camera across the upper row, with an off-axis projection fitting the car between the controls. Preset views start at 8° pitch except the 60° Sunroof view. Overview now uses the supplied transparent top-view image with correctly oriented door/trunk controls.
 
@@ -62,8 +64,9 @@ Development roadmap
 - [x] Connect vehicle controls to a mock state repository
 - [x] Build Climate screen and airflow visualizations
 - [x] Add shared Media3 playback, media session, file selection and queue
-- [ ] Complete Media and Settings screen designs
-- [ ] Implement themes and settings persistence
+- [x] Complete Settings screen design
+- [ ] Complete Media screen design
+- [x] Implement themes and settings persistence
 - [ ] Profile rendering and UI performance on a physical Android phone
 - [ ] Explore AAOS integration and document platform limitations
 Running the project

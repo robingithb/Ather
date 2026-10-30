@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aether.hmi.R
+import com.aether.hmi.domain.AppTheme
 import com.aether.hmi.domain.CabinAir
 import com.aether.hmi.domain.DataSource
 import com.aether.hmi.domain.Greeting
@@ -61,6 +62,7 @@ import com.aether.hmi.ui.components.vehicleStatusColor
 import com.aether.hmi.ui.components.vehicleStatusText
 import com.aether.hmi.ui.navigation.AetherTab
 import com.aether.hmi.ui.theme.AetherColors
+import com.aether.hmi.ui.theme.LocalAetherPalette
 import java.text.NumberFormat
 import java.time.format.DateTimeFormatter
 
@@ -125,11 +127,19 @@ fun HomeScreen(
 
 @Composable
 private fun Hero(greeting: Greeting, compact: Boolean, modifier: Modifier) {
+    val palette = LocalAetherPalette.current
+    val image = when (palette.theme) {
+        AppTheme.Midnight -> R.drawable.home_hero
+        AppTheme.Arctic -> R.drawable.theme_arctic
+        AppTheme.Sport -> R.drawable.theme_sport
+        AppTheme.Minimal -> R.drawable.theme_minimal
+    }
     DashboardSurface(modifier) {
-        Image(painterResource(R.drawable.home_hero), stringResource(R.string.hero_description),
+        Image(painterResource(image), stringResource(R.string.hero_description),
             contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
         Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(
-            Color(0xB3020A14), Color(0x18020A14), Color.Transparent), endY = Float.POSITIVE_INFINITY)))
+            AetherColors.Background.copy(alpha = if (palette.isLight) .88f else .70f),
+            AetherColors.Background.copy(alpha = .10f), Color.Transparent), endY = Float.POSITIVE_INFINITY)))
         Column(Modifier.padding(if (compact) 12.dp else 20.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(stringResource(when (greeting) {
                 Greeting.Morning -> R.string.greeting_morning
@@ -149,7 +159,7 @@ private fun Hero(greeting: Greeting, compact: Boolean, modifier: Modifier) {
 private fun NavigationCard(state: DashboardState, showIcons: Boolean, onClick: () -> Unit, modifier: Modifier) {
     DashboardSurface(modifier, onClick) {
         Image(painterResource(R.drawable.navigation_road), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
-        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xFF021320), Color(0xDD00101B), Color(0x60000B14)))))
+        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(AetherColors.Panel, AetherColors.PanelDeep.copy(alpha = .9f), AetherColors.PanelDeep.copy(alpha = .62f)))))
         Row(Modifier.fillMaxSize().padding(horizontal = 10.dp, vertical = if (showIcons) 5.dp else 4.dp), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             if (showIcons) IconBadge { AetherGlyph(Glyph.Arrow, size = 28.dp) }

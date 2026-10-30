@@ -5,6 +5,7 @@ import android.content.Context
 import com.aether.hmi.data.ConnectivityRepository
 import com.aether.hmi.data.MockVehicleRepository
 import com.aether.hmi.data.SystemTimeRepository
+import com.aether.hmi.data.SettingsRepository
 import com.aether.hmi.domain.VehicleRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,4 +26,5 @@ class AppContainer(context: Context) {
     val vehicle: VehicleRepository = MockVehicleRepository(context, applicationScope)
     val time = SystemTimeRepository(context)
     val connectivity = ConnectivityRepository(context)
+    val settings = SettingsRepository(context)
 }

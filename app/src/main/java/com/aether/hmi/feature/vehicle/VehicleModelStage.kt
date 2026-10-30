@@ -57,6 +57,8 @@ import com.aether.hmi.domain.VehiclePart
 import com.aether.hmi.feature.vehicle.renderer.FilamentVehicleRenderer
 import com.aether.hmi.feature.vehicle.renderer.VehicleModelStatus
 import com.aether.hmi.ui.theme.AetherColors
+import com.aether.hmi.ui.theme.LocalAetherPalette
+import androidx.compose.ui.graphics.toArgb
 
 /** Native scene ownership belongs to the Activity; navigation only attaches a viewport. */
 @Composable
@@ -91,6 +93,7 @@ private fun VehicleModelSurface(
     contentLeftFraction: Float,
     contentWidthFraction: Float,
 ) {
+    val colors = LocalAetherPalette.current
     // Reserve only the gesture hint now that direct camera buttons have been removed.
     val stageBottomInset = with(LocalDensity.current) { 20.dp.toPx() }
     val owner = LocalLifecycleOwner.current
@@ -159,6 +162,7 @@ private fun VehicleModelSurface(
                 renderer.updateStageViewport(contentLeftFraction, contentWidthFraction, stageBottomInset)
                 renderer.updateControls(controls)
                 renderer.updatePresentation(focus, charging, batteryPercent)
+                renderer.updateTheme(colors.Accent.toArgb(), colors.Background.toArgb(), colors.isLight)
                 renderer.setReducedMotion(reducedMotion)
                 renderer.setActive(owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
             }
@@ -167,6 +171,7 @@ private fun VehicleModelSurface(
                 holder.renderer?.updateStageViewport(contentLeftFraction, contentWidthFraction, stageBottomInset)
                 holder.renderer?.updateControls(controls)
                 holder.renderer?.updatePresentation(focus, charging, batteryPercent)
+                holder.renderer?.updateTheme(colors.Accent.toArgb(), colors.Background.toArgb(), colors.isLight)
                 holder.renderer?.setReducedMotion(reducedMotion)
             }
         }, onRelease = { attached ->
@@ -174,7 +179,7 @@ private fun VehicleModelSurface(
         }, modifier = Modifier.fillMaxSize().semantics { contentDescription = description; customActions = partActions + cameraActions })
         // Fade the shared scene into the existing shell rather than showing a rectangular image card.
         Canvas(Modifier.fillMaxSize()) {
-            val base = Color(0xFF020A14)
+            val base = colors.Background
             drawRect(Brush.horizontalGradient(0f to base, .15f to base.copy(alpha=.6f), .28f to Color.Transparent,
                 .70f to Color.Transparent, 1f to base.copy(alpha=.82f)))
             drawRect(Brush.verticalGradient(0f to base.copy(alpha=.75f), .15f to Color.Transparent,
@@ -182,14 +187,14 @@ private fun VehicleModelSurface(
         }
         Box(Modifier.offset(x=contentOffset).width(contentWidth).fillMaxSize()) {
         when (val current = status) {
-            is VehicleModelStatus.Loading -> Column(Modifier.align(Alignment.Center).background(Color(0xD9020A14), RoundedCornerShape(12.dp)).padding(14.dp),
+            is VehicleModelStatus.Loading -> Column(Modifier.align(Alignment.Center).background(colors.Background.copy(alpha = .85f), RoundedCornerShape(12.dp)).padding(14.dp),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (current.percent == null) CircularProgressIndicator(Modifier.size(32.dp), color = AetherColors.Accent, strokeWidth = 3.dp)
                 else CircularProgressIndicator(progress = { current.percent / 100f }, modifier = Modifier.size(32.dp), color = AetherColors.Accent,
                     trackColor = AetherColors.Border, strokeWidth = 3.dp)
                 Text(stringResource(R.string.vehicle_model_loading), color = AetherColors.TextPrimary, fontSize = 11.sp)
             }
-            VehicleModelStatus.Failed -> Column(Modifier.align(Alignment.Center).background(Color(0xED020A14), RoundedCornerShape(10.dp)).padding(10.dp),
+            VehicleModelStatus.Failed -> Column(Modifier.align(Alignment.Center).background(colors.Background.copy(alpha = .93f), RoundedCornerShape(10.dp)).padding(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(stringResource(R.string.vehicle_model_failed), color = AetherColors.Warning, fontSize = 11.sp)
                 TextButton(onClick = sceneModel::retry) { Text(stringResource(R.string.vehicle_model_retry)) }

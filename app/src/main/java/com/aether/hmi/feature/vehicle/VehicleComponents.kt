@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -54,7 +55,7 @@ import java.util.Locale
 internal fun VehicleSurface(modifier: Modifier = Modifier, selected: Boolean = false, content: @Composable BoxScope.() -> Unit) {
     val shape = RoundedCornerShape(10.dp)
     Box(modifier.clip(shape)
-        .background(Brush.linearGradient(listOf(Color(0xF2071B2B), Color(0xF2000C14))))
+        .background(Brush.linearGradient(listOf(AetherColors.Panel.copy(alpha = .95f), AetherColors.PanelDeep.copy(alpha = .95f))))
         .then(if (selected) Modifier.background(Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = .20f), Color.Transparent))) else Modifier)
         .border(if (selected) 1.dp else .6.dp, if (selected) AetherColors.Accent else AetherColors.Border, shape), content = content)
 }
@@ -81,10 +82,10 @@ internal fun VehicleBatteryCard(vehicle: VehicleState, compact: Boolean, modifie
                 }
                 if (onClick != null) AetherGlyph(Glyph.Chevron, size = if (compact) 8.dp else 11.dp, color = AetherColors.TextSecondary)
             }
-            Box(Modifier.fillMaxWidth().height(if (compact) 4.dp else 6.dp).clip(RoundedCornerShape(5.dp)).background(Color(0xFF153044))) {
+            Box(Modifier.fillMaxWidth().height(if (compact) 4.dp else 6.dp).clip(RoundedCornerShape(5.dp)).background(AetherColors.PanelRaised)) {
                 vehicle.batteryPercent?.let {
                     Box(Modifier.fillMaxWidth((it / 100f).coerceIn(0f, 1f)).fillMaxHeight()
-                        .background(Brush.horizontalGradient(listOf(AetherColors.Accent, Color(0xFF69C8FF)))))
+                        .background(Brush.horizontalGradient(listOf(AetherColors.Accent, lerp(AetherColors.Accent, AetherColors.TextPrimary, .25f)))))
                 }
             }
         }

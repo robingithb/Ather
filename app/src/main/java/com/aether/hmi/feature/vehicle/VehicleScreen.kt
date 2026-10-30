@@ -32,7 +32,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -58,6 +57,7 @@ import com.aether.hmi.feature.climate.ClimateActions
 import com.aether.hmi.feature.climate.ClimateGlyph
 import com.aether.hmi.feature.climate.ClimateIcon
 import com.aether.hmi.feature.climate.ClimateStepButton
+import com.aether.hmi.feature.climate.ClimateWarm
 import com.aether.hmi.feature.climate.climateTemperature
 import com.aether.hmi.ui.components.AetherGlyph
 import com.aether.hmi.ui.components.Glyph
@@ -440,7 +440,7 @@ private fun VehicleClimateDock(snapshot: VehicleSnapshot, actions: ClimateAction
             VehicleDockControl(stringResource(R.string.vehicle_heat), state.driverHeatingLevel > 0, state.available, compact,
                 { actions.onSeatLevel(SeatZone.Driver, SeatComfort.Heating) }, Modifier.width(if (compact) 29.dp else 39.dp), heatLabel) {
                 ClimateGlyph(ClimateIcon.HeatSeat, size = if (compact) 17.dp else 22.dp,
-                    color = if (state.driverHeatingLevel > 0) Color(0xFFFF6255) else AetherColors.TextSecondary)
+                    color = if (state.driverHeatingLevel > 0) ClimateWarm else AetherColors.TextSecondary)
             }
             val coolLabel = stringResource(R.string.vehicle_driver_cool, state.driverCoolingLevel, state.maxSeatLevel)
             VehicleDockControl(stringResource(R.string.vehicle_cool), state.driverCoolingLevel > 0, state.available, compact,

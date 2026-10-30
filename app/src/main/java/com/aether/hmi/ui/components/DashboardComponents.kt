@@ -40,7 +40,7 @@ fun DashboardSurface(
     val shape = RoundedCornerShape(11.dp)
     Box(
         modifier.clip(shape)
-            .background(Brush.linearGradient(listOf(AetherColors.Panel.copy(alpha = 0.92f), Color(0xFF000D17))))
+            .background(Brush.linearGradient(listOf(AetherColors.Panel.copy(alpha = 0.92f), AetherColors.PanelDeep)))
             .border(0.7.dp, AetherColors.Border, shape)
             .then(if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier),
         content = content,
@@ -77,7 +77,7 @@ fun MediaArtwork(data: ByteArray?, modifier: Modifier = Modifier, @androidx.anno
         }
     }
     Box(modifier.clip(RoundedCornerShape(7.dp))
-        .background(Brush.linearGradient(listOf(Color(0xFF124864), AetherColors.Panel)))
+        .background(Brush.linearGradient(listOf(AetherColors.PanelRaised, AetherColors.Panel)))
         .border(0.6.dp, AetherColors.Border, RoundedCornerShape(7.dp)), contentAlignment = Alignment.Center) {
         val image = bitmap
         if (image != null) Image(image, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())

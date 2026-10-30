@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -41,11 +42,16 @@ import com.aether.hmi.domain.ClimateState
 import com.aether.hmi.ui.components.AetherGlyph
 import com.aether.hmi.ui.components.Glyph
 import com.aether.hmi.ui.theme.AetherColors
+import com.aether.hmi.ui.theme.LocalAetherPalette
 import java.text.NumberFormat
 import java.util.Locale
 
-internal val ClimateWarm = Color(0xFFFF6255)
-internal val ClimateCool = Color(0xFF00B8FF)
+// Temperature cues retain their hot/cold meaning in every theme, with darker
+// tones on light surfaces so the seat icons and thin rails stay readable.
+internal val ClimateWarm: Color
+    @Composable get() = if (AetherColors.Panel.luminance() > .5f) Color(0xFFCA3C30) else Color(0xFFFF6255)
+internal val ClimateCool: Color
+    @Composable get() = if (AetherColors.Panel.luminance() > .5f) Color(0xFF0072A8) else Color(0xFF00B8FF)
 
 @Composable
 internal fun ClimateSurface(
@@ -53,9 +59,11 @@ internal fun ClimateSurface(
     selected: Boolean = false,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val palette = LocalAetherPalette.current
+    val appearance = remember(palette) { climateAppearance(palette) }
     val shape = RoundedCornerShape(10.dp)
     Box(modifier.clip(shape)
-        .background(Brush.linearGradient(listOf(Color(0xF2071B2B), Color(0xF0000D17))))
+        .background(Brush.linearGradient(listOf(appearance.surfaceTop, appearance.surfaceBottom)))
         .then(if (selected) Modifier.background(Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = .19f), Color.Transparent))) else Modifier)
         .border(if (selected) 1.1.dp else .65.dp, if (selected) AetherColors.Accent else AetherColors.Border, shape), content = content)
 }
@@ -70,7 +78,7 @@ internal fun ClimateStepButton(
     diameter: Dp = 30.dp,
 ) {
     Box(modifier.size(diameter).clip(CircleShape)
-        .background(Brush.verticalGradient(listOf(Color(0xFF183247), Color(0xFF071421))))
+        .background(Brush.verticalGradient(listOf(AetherColors.PanelRaised, AetherColors.PanelDeep)))
         .border(.65.dp, AetherColors.Border, CircleShape)
         .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
         .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
@@ -129,7 +137,7 @@ internal fun ZoneTemperatureCard(
 @Composable
 private fun TemperatureRail(state: ClimateState, temperature: Float?, enabled: Boolean, onAdjust: (Int) -> Unit, label: String, diameter: Dp) {
     Column(Modifier.width(diameter).fillMaxHeight().clip(RoundedCornerShape(diameter / 2))
-        .background(Color(0xFF081724)).border(.6.dp, AetherColors.Border, RoundedCornerShape(diameter / 2)),
+        .background(AetherColors.PanelDeep).border(.6.dp, AetherColors.Border, RoundedCornerShape(diameter / 2)),
         horizontalAlignment = Alignment.CenterHorizontally) {
         ClimateStepButton(true, stringResource(R.string.climate_increase_zone, label), enabled && temperature != null && temperature < state.maxCelsius,
             { onAdjust(1) }, diameter = diameter)
@@ -148,7 +156,7 @@ internal fun ClimateSegments(level: Int, maximum: Int, color: Color, modifier: M
             val active = index < level
             Box(Modifier.weight(1f).fillMaxHeight(if (stepped) .45f + .55f * (index + 1) / count else 1f)
                 .clip(RoundedCornerShape(1.5.dp))
-                .background(if (active) color else Color(0xFF1A3549))
+                .background(if (active) color else AetherColors.RailBorder)
                 .then(if (active) Modifier.border(.3.dp, color.copy(alpha = .6f), RoundedCornerShape(1.5.dp)) else Modifier))
         }
     }
@@ -177,9 +185,10 @@ internal fun ClimateToggleTile(
                 fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal, maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (showSwitch) {
                 Box(Modifier.width(if (compact) 23.dp else 29.dp).height(if (compact) 13.dp else 17.dp)
-                    .clip(CircleShape).background(if (selected) AetherColors.Accent else Color(0xFF244254)),
+                    .clip(CircleShape).background(if (selected) AetherColors.Accent else AetherColors.RailBorder),
                     contentAlignment = if (selected) Alignment.CenterEnd else Alignment.CenterStart) {
-                    Box(Modifier.padding(2.dp).size(if (compact) 9.dp else 13.dp).background(AetherColors.TextPrimary, CircleShape))
+                    Box(Modifier.padding(2.dp).size(if (compact) 9.dp else 13.dp)
+                        .background(if (selected) AetherColors.OnAccent else AetherColors.TextSecondary, CircleShape))
                 }
             }
         }
