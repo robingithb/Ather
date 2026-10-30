@@ -9,10 +9,19 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.aether.hmi.MainActivity
+import com.aether.hmi.AetherApplication
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 /** One player and session in the app's default process, shared by every destination. */
 class AetherPlaybackService : MediaSessionService() {
     private var session: MediaSession? = null
+    private val settingsScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun onCreate() {
         super.onCreate()
@@ -20,6 +29,12 @@ class AetherPlaybackService : MediaSessionService() {
             setAudioAttributes(AudioAttributes.Builder().setUsage(C.USAGE_MEDIA)
                 .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).build(), true)
             setHandleAudioBecomingNoisy(true)
+        }
+        // App playback gain survives navigation, reconnection and process recreation.
+        val preferences = (application as AetherApplication).container.settings
+        player.volume = preferences.state.value.mediaVolume
+        settingsScope.launch {
+            preferences.state.map { it.mediaVolume }.distinctUntilChanged().collect { player.volume = it }
         }
         val activity = PendingIntent.getActivity(this, 0,
             Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
@@ -58,6 +73,7 @@ class AetherPlaybackService : MediaSessionService() {
     }
 
     override fun onDestroy() {
+        settingsScope.cancel()
         session?.let {
             PlaylistStore(this).save(it.player)
             it.player.release()

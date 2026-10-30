@@ -1,12 +1,20 @@
 package com.aether.hmi.feature.vehicle.renderer
 
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Paint
 import android.annotation.SuppressLint
 import android.os.Looper
+import androidx.core.graphics.createBitmap
 import com.aether.hmi.R
 import com.google.android.filament.Engine
 import com.google.android.filament.EntityManager
 import com.google.android.filament.Scene
+import com.google.android.filament.MaterialInstance
 import com.google.android.filament.gltfio.AssetLoader
 import com.google.android.filament.gltfio.FilamentAsset
 import com.google.android.filament.gltfio.ResourceLoader
@@ -22,7 +30,8 @@ import org.json.JSONObject
 
 /** Static world geometry: the native camera moves the scenery, platform and vehicle together. */
 internal class VehicleScenery(private val engine: Engine, private val scene: Scene, materials: UbershaderProvider) {
-    data class Data(val glb: ByteBuffer, val panorama: ByteBuffer, val floorPng: ByteBuffer)
+    data class Data(val glb: ByteBuffer, val panorama: ByteBuffer, val floorPng: ByteBuffer,
+        val neutralPanorama: ByteBuffer, val neutralFloor: ByteBuffer)
     private val assets = AssetLoader(engine, materials, EntityManager.get())
     private val resources = ResourceLoader(engine)
     private var asset: FilamentAsset? = null
@@ -31,6 +40,41 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
     private var disposed = false
     private var showBatteryGauge = false
     private var batteryFraction: Float? = null
+    private val themeMaterials = mutableMapOf<String, List<MaterialInstance>>()
+    private var themeAccent = 0xFF00DFFF.toInt()
+    private var themeBackground = 0xFF020A14.toInt()
+    private var themeIsLight = false
+    private val themedRenderables = mutableMapOf<String, Int>()
+    private var completedLoad = false
+
+    fun updateTheme(accent: Int, background: Int, isLight: Boolean) {
+        checkMainThread()
+        if (disposed) return
+        themeAccent = accent
+        themeBackground = background
+        themeIsLight = isLight
+        applyTheme()
+    }
+
+    private fun applyTheme() {
+        val theme = VehicleSceneryTheme.from(themeAccent, themeBackground, themeIsLight)
+        fun set(name: String, color: SceneryColor) {
+            themeMaterials[name]?.forEach { material ->
+                material.setParameter("baseColorFactor", color.red, color.green, color.blue, 1f)
+            }
+        }
+        set("AETHER_PLATFORM_GLOW", theme.glow)
+        set("AETHER_PLATFORM_RING", theme.ring)
+        set("AETHER_PLATFORM_CORE", theme.core)
+        set("AETHER_PLATFORM_RIM", theme.rim)
+        for (name in panoramaNames) set(name, theme.panorama)
+        for (name in floorNames) set(name, theme.floor)
+        val manager = engine.renderableManager
+        themedRenderables.forEach { (name, instance) ->
+            val visible = theme.showsSurface(name)
+            manager.setLayerMask(instance, 0xff, if (visible) 1 else 0)
+        }
+    }
 
     private var batteryTrackEntity = 0
     private var batteryFillEntity = 0
@@ -75,9 +119,12 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
         source = data // Keep direct resource buffers alive through asynchronous upload.
         resources.addResourceData(imageUri, data.panorama)
         resources.addResourceData(floorImageUri, data.floorPng)
+        resources.addResourceData(neutralImageUri, data.neutralPanorama)
+        resources.addResourceData(neutralFloorImageUri, data.neutralFloor)
         val loaded = requireNotNull(assets.createAsset(data.glb)) { "Invalid generated scenery" }
         asset = loaded
         loaded.renderableEntities.forEach { configureShadows(loaded, it) }
+        applyTheme()
         check(resources.asyncBeginLoad(loaded)) { "Unable to load scenery textures" }
         loaded.releaseSourceData()
     }
@@ -90,10 +137,19 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
         var count = loaded.popRenderables(ready)
         while (count > 0) {
             for (index in 0 until count) configureShadows(loaded, ready[index])
+            // ResourceLoader writes the authored glTF factors during async loading. Reapply
+            // the current theme after readiness, even when the material was cached in begin().
+            applyTheme()
             scene.addEntities(ready.copyOf(count))
             count = loaded.popRenderables(ready)
         }
-        return resources.asyncGetLoadProgress().takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0f
+        val progress = resources.asyncGetLoadProgress().takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0f
+        if (!completedLoad && progress >= 1f) {
+            completedLoad = true
+            loaded.renderableEntities.forEach { configureShadows(loaded, it) }
+            applyTheme()
+        }
+        return progress
     }
 
     private fun configureShadows(loaded: FilamentAsset, entity: Int) {
@@ -102,7 +158,12 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
         if (instance == 0) return
         // The panorama and decorative glow must never occlude the model's sun shadow.
         manager.setCastShadows(instance, false)
-        manager.setReceiveShadows(instance, loaded.getName(entity) == "AETHER_FLOOR")
+        manager.setReceiveShadows(instance, loaded.getName(entity) in floorNames)
+        val name = loaded.getName(entity)
+        if (name in themedEntities) {
+            themedRenderables[name] = instance
+            themeMaterials[name] = (0 until manager.getPrimitiveCount(instance)).map { manager.getMaterialInstanceAt(instance, it) }
+        }
         configureBatteryGauge(loaded, entity)
     }
 
@@ -115,6 +176,8 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
         asset = null
         batteryTrackEntity = 0
         batteryFillEntity = 0
+        themeMaterials.clear()
+        themedRenderables.clear()
         resources.evictResourceData()
         resources.destroy()
         assets.destroy()
@@ -125,14 +188,42 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
     private fun checkMainThread() = check(Looper.myLooper() == Looper.getMainLooper())
 
     companion object {
+        private val panoramaNames = setOf("AETHER_PANORAMA", "AETHER_NEUTRAL_PANORAMA", "AETHER_LIGHT_PANORAMA")
+        private val floorNames = setOf("AETHER_FLOOR", "AETHER_NEUTRAL_FLOOR", "AETHER_LIGHT_FLOOR")
+        private val themedEntities = panoramaNames + floorNames + setOf("AETHER_PLATFORM_RIM",
+            "AETHER_PLATFORM_GLOW", "AETHER_PLATFORM_RING", "AETHER_PLATFORM_CORE")
         private const val imageUri = "aether_scenery.png"
         private const val floorImageUri = "aether_ground.png"
+        private const val neutralImageUri = "aether_scenery_neutral.png"
+        private const val neutralFloorImageUri = "aether_ground_neutral.png"
         /** CPU-only preparation; call on Dispatchers.IO before begin() on the native thread. */
         @SuppressLint("ResourceType") // nodpi PNG is an uncompiled binary; read original encoded bytes for glTF.
         fun read(resources: Resources): Data {
             val png = resources.openRawResource(R.drawable.vehicle_stage).use { it.readBytes() }
             val floorPng = resources.openRawResource(R.drawable.vehicle_ground).use { it.readBytes() }
-            return Data(direct(buildGlb()), direct(png), direct(floorPng))
+            return Data(direct(buildGlb()), direct(png), direct(floorPng),
+                direct(neutralPng(png)), direct(neutralPng(floorPng)))
+        }
+
+        /** A neutral source lets red/slate factors recolor the scenery without a residual blue cast.
+         * This runs once on IO; the original image files and the reflection probe stay unchanged. */
+        private fun neutralPng(encoded: ByteArray): ByteArray {
+            val options = BitmapFactory.Options().apply { inSampleSize = 2; inPreferredConfig = Bitmap.Config.ARGB_8888 }
+            val source = requireNotNull(BitmapFactory.decodeByteArray(encoded, 0, encoded.size, options))
+            val neutral = createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
+            try {
+                val paint = Paint().apply {
+                    colorFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
+                }
+                Canvas(neutral).drawBitmap(source, 0f, 0f, paint)
+                return ByteArrayOutputStream().use { output ->
+                    check(neutral.compress(Bitmap.CompressFormat.PNG, 100, output))
+                    output.toByteArray()
+                }
+            } finally {
+                source.recycle()
+                neutral.recycle()
+            }
         }
 
         private fun direct(bytes: ByteArray): ByteBuffer = ByteBuffer.allocateDirect(bytes.size)
@@ -195,11 +286,17 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
             cylinder += vertex(0.0, 12.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0)
             for (segment in 0 until segments) cylinderIndices += listOf(cap, segment*4+1, segment*4+3)
             mesh("AETHER_PANORAMA", cylinder, cylinderIndices, 0)
+            mesh("AETHER_NEUTRAL_PANORAMA", cylinder, cylinderIndices, 9)
+            mesh("AETHER_LIGHT_PANORAMA", cylinder, cylinderIndices, 11)
             // World-space repeat UVs preserve the stone scale through every camera orbit.
             // An eight-millimetre gap avoids z-fighting at the measured Y=0 tyre contacts.
             fun floorCorner(x: Double, z: Double) = vertex(x, -.008, z, u = x/6.0 + .5, v = z/6.0 + .5)
-            mesh("AETHER_FLOOR", listOf(floorCorner(-40.0,-40.0), floorCorner(40.0,-40.0),
-                floorCorner(40.0,40.0), floorCorner(-40.0,40.0)), listOf(0,2,1,0,3,2), 1)
+            val floorVertices = listOf(floorCorner(-40.0,-40.0), floorCorner(40.0,-40.0),
+                floorCorner(40.0,40.0), floorCorner(-40.0,40.0))
+            val floorIndices = listOf(0,2,1,0,3,2)
+            mesh("AETHER_FLOOR", floorVertices, floorIndices, 1)
+            mesh("AETHER_NEUTRAL_FLOOR", floorVertices, floorIndices, 10)
+            mesh("AETHER_LIGHT_FLOOR", floorVertices, floorIndices, 12)
             fun annulus(name: String, radii: List<Double>, opacity: List<Double>, y: Double, material: Int) {
                 require(radii.size == opacity.size)
                 val vertices = mutableListOf<FloatArray>(); val indices = mutableListOf<Int>()
@@ -260,6 +357,20 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
             val rim = material("Aether dark platform rim", array(.025,.040,.065,1), false).apply {
                 getJSONObject("pbrMetallicRoughness").put("metallicFactor", .65).put("roughnessFactor", .18)
             }
+            val neutralPanorama = JSONObject(panorama.toString()).apply {
+                put("name", "Aether neutral panorama")
+                getJSONObject("pbrMetallicRoughness").put("baseColorTexture", obj("index" to 2))
+            }
+            val neutralFloor = JSONObject(floor.toString()).apply {
+                put("name", "Aether neutral stone")
+                getJSONObject("pbrMetallicRoughness").put("baseColorTexture", obj("index" to 3))
+            }
+            // Arctic uses genuinely light untextured studio surfaces. Multiplying the dark
+            // mountain/stone PNG by white cannot produce a pale setting.
+            val lightPanorama = material("Aether light studio backdrop", array(.88,.93,.97,1), true)
+            val lightFloor = material("Aether light studio floor", array(.88,.91,.94,1), false).apply {
+                getJSONObject("pbrMetallicRoughness").put("metallicFactor", 0).put("roughnessFactor", .72)
+            }
             val document = obj("asset" to obj("version" to "2.0", "generator" to "AETHER native scenery"), "scene" to 0,
                 "scenes" to array(obj("nodes" to JSONArray((0 until nodes.length()).toList()))), "nodes" to nodes, "meshes" to meshes,
                 "materials" to array(panorama, floor, rim,
@@ -268,13 +379,17 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
                     material("Aether ring white core", array(.65,.92,1.0,1), true),
                     material("Aether soft contact", array(0,0,0,1), true, true),
                     material("Aether battery level track", array(.035,.045,.050,1), true),
-                    material("Aether battery level fill", array(.045,.68,.19,1), true)),
+                    material("Aether battery level fill", array(.045,.68,.19,1), true),
+                    neutralPanorama, neutralFloor, lightPanorama, lightFloor),
                 "extensionsUsed" to array("KHR_materials_unlit", "KHR_materials_clearcoat"),
                 "images" to array(obj("uri" to imageUri, "mimeType" to "image/png"),
-                    obj("uri" to floorImageUri, "mimeType" to "image/png")),
+                    obj("uri" to floorImageUri, "mimeType" to "image/png"),
+                    obj("uri" to neutralImageUri, "mimeType" to "image/png"),
+                    obj("uri" to neutralFloorImageUri, "mimeType" to "image/png")),
                 "samplers" to array(obj("magFilter" to 9729, "minFilter" to 9987, "wrapS" to 33648, "wrapT" to 33071),
                     obj("magFilter" to 9729, "minFilter" to 9987, "wrapS" to 10497, "wrapT" to 10497)),
-                "textures" to array(obj("sampler" to 0, "source" to 0), obj("sampler" to 1, "source" to 1)),
+                "textures" to array(obj("sampler" to 0, "source" to 0), obj("sampler" to 1, "source" to 1),
+                    obj("sampler" to 0, "source" to 2), obj("sampler" to 1, "source" to 3)),
                 "bufferViews" to views, "accessors" to accessors,
                 "buffers" to array(obj("byteLength" to binary.size())))
             // Android JSONObject escapes '/', but cgltf's MIME dispatch expects literal "image/png".

@@ -63,7 +63,7 @@ internal fun AetherNavigationRail(
             .clip(RoundedCornerShape(22.dp))
             .background(
                 Brush.horizontalGradient(
-                    listOf(Color(0xFF01070B), AetherColors.Rail, Color(0xFF000B12)),
+                    listOf(AetherColors.Rail, AetherColors.Rail, AetherColors.PanelDeep),
                 ),
             )
             .border(0.8.dp, AetherColors.RailBorder, RoundedCornerShape(22.dp)),
@@ -139,16 +139,16 @@ internal fun AetherNavigationRail(
     }
 }
 
-private fun Modifier.selectedTabSurface(): Modifier =
-    background(
-        brush = Brush.horizontalGradient(
-            listOf(Color(0xFF003047), Color(0xFF001B2B), Color(0xFF00121F)),
-        ),
-    )
-        .border(0.8.dp, AetherColors.Accent.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
+@Composable
+private fun Modifier.selectedTabSurface(): Modifier {
+    val accent = AetherColors.Accent
+    val soft = AetherColors.AccentSoft
+    val panel = AetherColors.PanelDeep
+    return background(Brush.horizontalGradient(listOf(soft, panel)))
+        .border(0.8.dp, accent.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
         .drawWithCache {
             val glow = Brush.radialGradient(
-                colors = listOf(AetherColors.Accent.copy(alpha = 0.20f), Color.Transparent),
+                colors = listOf(accent.copy(alpha = 0.20f), Color.Transparent),
                 center = Offset(size.width * 0.42f, size.height * 0.42f),
                 radius = size.width * 0.65f,
             )
@@ -156,13 +156,14 @@ private fun Modifier.selectedTabSurface(): Modifier =
             onDrawBehind {
                 drawRect(glow)
                 drawRoundRect(
-                    color = AetherColors.Accent,
+                    color = accent,
                     topLeft = Offset(0f, 9.dp.toPx()),
                     size = Size(barWidth, (size.height - 18.dp.toPx()).coerceAtLeast(0f)),
                     cornerRadius = CornerRadius(barWidth),
                 )
             }
         }
+}
 
 @Composable
 private fun RailClock(now: ZonedDateTime, modifier: Modifier = Modifier, compact: Boolean) {

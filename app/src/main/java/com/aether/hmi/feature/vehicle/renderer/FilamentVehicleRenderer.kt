@@ -127,6 +127,9 @@ internal class FilamentVehicleRenderer(
     private var stageWidth = 1f
     private var stageBottomInset = 0f
     private var scenery: VehicleScenery? = null
+    private var themeAccent = 0xFF00DFFF.toInt()
+    private var themeBackground = 0xFF020A14.toInt()
+    private var themeIsLight = false
     private var surfaceDefinitions: Map<String, List<SurfaceDefaults>> = emptyMap()
     private var activeMaterialVariant = 0
     private var xrayFraction = 0f
@@ -235,6 +238,7 @@ internal class FilamentVehicleRenderer(
                     bindParts(loaded, surfaceDefinitions)
                     scenery = VehicleScenery(e, scene!!, materials!!)
                     scenery!!.begin(prepared.scenery)
+                    scenery!!.updateTheme(themeAccent, themeBackground, themeIsLight)
                     updateBatteryGauge()
                     check(resourceLoader!!.asyncBeginLoad(loaded)) { "Unable to load vehicle textures" }
                     loaded.releaseSourceData()
@@ -475,6 +479,17 @@ internal class FilamentVehicleRenderer(
             }
         }
         updateBatteryGauge()
+        requestFrame()
+    }
+
+    /** Only scenery materials receive UI colors; vehicle materials and lighting stay intact. */
+    fun updateTheme(accent: Int, background: Int, isLight: Boolean) {
+        checkMainThread()
+        if (disposed || (themeAccent == accent && themeBackground == background && themeIsLight == isLight)) return
+        themeAccent = accent
+        themeBackground = background
+        themeIsLight = isLight
+        scenery?.updateTheme(accent, background, isLight)
         requestFrame()
     }
 

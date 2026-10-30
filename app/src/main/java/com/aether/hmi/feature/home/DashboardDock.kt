@@ -254,11 +254,17 @@ private fun Divider() {
     Box(Modifier.width(0.6.dp).fillMaxHeight().background(AetherColors.Border))
 }
 
-private fun Modifier.accentGlow(shape: Shape) = clip(shape).background(AetherColors.Panel, shape).drawWithCache {
-    val glow = Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = 0.03f), AetherColors.Accent.copy(alpha = 0.22f)),
-        radius = size.maxDimension * 0.65f)
-    onDrawBehind { drawRect(glow) }
+@Composable
+private fun Modifier.accentGlow(shape: Shape): Modifier {
+    val accent = AetherColors.Accent
+    val panel = AetherColors.Panel
+    return clip(shape).background(panel, shape).drawWithCache {
+        val glow = Brush.radialGradient(listOf(accent.copy(alpha = 0.03f), accent.copy(alpha = 0.22f)),
+            radius = size.maxDimension * 0.65f)
+        onDrawBehind { drawRect(glow) }
+    }
 }
+
 
 
 /** The Climate screen uses the same player/session with its own media-only bar. */

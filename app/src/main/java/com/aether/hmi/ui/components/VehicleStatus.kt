@@ -23,6 +23,7 @@ import com.aether.hmi.domain.VehicleSnapshot
 import com.aether.hmi.domain.VehicleWindow
 import com.aether.hmi.domain.vehicleAttention
 import com.aether.hmi.ui.theme.AetherColors
+import com.aether.hmi.ui.theme.readableContentColor
 
 @Composable
 fun vehicleStatusText(snapshot: VehicleSnapshot, @StringRes goodLabel: Int = R.string.systems_good): String =
@@ -54,6 +55,7 @@ fun vehicleStatusText(attention: VehicleAttention, @StringRes goodLabel: Int = R
     return if (attention.additionalIssueCount > 0) stringResource(R.string.vehicle_status_more, primary, attention.additionalIssueCount) else primary
 }
 
+@Composable
 fun vehicleStatusColor(attention: VehicleAttention, goodColor: Color = AetherColors.TextPrimary): Color = when (attention.severity) {
     VehicleAttentionSeverity.Good -> goodColor
     VehicleAttentionSeverity.Attention -> AetherColors.Warning
@@ -64,16 +66,17 @@ fun vehicleStatusColor(attention: VehicleAttention, goodColor: Color = AetherCol
 @Composable
 fun VehicleStatusBadge(attention: VehicleAttention, modifier: Modifier = Modifier) {
     val color = vehicleStatusColor(attention, AetherColors.Good)
+    val foreground = readableContentColor(color)
     Box(modifier.background(color, CircleShape), contentAlignment = Alignment.Center) {
         if (attention.severity == VehicleAttentionSeverity.Good) {
-            AetherGlyph(Glyph.Check, modifier = Modifier.fillMaxSize(.7f), color = AetherColors.Background)
+            AetherGlyph(Glyph.Check, modifier = Modifier.fillMaxSize(.7f), color = foreground)
         } else Canvas(Modifier.fillMaxSize(.6f)) {
             val stroke = 1.6.dp.toPx()
             if (attention.severity == VehicleAttentionSeverity.Attention) {
-                drawLine(AetherColors.Background, Offset(size.width * .5f, size.height * .12f),
+                drawLine(foreground, Offset(size.width * .5f, size.height * .12f),
                     Offset(size.width * .5f, size.height * .55f), stroke, StrokeCap.Round)
-                drawCircle(AetherColors.Background, stroke / 2, Offset(size.width * .5f, size.height * .84f))
-            } else drawLine(AetherColors.Background, Offset(size.width * .2f, size.height * .5f),
+                drawCircle(foreground, stroke / 2, Offset(size.width * .5f, size.height * .84f))
+            } else drawLine(foreground, Offset(size.width * .2f, size.height * .5f),
                 Offset(size.width * .8f, size.height * .5f), stroke, StrokeCap.Round)
         }
     }

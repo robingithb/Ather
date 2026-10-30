@@ -43,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aether.hmi.AetherApplication
 import com.aether.hmi.R
 import com.aether.hmi.domain.CabinAir
+import com.aether.hmi.domain.AppSettings
 import com.aether.hmi.domain.ClimateControl
 import com.aether.hmi.domain.ClimateState
 import com.aether.hmi.domain.ConnectivityState
@@ -69,14 +70,16 @@ import com.aether.hmi.feature.media.PlaybackViewModel
 import com.aether.hmi.feature.media.QueueDialog
 import com.aether.hmi.feature.vehicle.VehicleActions
 import com.aether.hmi.feature.vehicle.VehicleScreen
+import com.aether.hmi.feature.settings.SettingsScreen
 import com.aether.hmi.ui.navigation.AetherTab
 import com.aether.hmi.ui.theme.AetherColors
 import com.aether.hmi.ui.theme.AetherTheme
+import com.aether.hmi.ui.theme.LocalAetherPalette
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun AetherApp() {
+fun AetherApp(settings: AppSettings, onSettingsChange: (AppSettings) -> Unit) {
     val context = LocalContext.current
     val container = (context.applicationContext as AetherApplication).container
     val dashboard: DashboardViewModel = viewModel(factory = DashboardViewModel.factory(container))
@@ -107,7 +110,8 @@ fun AetherApp() {
             dashboard::adjustFanSpeed, dashboard::setAirflowMode, dashboard::toggle, dashboard::cycleSeatLevel),
         vehicleActions = VehicleActions(dashboard::toggleVehiclePart, dashboard::setVehicleLocked,
             dashboard::setHeadlightMode, dashboard::setWindowPosition, dashboard::toggleParkingBrake, dashboard::setCharging,
-            dashboard::setTurnSignal, dashboard::setVehicleGear, dashboard::setBrakeLights, dashboard::setAmbientLights))
+            dashboard::setTurnSignal, dashboard::setVehicleGear, dashboard::setBrakeLights, dashboard::setAmbientLights),
+        settings = settings, onSettingsChange = onSettingsChange)
     if (showQueue) QueueDialog(media, { showQueue = false }, {
         showQueue = false
         audioPicker.launch(arrayOf("audio/*"))
@@ -129,11 +133,14 @@ fun AetherShell(
     modifier: Modifier = Modifier,
     climateActions: ClimateActions = ClimateActions({}, {}, {}, {}, {}, { _, _ -> }),
     vehicleActions: VehicleActions = VehicleActions({}, {}, {}, { _, _ -> }, {}, {}),
+    settings: AppSettings = AppSettings(),
+    onSettingsChange: (AppSettings) -> Unit = {},
 ) {
     var highlightedIndicators by rememberSaveable { mutableIntStateOf(0) }
     val screenStates = rememberSaveableStateHolder()
+    val colors = LocalAetherPalette.current
     Box(modifier.fillMaxSize().background(AetherColors.Background).drawWithCache {
-        val ambient = Brush.radialGradient(listOf(AetherColors.Panel.copy(alpha = 0.5f), AetherColors.Background),
+        val ambient = Brush.radialGradient(listOf(colors.Panel.copy(alpha = 0.5f), colors.Background),
             center = Offset(size.width * 0.35f, size.height * 0.5f), radius = size.width * 0.8f)
         onDrawBehind { drawRect(ambient) }
     }) {
@@ -167,7 +174,9 @@ fun AetherShell(
                                 VehicleScreen(state.snapshot, vehicleActions, climateActions, Modifier.fillMaxSize())
                             }
                             AetherTab.Media -> MediaLibrary(media, playbackActions.chooseAudio, onPlayIndex, Modifier.fillMaxSize())
-                            else -> Unit // Other feature layouts await their own design phase.
+                            AetherTab.Settings -> screenStates.SaveableStateProvider("settings") {
+                                SettingsScreen(settings, onSettingsChange, state.connectivity, Modifier.fillMaxSize())
+                            }
                         }
                     }
                     if (selectedTab == AetherTab.Home) StatusChips(state, highlightedIndicators,

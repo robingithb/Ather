@@ -16,7 +16,6 @@ import androidx.compose.ui.MotionDurationScale
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
@@ -28,7 +27,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.currentStateAsState
 import com.aether.hmi.R
 import com.aether.hmi.domain.AirflowMode
-import com.aether.hmi.ui.theme.AetherColors
+import com.aether.hmi.ui.theme.LocalAetherPalette
 import kotlin.math.max
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -51,6 +50,8 @@ fun CabinAirflowOverlay(
     reducedMotion: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val palette = LocalAetherPalette.current
+    val appearance = remember(palette) { climateAppearance(palette) }
     val resources = LocalResources.current
     val artwork = remember(resources) { readAirflowArtwork(resources) }
     val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateAsState()
@@ -141,12 +142,12 @@ fun CabinAirflowOverlay(
                         // streaks direction; layered strokes avoid a bitmap blur.
                         drawPath(
                             path = stream.path,
-                            color = AetherColors.Accent.copy(alpha = opacity * 0.055f),
+                            color = appearance.airflow.copy(alpha = opacity * 0.055f),
                             style = Stroke(width = stream.width * 5f, cap = StrokeCap.Round),
                         )
                         drawPath(
                             path = stream.path,
-                            color = AetherColors.Accent.copy(alpha = opacity * 0.20f),
+                            color = appearance.airflow.copy(alpha = opacity * 0.20f),
                             style = Stroke(
                                 width = stream.width * 2.9f,
                                 cap = StrokeCap.Round,
@@ -155,7 +156,16 @@ fun CabinAirflowOverlay(
                         )
                         drawPath(
                             path = stream.path,
-                            color = Color(0xFFA2F5FF).copy(alpha = opacity * 0.76f),
+                            color = appearance.airflowSeparator.copy(alpha = routeOpacity.getValue(stream.route).value * .72f),
+                            style = Stroke(
+                                width = stream.width * 1.4f,
+                                cap = StrokeCap.Round,
+                                pathEffect = dashEffect,
+                            ),
+                        )
+                        drawPath(
+                            path = stream.path,
+                            color = appearance.airflowHighlight.copy(alpha = routeOpacity.getValue(stream.route).value * (.82f + .16f * strength)),
                             style = Stroke(
                                 width = stream.width * 0.65f,
                                 cap = StrokeCap.Round,
