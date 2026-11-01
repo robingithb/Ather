@@ -1,0 +1,64 @@
+{
+  "verified_at": "2026-11-02T00:35:11.580904+05:30",
+  "status": "source_and_automated_checks_complete",
+  "requirements": {
+    "home": "Seven built-in widget types, add/remove/reorder/reset, preferences persistence, bounded Home pages, two-page library for compact sizing.",
+    "vehicle": "Exact equal-width model/control panes; all section/choice grids remain in right pane; no dialogs or Previous/Next controls.",
+    "climate": "Modern temperature dials and inline control deck; original animated cabin retained.",
+    "media": "Grouped understandable playback/source cards; On/Off states and explicit Repeat modes.",
+    "settings": "Compact bounded slider rows and four small theme previews."
+  },
+  "jvm_tests": {
+    "tests": 163,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 58,
+    "by_id": {
+      "DiscouragedApi": 1,
+      "PluralsCandidate": 2,
+      "AutoboxingStateCreation": 1,
+      "UnusedResources": 52,
+      "UseKtx": 2,
+      "ClickableViewAccessibility": 1
+    }
+  },
+  "compiler_warnings": [],
+  "scroll_audit": {
+    "source_count": 73,
+    "matching_files": []
+  },
+  "orientation": "sensorLandscape; merged manifest checked",
+  "logs": [
+    "app/build/reports/widgets-review-compile-tests.log",
+    "app/build/reports/widgets-review-lint.log"
+  ],
+  "adb": {
+    "state": "connected",
+    "device": "Samsung SM-G990E",
+    "physical_pixels": [
+      1080,
+      2340
+    ],
+    "density_dpi": 480
+  },
+  "apk_created": false,
+  "apk_installed": false,
+  "existing_apks": [
+    {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "modified": "2026-10-30T01:15:28.499086+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "modified": "2026-10-28T00:32:04.571452+05:30"
+    }
+  ],
+  "visual_device_verification": "pending deployment; new source not installed",
+  "persistence_verification": "codec/migration/order tests pass; preference read/write wiring reviewed; actual process restart not exercised on device",
+  "git_diff_check": "passed",
+  "verification_runtime": "Compilation/tests and lint ran separately with512MiB heap and384MiB metaspace after stopping only the original verification daemon to ease memory pressure."
+}

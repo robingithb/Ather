@@ -1,8 +1,6 @@
 package com.aether.hmi.ui.shell
 
-import android.text.format.DateFormat
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -10,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,162 +15,58 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.aether.hmi.ui.components.PageText
 import com.aether.hmi.R
 import com.aether.hmi.ui.navigation.AetherTab
 import com.aether.hmi.ui.theme.AetherColors
 import java.time.ZonedDateTime
 
+/** Stable side navigation for landscape infotainment demo displays. */
 @Composable
 internal fun AetherNavigationRail(
     selectedTab: AetherTab,
     onTabSelected: (AetherTab) -> Unit,
     modifier: Modifier = Modifier,
-    now: ZonedDateTime = ZonedDateTime.now(),
+    @Suppress("UNUSED_PARAMETER") now: ZonedDateTime = ZonedDateTime.now(),
 ) {
-    val fontScale = LocalDensity.current.fontScale
-    val railWidth = (92f + (fontScale - 1f).coerceAtLeast(0f) * 40f).coerceAtMost(132f).dp
     val navigationLabel = stringResource(R.string.navigation_label)
-
-    BoxWithConstraints(
-        modifier = modifier
-            .width(railWidth)
-            .fillMaxHeight()
-            .clip(RoundedCornerShape(22.dp))
-            .background(
-                Brush.horizontalGradient(
-                    listOf(AetherColors.Rail, AetherColors.Rail, AetherColors.PanelDeep),
-                ),
-            )
-            .border(0.8.dp, AetherColors.RailBorder, RoundedCornerShape(22.dp)),
-    ) {
-        val compact = maxHeight < 380.dp
-        val veryCompact = maxHeight < 280.dp
-        val labelSize = if (veryCompact) 11.sp else if (compact) 13.sp else 15.sp
-        val iconSize = if (veryCompact) 19.dp else if (compact) 24.dp else 28.dp
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 5.dp, vertical = if (veryCompact) 6.dp else 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            RailClock(
-                now = now,
-                modifier = Modifier.padding(bottom = if (veryCompact) 4.dp else if (compact) 8.dp else 16.dp),
-                compact = compact,
-            )
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .selectableGroup()
-                    .semantics { contentDescription = navigationLabel },
-                verticalArrangement = Arrangement.spacedBy(if (veryCompact) 2.dp else if (compact) 3.dp else 6.dp),
-            ) {
-                AetherTab.entries.forEach { tab ->
-                    val selected = selectedTab == tab
-                    val tint = if (selected) AetherColors.Accent else AetherColors.TextSecondary
-                    val label = stringResource(tab.labelRes)
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .heightIn(min = if (veryCompact) 34.dp else 48.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .then(if (selected) Modifier.selectedTabSurface() else Modifier)
-                            .selectable(
-                                selected = selected,
-                                role = Role.Tab,
-                                onClick = { onTabSelected(tab) },
-                            ),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(if (veryCompact) 2.dp else if (compact) 3.dp else 5.dp),
-                        ) {
-                            Icon(
-                                painter = painterResource(if (tab == AetherTab.Climate && selectedTab == tab) R.drawable.ic_climate_filled else tab.iconRes),
-                                contentDescription = null,
-                                tint = tint,
-                                modifier = Modifier.size(iconSize),
-                            )
-                            Text(
-                                text = label,
-                                color = tint,
-                                fontSize = labelSize,
-                                lineHeight = if (veryCompact) 13.sp else if (compact) 16.sp else 19.sp,
-                                fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal,
-                                textAlign = TextAlign.Center,
-                                maxLines = 1,
-                            )
-                        }
-                    }
-                }
+    BoxWithConstraints(modifier.fillMaxHeight()) {
+        val roomy = maxHeight >= 440.dp
+        val railWidth = if (roomy) 88.dp else 72.dp
+        val gap = if (roomy) 8.dp else 4.dp
+        Column(Modifier.width(railWidth).fillMaxHeight().clip(RoundedCornerShape(16.dp)).background(AetherColors.Rail)
+            .padding(4.dp).selectableGroup().semantics { contentDescription = navigationLabel },
+            verticalArrangement = Arrangement.spacedBy(gap)) {
+            AetherTab.entries.forEach { tab ->
+                NavigationItem(tab, selectedTab == tab, { onTabSelected(tab) },
+                    Modifier.fillMaxWidth().weight(1f), roomy)
             }
-            // A small breathing space echoes the reference without consuming phone height.
-            Box(Modifier.weight(if (compact) 0.035f else 0.08f))
         }
     }
 }
 
 @Composable
-private fun Modifier.selectedTabSurface(): Modifier {
-    val accent = AetherColors.Accent
-    val soft = AetherColors.AccentSoft
-    val panel = AetherColors.PanelDeep
-    return background(Brush.horizontalGradient(listOf(soft, panel)))
-        .border(0.8.dp, accent.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
-        .drawWithCache {
-            val glow = Brush.radialGradient(
-                colors = listOf(accent.copy(alpha = 0.20f), Color.Transparent),
-                center = Offset(size.width * 0.42f, size.height * 0.42f),
-                radius = size.width * 0.65f,
-            )
-            val barWidth = 2.5.dp.toPx()
-            onDrawBehind {
-                drawRect(glow)
-                drawRoundRect(
-                    color = accent,
-                    topLeft = Offset(0f, 9.dp.toPx()),
-                    size = Size(barWidth, (size.height - 18.dp.toPx()).coerceAtLeast(0f)),
-                    cornerRadius = CornerRadius(barWidth),
-                )
-            }
-        }
-}
-
-@Composable
-private fun RailClock(now: ZonedDateTime, modifier: Modifier = Modifier, compact: Boolean) {
-    val context = LocalContext.current
-    Text(
-        text = DateFormat.format(if (DateFormat.is24HourFormat(context)) "HH:mm" else "h:mm", now.toInstant().toEpochMilli()).toString(),
-        color = AetherColors.TextPrimary,
-        fontSize = if (compact) 17.sp else 19.sp,
-        fontWeight = FontWeight.Normal,
-        maxLines = 1,
-        modifier = modifier,
-    )
+private fun NavigationItem(tab: AetherTab, selected: Boolean, onClick: () -> Unit, modifier: Modifier, roomy: Boolean) {
+    val tint = if (selected) AetherColors.Accent else AetherColors.TextSecondary
+    Column(modifier.clip(RoundedCornerShape(12.dp)).background(if (selected) AetherColors.AccentSoft else AetherColors.Rail)
+        .selectable(selected, role = Role.Tab, onClick = onClick).padding(horizontal = 6.dp, vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)) {
+        Icon(painterResource(if (tab == AetherTab.Climate && selected) R.drawable.ic_climate_filled else tab.iconRes),
+            null, Modifier.size(if (roomy) 28.dp else 21.dp), tint = tint)
+        PageText(stringResource(tab.labelRes), Modifier.fillMaxWidth().weight(1f), color = tint,
+            maxFontSize = if (roomy) 16f else 13f, minFontSize = 10f,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+    }
 }

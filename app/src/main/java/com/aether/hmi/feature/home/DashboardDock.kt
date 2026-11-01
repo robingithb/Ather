@@ -91,7 +91,7 @@ private fun MediaDock(state: PlaybackState, position: StateFlow<Long>, actions: 
         horizontalArrangement = Arrangement.spacedBy(if (compact) 3.dp else 6.dp)) {
         MediaArtwork(state.artwork, Modifier.width(if (compact) 30.dp else 46.dp)
             .height(if (compact) 46.dp else 64.dp).clickable(role = Role.Button, onClick = actions.openMedia),
-            fallback = R.drawable.home_album_placeholder)
+            fallback = R.drawable.home_album_placeholder, artworkUri = state.artworkUri)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(if (compact) 5.dp else 8.dp)) {
             Column(Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = actions.openMedia),
                 verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -258,8 +258,9 @@ private fun Divider() {
 private fun Modifier.accentGlow(shape: Shape): Modifier {
     val accent = AetherColors.Accent
     val panel = AetherColors.Panel
+    val glowScale = AetherColors.DecorativeGlowScale
     return clip(shape).background(panel, shape).drawWithCache {
-        val glow = Brush.radialGradient(listOf(accent.copy(alpha = 0.03f), accent.copy(alpha = 0.22f)),
+        val glow = Brush.radialGradient(listOf(accent.copy(alpha = .03f * glowScale), accent.copy(alpha = .22f * glowScale)),
             radius = size.maxDimension * 0.65f)
         onDrawBehind { drawRect(glow) }
     }

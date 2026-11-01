@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.edit
 import com.aether.hmi.domain.AppSettings
 import com.aether.hmi.domain.AppTheme
+import com.aether.hmi.domain.HomeWidgets
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +20,7 @@ class SettingsRepository(context: Context) {
         val next = settings.normalized()
         mutableState.value = next
         preferences.edit {
+            putString("home_widgets", HomeWidgets.encode(next.homeWidgets))
             putString("theme", next.theme.name)
             putFloat("brightness", next.brightness)
             putBoolean("auto_brightness", next.autoBrightness)
@@ -42,6 +44,7 @@ class SettingsRepository(context: Context) {
         fun boolean(key: String, fallback: Boolean) = runCatching { preferences.getBoolean(key, fallback) }.getOrDefault(fallback)
         fun long(key: String, fallback: Long) = runCatching { preferences.getLong(key, fallback) }.getOrDefault(fallback)
         return AppSettings(
+            homeWidgets = HomeWidgets.decode(string("home_widgets", HomeWidgets.encode(defaults.homeWidgets))),
             theme = AppTheme.entries.firstOrNull { it.name == string("theme", defaults.theme.name) } ?: defaults.theme,
             brightness = float("brightness", defaults.brightness),
             autoBrightness = boolean("auto_brightness", defaults.autoBrightness),

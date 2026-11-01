@@ -3,69 +3,157 @@ package com.aether.hmi.feature.media
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.aether.hmi.R
 import com.aether.hmi.ui.components.AetherGlyph
+import com.aether.hmi.ui.components.DashboardSurface
 import com.aether.hmi.ui.components.Glyph
 import com.aether.hmi.ui.theme.AetherColors
 
 @Composable
-fun MediaLibrary(state: PlaybackState, onChooseAudio: () -> Unit, onPlayIndex: (Int) -> Unit, modifier: Modifier = Modifier) {
-    if (state.queue.isEmpty()) {
-        Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                AetherGlyph(Glyph.Music, size = 32.dp)
-                Text(stringResource(R.string.nothing_playing), color = AetherColors.TextPrimary)
-                Text(stringResource(R.string.choose_audio_hint), fontSize = 12.sp, color = AetherColors.TextSecondary)
-                Button(onClick = onChooseAudio, enabled = state.connected) { Text(stringResource(R.string.choose_audio)) }
+fun MediaLibrary(state: PlaybackState, onChooseAudio: () -> Unit, onPlayIndex: (Int) -> Unit,
+    modifier: Modifier = Modifier) {
+    BoxWithConstraints(modifier.fillMaxSize()) {
+        val tiny = maxHeight < 180.dp
+        val headerHeight = minOf(56.dp, maxHeight * .28f)
+        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(Modifier.fillMaxWidth().height(headerHeight), verticalAlignment = Alignment.CenterVertically) {
+                MediaFitText(stringResource(R.string.queue), color = AetherColors.TextPrimary,
+                    maxFontSize = if (tiny) 13f else 16f, fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f).fillMaxHeight())
+                MediaPageAction(stringResource(R.string.add_audio), onChooseAudio,
+                    enabled = state.connected && !state.importing, modifier = Modifier.weight(1f).fillMaxHeight())
+            }
+            if (state.queue.isEmpty()) {
+                Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    MediaFitText(stringResource(R.string.choose_audio_hint), color = AetherColors.TextSecondary,
+                        maxFontSize = if (tiny) 11f else 13f, maxLines = 3,
+                        textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
+                }
+            } else MediaPagedList(state.queue.size, "media-library", Modifier.weight(1f), compact = true) { index, rowHeight ->
+                MediaTrackRow(state.queue[index], index == state.currentIndex, { onPlayIndex(index) },
+                    compact = true, rowHeight = rowHeight)
             }
         }
-    } else {
-        Column(modifier.fillMaxSize()) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.queue), color = AetherColors.TextPrimary)
-                TextButton(onClick = onChooseAudio) { Text(stringResource(R.string.add_audio)) }
+    }
+}
+
+/** Dialog content is explicitly bounded and paged; no platform scroll container is needed. */
+@Composable
+fun QueueDialog(state: PlaybackState, onDismiss: () -> Unit, onChooseAudio: () -> Unit, onPlayIndex: (Int) -> Unit) {
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        DashboardSurface(Modifier.widthIn(max = 640.dp).fillMaxWidth(.88f).fillMaxHeight(.84f)) {
+            BoxWithConstraints(Modifier.fillMaxSize().padding(12.dp)) {
+                val tiny = maxHeight < 220.dp
+                val actionsHeight = minOf(56.dp, maxHeight * .24f)
+                Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                    MediaFitText(stringResource(R.string.queue), color = AetherColors.TextPrimary,
+                        maxFontSize = if (tiny) 16f else 20f, fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.fillMaxWidth().height(if (tiny) 25.dp else 32.dp))
+                    if (state.queue.isEmpty()) Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        MediaFitText(stringResource(R.string.queue_empty), color = AetherColors.TextSecondary,
+                            maxFontSize = 13f, maxLines = 2, modifier = Modifier.fillMaxSize())
+                    } else MediaPagedList(state.queue.size, "queue-dialog", Modifier.weight(1f), compact = true) { index, rowHeight ->
+                        MediaTrackRow(state.queue[index], index == state.currentIndex, { onPlayIndex(index) },
+                            compact = true, rowHeight = rowHeight)
+                    }
+                    Row(Modifier.fillMaxWidth().height(actionsHeight),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        MediaPageAction(stringResource(R.string.add_audio), onChooseAudio,
+                            enabled = state.connected && !state.importing, modifier = Modifier.weight(1f).fillMaxHeight())
+                        MediaPageAction(stringResource(R.string.close), onDismiss,
+                            modifier = Modifier.weight(1f).fillMaxHeight())
+                    }
+                }
             }
-            QueueList(state.queue, onPlayIndex, Modifier.weight(1f))
+        }
+    }
+}
+
+/** Every item stays reachable through pages sized from the available height. */
+@Composable
+internal fun MediaPagedList(itemCount: Int, contentKey: String, modifier: Modifier,
+    compact: Boolean = true, fillPage: Boolean = false, row: @Composable (Int, Dp) -> Unit) {
+    var anchor by rememberSaveable(contentKey) { mutableIntStateOf(0) }
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        val geometry = MediaListGeometry.fit(maxHeight.value, itemCount, compact, LocalDensity.current.fontScale)
+        val controlsHeight = geometry.controlsHeight.dp
+        val listHeight = (maxHeight - controlsHeight).coerceAtLeast(0.dp)
+        val capacity = geometry.capacity
+        val page = MediaPagination.window(itemCount, capacity, anchor)
+        val rowHeight = if (fillPage) listHeight / (page.endExclusive - page.startIndex).coerceAtLeast(1)
+            else geometry.rowHeight.dp
+        LaunchedEffect(itemCount, capacity) { anchor = page.startIndex }
+        Column(Modifier.fillMaxSize()) {
+            Column(Modifier.weight(1f).fillMaxWidth()) {
+                (page.startIndex until page.endExclusive).forEach { index -> row(index, rowHeight) }
+                Spacer(Modifier.weight(1f, fill = true))
+            }
+            if (page.pageCount > 1) MediaPageControls(page, { anchor = page.previousAnchor }, { anchor = page.nextAnchor },
+                Modifier.fillMaxWidth().height(controlsHeight))
         }
     }
 }
 
 @Composable
-fun QueueDialog(state: PlaybackState, onDismiss: () -> Unit, onChooseAudio: () -> Unit, onPlayIndex: (Int) -> Unit) {
-    AlertDialog(onDismissRequest = onDismiss, title = { Text(stringResource(R.string.queue)) },
-        text = {
-            if (state.queue.isEmpty()) Text(stringResource(R.string.queue_empty))
-            else QueueList(state.queue, onPlayIndex, Modifier.heightIn(max = 240.dp))
-        }, confirmButton = { TextButton(onClick = onChooseAudio) { Text(stringResource(R.string.add_audio)) } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } })
+private fun MediaPageControls(page: MediaPageWindow, onPrevious: () -> Unit, onNext: () -> Unit, modifier: Modifier) {
+    val previous = stringResource(R.string.media_previous_page)
+    val next = stringResource(R.string.media_next_page)
+    val position = stringResource(R.string.media_page_description, page.pageIndex + 1, page.pageCount)
+    Row(modifier, verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+        Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(6.dp))
+            .clickable(enabled = page.hasPrevious, role = Role.Button, onClick = onPrevious)
+            .semantics { contentDescription = previous }, contentAlignment = Alignment.Center) {
+            AetherGlyph(Glyph.Previous, color = if (page.hasPrevious) AetherColors.Accent else AetherColors.Muted, size = 16.dp)
+        }
+        MediaFitText(stringResource(R.string.media_page_counter, page.pageIndex + 1, page.pageCount),
+            color = AetherColors.TextSecondary, maxFontSize = 15f, textAlign = TextAlign.Center,
+            modifier = Modifier.weight(1f).fillMaxHeight().semantics { contentDescription = position })
+        Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(6.dp))
+            .clickable(enabled = page.hasNext, role = Role.Button, onClick = onNext)
+            .semantics { contentDescription = next }, contentAlignment = Alignment.Center) {
+            AetherGlyph(Glyph.Next, color = if (page.hasNext) AetherColors.Accent else AetherColors.Muted, size = 16.dp)
+        }
+    }
 }
 
 @Composable
-private fun QueueList(queue: List<QueueTrack>, onPlayIndex: (Int) -> Unit, modifier: Modifier) {
-    LazyColumn(modifier) {
-        itemsIndexed(queue, key = { index, item -> "${item.id}:$index" }) { index, track ->
-            Text(track.title ?: stringResource(R.string.unknown_title), maxLines = 1, overflow = TextOverflow.Ellipsis,
-                color = AetherColors.TextPrimary, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
-                    .clickable { onPlayIndex(index) }.padding(12.dp))
-        }
+internal fun MediaPageAction(label: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
+    Box(modifier.clip(RoundedCornerShape(10.dp))
+        .clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(horizontal = 8.dp),
+        contentAlignment = Alignment.Center) {
+        MediaFitText(label, color = if (enabled) AetherColors.Accent else AetherColors.Muted,
+            maxFontSize = 16f, textAlign = TextAlign.Center, maxLines = 2, modifier = Modifier.fillMaxSize())
     }
 }

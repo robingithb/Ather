@@ -1,0 +1,25 @@
+<resources>
+    <string name="media_side_climate">Climate</string>
+    <string name="media_side_open_climate">Open climate controls</string>
+    <string name="media_side_output_source">Output &amp; Source</string>
+    <string name="media_side_close">Close</string>
+    <string name="media_side_bluetooth">Bluetooth</string>
+    <string name="media_side_bluetooth_settings">Open Bluetooth settings</string>
+    <string name="media_side_bluetooth_connected">Connected: %1$s</string>
+    <string name="media_side_bluetooth_available">Bluetooth output available</string>
+    <string name="media_side_device_audio">Device audio</string>
+    <string name="media_side_browse_files">Browse files</string>
+    <string name="media_side_usb_files">USB / files</string>
+    <string name="media_side_radio">Radio</string>
+    <string name="media_side_radio_unavailable">Unavailable</string>
+    <string name="media_side_radio_description">Radio is unavailable on this device</string>
+    <string name="media_side_routing_note">Audio follows system routing</string>
+    <string name="media_side_connected_outputs">Connected outputs: %1$s</string>
+    <string name="media_side_output_unknown">Output information unavailable</string>
+    <string name="media_side_output_none">No outputs reported</string>
+    <string name="media_side_output_builtin">Built-in audio</string>
+    <string name="media_side_output_wired">Wired audio</string>
+    <string name="media_side_output_usb">USB audio</string>
+    <string name="media_side_output_other">External audio</string>
+    <string name="media_side_settings_unavailable">Bluetooth settings are unavailable on this device</string>
+</resources>

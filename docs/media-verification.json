@@ -1,0 +1,177 @@
+{
+  "verified_at": "2026-10-31T13:04:11.250321+05:30",
+  "compile": {
+    "task": ":app:compileDebugSources",
+    "result": "passed",
+    "latest_source_compiled_by": ":app:lintDebug",
+    "latest_log": "app/build/reports/media-alignment-checks.log"
+  },
+  "unit_tests": {
+    "task": ":app:testDebugUnitTest",
+    "result": "passed",
+    "tests": 141,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "report": "app/build/reports/tests/testDebugUnitTest/index.html"
+  },
+  "lint": {
+    "task": ":app:lintDebug",
+    "result": "passed",
+    "errors": 0,
+    "warnings": 8,
+    "new_warnings": 0,
+    "log": "app/build/reports/media-alignment-checks.log"
+  },
+  "themes": {
+    "integrated": [
+      "Midnight",
+      "Arctic",
+      "Sport",
+      "Minimal",
+      "Custom accent"
+    ],
+    "method": "Shared AetherColors tokens; source review and existing palette tests",
+    "visual_runtime_verified": false
+  },
+  "audio": {
+    "bundled_original_tracks": 6,
+    "duration_seconds_each": 24,
+    "format": "16 kHz mono 16-bit PCM WAV",
+    "playback_on_device_verified": false,
+    "assets": [
+      {
+        "name": "coastal_road.wav",
+        "seconds": 24.0,
+        "sha256": "37aa5db511e13746fc0f25b00417d637f2eb71659744bfc246eb7b2455dc8021"
+      },
+      {
+        "name": "evening_lights.wav",
+        "seconds": 24.0,
+        "sha256": "dbc1c2f3ac8a9edbe976476bef0cc1775e045493f06ae95c0bf8d894eb993a0c"
+      },
+      {
+        "name": "golden_hour.wav",
+        "seconds": 24.0,
+        "sha256": "b7ff90cecbfd6028a807657d3e2d39aa94373f9b0bdc35c14a010645bbb32261"
+      },
+      {
+        "name": "midnight_city.wav",
+        "seconds": 24.0,
+        "sha256": "2d03bc3562491e1b6689e66c9316ee756dbde647f2abea85b12e4c42d1dbe7a6"
+      },
+      {
+        "name": "mountain_drive.wav",
+        "seconds": 24.0,
+        "sha256": "ecbc59628ced2939897cb3594400c1807d80c15ea31200cda05a7ef10bd823dd"
+      },
+      {
+        "name": "ocean_air.wav",
+        "seconds": 24.0,
+        "sha256": "1d799c7445aebf330bca5ba6a956c2dc910100fc38d5c422ddaacb68d270cb99"
+      }
+    ]
+  },
+  "device": {
+    "kind": "Physical Samsung USB",
+    "serial": "RZCT902Y60B",
+    "adb_state": "device",
+    "new_revision_installed": false,
+    "runtime_verified": false,
+    "display_pixels_landscape": [
+      2340,
+      1080
+    ],
+    "density_dpi": 480,
+    "app_viewport_dp": [
+      780,
+      360
+    ],
+    "font_scale": 1.0,
+    "observed_installed_update": "2026-10-31 12:11:49",
+    "new_revision_deployed_by_this_task": false
+  },
+  "constraints": {
+    "apk_packaging_run": false,
+    "apk_installation_run": false,
+    "emulator_launched": false
+  },
+  "existing_apks": [
+    {
+      "path": "app/build/intermediates/apk/debug/app-debug.apk",
+      "size": 62251923,
+      "modified_at": "2026-10-31T12:11:28.366790+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "size": 36443,
+      "modified_at": "2026-10-28T00:32:04.571452+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "size": 52370774,
+      "modified_at": "2026-10-30T01:15:28.499086+05:30"
+    }
+  ],
+  "vehicle_model_sha256": "88e4c72f9ff1ef8a2d2a760b73e1f5cca063bb1b1fba441bd25edfd875d79883",
+  "limitations": [
+    "Display metrics were read from the physical Samsung; no new code was deployed by this task.",
+    "Source, finite layout budgets, tests and lint passed; visual confirmation of the fitted revision still needs deployment."
+  ],
+  "fit_to_display": {
+    "scroll_container_audit": "passed: no scrolling or lazy-list containers in the Media feature, including dialogs",
+    "long_lists": "height-based pagination with Previous/Next controls",
+    "fitted_content_dp_after_shell_and_cutout": [
+      632,
+      328
+    ],
+    "geometry_and_pagination_tests": 9,
+    "visual_runtime_verified": false,
+    "themes_preserved": true
+  },
+  "prior_apk_snapshot": [
+    {
+      "path": "app/build/intermediates/apk/debug/app-debug.apk",
+      "size": 59682811,
+      "modified_at": "2026-10-31T03:10:30.179408+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "size": 36443,
+      "modified_at": "2026-10-28T00:32:04.571452+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "size": 52370774,
+      "modified_at": "2026-10-30T01:15:28.499086+05:30"
+    }
+  ],
+  "polish": {
+    "up_next": "Actual queued tracks followed by labeled playable demo suggestions; page rows fill the card height.",
+    "demo_selection": "Preserves selected documents/order and appends only missing bundled originals on explicit click.",
+    "artwork": "Resource artwork shared by Media, Home and Climate players.",
+    "seek_bar": "Slim rounded track, fixed thumb footprint, focus/scrub animation, smooth progress, tabular time labels and RTL track.",
+    "seek_recovery": "Pending target held until controller acknowledgment or two-second timeout.",
+    "position_polling_ms": {
+      "playing": 100,
+      "paused": 500
+    },
+    "new_policy_tests": 19,
+    "scroll_containers": false,
+    "new_revision_deployed_by_this_task": false,
+    "visual_runtime_verified": false
+  },
+  "alignment": {
+    "change": "Shared Media text slots vertically center their content relative to adjacent icons.",
+    "implementation": "Modifier.wrapContentHeight(Alignment.CenterVertically) preserves bounded sizing and horizontal text alignment.",
+    "source_compile": "passed",
+    "lint_errors": 0,
+    "lint_warnings": 8,
+    "unit_tests_rerun": false,
+    "scope": "Text alignment only; existing 141 logic-test results retained.",
+    "log": "app/build/reports/media-alignment-checks.log",
+    "apk_packaging_run": false,
+    "installation_run": false,
+    "visual_device_verification": false
+  }
+}

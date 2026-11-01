@@ -1,0 +1,9 @@
+<resources>
+    <string name="media_previous_page">Previous page</string>
+    <string name="media_next_page">Next page</string>
+    <string name="media_page_counter">%1$d / %2$d</string>
+    <string name="media_page_description">Page %1$d of %2$d</string>
+    <string name="media_source_usb_compact">Browse audio on this device or an accessible USB drive.</string>
+    <string name="media_source_bluetooth_compact">Android routes audio. Connect speakers or a car in system settings.</string>
+    <string name="media_source_radio_compact">Radio needs compatible vehicle hardware. It is unavailable on this phone.</string>
+</resources>

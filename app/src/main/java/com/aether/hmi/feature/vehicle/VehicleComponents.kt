@@ -1,6 +1,5 @@
 package com.aether.hmi.feature.vehicle
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,107 +8,61 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.aether.hmi.R
 import com.aether.hmi.domain.HeadlightMode
-import com.aether.hmi.domain.VehicleControlsState
 import com.aether.hmi.domain.VehiclePart
-import com.aether.hmi.domain.VehicleState
-import com.aether.hmi.ui.components.AetherGlyph
-import com.aether.hmi.ui.components.Glyph
+import com.aether.hmi.ui.components.PageText
 import com.aether.hmi.ui.theme.AetherColors
-import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
 internal fun VehicleSurface(modifier: Modifier = Modifier, selected: Boolean = false, content: @Composable BoxScope.() -> Unit) {
     val shape = RoundedCornerShape(10.dp)
+    val glowAlpha = .20f * AetherColors.DecorativeGlowScale
     Box(modifier.clip(shape)
         .background(Brush.linearGradient(listOf(AetherColors.Panel.copy(alpha = .95f), AetherColors.PanelDeep.copy(alpha = .95f))))
-        .then(if (selected) Modifier.background(Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = .20f), Color.Transparent))) else Modifier)
+        .then(if (selected) Modifier.background(Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = glowAlpha), Color.Transparent))) else Modifier)
         .border(if (selected) 1.dp else .6.dp, if (selected) AetherColors.Accent else AetherColors.Border, shape), content = content)
 }
 
 @Composable
-internal fun VehicleBatteryCard(vehicle: VehicleState, compact: Boolean, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
-    VehicleSurface(modifier.then(if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier)) {
-        Column(Modifier.fillMaxSize().padding(if (compact) 8.dp else 12.dp), verticalArrangement = Arrangement.SpaceBetween) {
-            Text(stringResource(R.string.vehicle_battery), color = AetherColors.TextSecondary,
-                fontSize = if (compact) 8.sp else 10.sp, lineHeight = if (compact) 10.sp else 12.sp)
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(vehicle.batteryPercent?.let { stringResource(R.string.battery_percent, it) } ?: stringResource(R.string.unavailable_value),
-                    Modifier.weight(1f), fontSize = if (compact) 23.sp else 30.sp,
-                    lineHeight = if (compact) 26.sp else 34.sp, color = AetherColors.TextPrimary, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(if (compact) 20.dp else 27.dp).width(.6.dp).background(AetherColors.Border))
-                Column(Modifier.weight(1f)) {
-                    Text(stringResource(R.string.vehicle_range), color = AetherColors.TextSecondary,
-                        fontSize = if (compact) 8.sp else 10.sp, lineHeight = if (compact) 10.sp else 12.sp)
-                    val locale = Locale.getDefault()
-                    val numbers = remember(locale) { NumberFormat.getIntegerInstance(locale) }
-                    Text(vehicle.rangeKm?.let { stringResource(R.string.range_km, numbers.format(it)) } ?: stringResource(R.string.unavailable_value),
-                        color = AetherColors.TextPrimary, fontSize = if (compact) 13.sp else 17.sp,
-                        lineHeight = if (compact) 16.sp else 20.sp, maxLines = 1)
-                }
-                if (onClick != null) AetherGlyph(Glyph.Chevron, size = if (compact) 8.dp else 11.dp, color = AetherColors.TextSecondary)
-            }
-            Box(Modifier.fillMaxWidth().height(if (compact) 4.dp else 6.dp).clip(RoundedCornerShape(5.dp)).background(AetherColors.PanelRaised)) {
-                vehicle.batteryPercent?.let {
-                    Box(Modifier.fillMaxWidth((it / 100f).coerceIn(0f, 1f)).fillMaxHeight()
-                        .background(Brush.horizontalGradient(listOf(AetherColors.Accent, lerp(AetherColors.Accent, AetherColors.TextPrimary, .25f)))))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-internal fun VehicleStatusTile(label: String, value: String, icon: VehicleIcon, compact: Boolean, modifier: Modifier = Modifier,
-    selected: Boolean = false, enabled: Boolean = true, onClick: () -> Unit) {
-    VehicleSurface(modifier.clickable(enabled = enabled, role = Role.Button, onClick = onClick), selected) {
+internal fun VehicleStatusTile(label: String, value: String, icon: VehicleIcon, modifier: Modifier = Modifier,
+    selected: Boolean = false, enabled: Boolean = true, roomy: Boolean = false, contentLabel: String = label, onClick: () -> Unit) {
+    val description = if (value.isEmpty()) contentLabel else "$contentLabel: $value"
+    VehicleSurface(modifier.clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+        .semantics { contentDescription = description; this.selected = selected }, selected) {
         BoxWithConstraints(Modifier.fillMaxSize()) {
-        val narrow = maxWidth < 140.dp
-        Row(Modifier.fillMaxSize().padding(horizontal = if (narrow) 5.dp else if (compact) 7.dp else 10.dp),
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (narrow) 4.dp else if (compact) 6.dp else 9.dp)) {
-            VehicleGlyph(icon, size = if (narrow) 15.dp else if (compact) 20.dp else 27.dp, color = if (selected) AetherColors.Accent else AetherColors.TextSecondary)
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(label, color = AetherColors.TextSecondary, fontSize = if (compact) 8.sp else 10.sp,
-                    lineHeight = if (compact) 10.sp else 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(value, color = if (selected) AetherColors.Accent else AetherColors.TextPrimary,
-                    fontSize = if (compact) 10.sp else 13.sp, lineHeight = if (compact) 12.sp else 15.sp,
-                    fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            val dense = maxHeight < 64.dp
+            val showIcon = maxHeight >= if (roomy) 112.dp else 88.dp
+            val padding = if (dense) 4.dp else if (roomy) 10.dp else 6.dp
+            Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(if (dense) 0.dp else 4.dp)) {
+                if (showIcon) VehicleGlyph(icon, size = if (roomy) 32.dp else 24.dp,
+                    color = if (!enabled) AetherColors.Muted else if (selected) AetherColors.Accent else AetherColors.TextSecondary)
+                PageText(label, Modifier.weight(1f).fillMaxWidth(),
+                    color = if (enabled) AetherColors.TextPrimary else AetherColors.Muted,
+                    maxFontSize = if (roomy) 18f else 14f, minFontSize = if (dense) 10f else 11f,
+                    textAlign = TextAlign.Center)
+                if (value.isNotEmpty()) PageText(value, Modifier.weight(1f).fillMaxWidth(),
+                    color = if (selected) AetherColors.Accent else AetherColors.TextSecondary,
+                    maxFontSize = if (roomy) 15f else 12f, minFontSize = 10f, textAlign = TextAlign.Center)
             }
-            if (!narrow) AetherGlyph(Glyph.Chevron, size = if (compact) 8.dp else 10.dp, color = AetherColors.TextSecondary)
-        }
         }
     }
 }
@@ -132,48 +85,3 @@ internal fun headlightModeLabel(mode: HeadlightMode): String = stringResource(wh
     HeadlightMode.Auto -> R.string.vehicle_light_auto
     HeadlightMode.On -> R.string.vehicle_light_on
 })
-
-/** Supplied transparent top view; rotate its south-facing nose north to match door labels. */
-@Composable
-internal fun VehicleDoorDiagram(controls: VehicleControlsState, compact: Boolean, onPartTap: (VehiclePart) -> Unit, modifier: Modifier = Modifier) {
-    VehicleSurface(modifier) {
-        BoxWithConstraints(Modifier.fillMaxSize()) {
-            // The supplied square PNG includes generous transparent side margins.
-            // Scale its visible cutout, preserving the original pixels and aspect ratio.
-            val fittedSide = minOf(maxWidth.value, maxHeight.value).coerceAtLeast(1f)
-            val cutoutScale = minOf(
-                maxWidth.value * .72f / (fittedSide * .506f),
-                maxHeight.value * .84f / (fittedSide * .910f),
-            )
-            Box(Modifier.align(Alignment.Center).fillMaxWidth(.8f).fillMaxHeight(.82f)
-                .background(Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = .16f), Color.Transparent))))
-            Image(painterResource(R.drawable.vehicle_overview_top), contentDescription = null,
-                contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize().graphicsLayer {
-                    rotationZ = 180f
-                    scaleX = cutoutScale
-                    scaleY = cutoutScale
-                })
-        }
-        listOf(VehiclePart.FrontLeftDoor, VehiclePart.FrontRightDoor, VehiclePart.RearLeftDoor, VehiclePart.RearRightDoor, VehiclePart.Trunk).forEach { part ->
-            val open = part in controls.openParts
-            val label = vehiclePartLabel(part)
-            val description = stringResource(R.string.vehicle_part_state, label,
-                stringResource(if (!controls.available) R.string.unavailable_value else if (open) R.string.vehicle_open else R.string.vehicle_closed))
-            val position = when (part) {
-                VehiclePart.FrontLeftDoor -> Modifier.align(Alignment.CenterStart).offset(x = 3.dp, y = if (compact) (-17).dp else (-24).dp)
-                VehiclePart.FrontRightDoor -> Modifier.align(Alignment.CenterEnd).offset(x = (-3).dp, y = if (compact) (-17).dp else (-24).dp)
-                VehiclePart.RearLeftDoor -> Modifier.align(Alignment.CenterStart).offset(x = 3.dp, y = if (compact) 17.dp else 24.dp)
-                VehiclePart.RearRightDoor -> Modifier.align(Alignment.CenterEnd).offset(x = (-3).dp, y = if (compact) 17.dp else 24.dp)
-                VehiclePart.Trunk -> Modifier.align(Alignment.BottomCenter).offset(y = (-3).dp)
-                else -> Modifier
-            }
-            VehicleSurface(position.size(if (compact) 20.dp else 25.dp)
-                .clickable(enabled = controls.available, role = Role.Button) { onPartTap(part) }
-                .semantics { contentDescription = description }, selected = open) {
-                VehicleGlyph(if (controls.locked && !open) VehicleIcon.Lock else VehicleIcon.Door,
-                    Modifier.align(Alignment.Center), size = if (compact) 11.dp else 14.dp,
-                    color = if (open) AetherColors.Warning else AetherColors.TextSecondary)
-            }
-        }
-    }
-}

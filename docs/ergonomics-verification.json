@@ -1,0 +1,69 @@
+{
+  "verified_at": "2026-11-01T23:24:44.708403+05:30",
+  "project": "AetherHMI",
+  "result": "passed",
+  "gradle_tasks": [
+    ":app:compileDebugKotlin",
+    ":app:testDebugUnitTest",
+    ":app:lintDebug"
+  ],
+  "jvm_tests": {
+    "tests": 143,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 12,
+    "by_id": {
+      "DiscouragedApi": 1,
+      "UnusedResources": 8,
+      "UseKtx": 2,
+      "ClickableViewAccessibility": 1
+    }
+  },
+  "compiler_warnings": [],
+  "git_diff_check": "passed",
+  "log": "app/build/reports/landscape-correction-build.log",
+  "layout_validation": {
+    "method": "landscape source review and compiled landscape Compose previews",
+    "preview_rendered": false,
+    "new_source_installed": false,
+    "new_on_device_layout_verified": false
+  },
+  "adb": {
+    "device_initial": "Samsung SM-G990E, RZCT902Y60B",
+    "physical_pixels": [
+      1080,
+      2340
+    ],
+    "density_dpi": 480,
+    "baseline_inspected": true,
+    "final_status": "unauthorized after reconnect"
+  },
+  "apk_created": false,
+  "apk_installed": false,
+  "existing_apk_timestamps": [
+    {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "modified": "2026-10-30T01:15:28.499086+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "modified": "2026-10-28T00:32:04.571452+05:30"
+    }
+  ],
+  "limitations": [
+    "Real vehicle controls remain simulated.",
+    "No new layout or audio runtime verification without deployment.",
+    "On Android 17 large displays, system/display landscape configuration may be required because the OS can ignore app orientation requests."
+  ],
+  "landscape_correction": {
+    "orientation": "sensorLandscape",
+    "merged_manifest_verified": true,
+    "navigation": "persistent side rail for all demo sizes",
+    "portrait_and_bottom_navigation_removed": true,
+    "responsive_scope": "landscape window sizes, densities and aspect ratios"
+  }
+}

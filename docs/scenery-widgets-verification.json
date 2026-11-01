@@ -1,0 +1,47 @@
+{
+  "verified_at": "2026-11-02T01:11:57.674981+05:30",
+  "status": "source_and_automated_checks_complete",
+  "requirements": {
+    "arctic": "Native panorama and ground now bind neutral mountain/stone image textures with the existing icy blue/slate palette.",
+    "scene_edges": "All four edges feather to the app background, capped at 12dp and 4% of the shorter scene dimension; no broad center overlay.",
+    "home_swipe": "Native horizontal finite-page swiping and small page indicators; visible Previous/Next page buttons removed from Home and the library.",
+    "widget_drag": "Long-press lifting with haptic feedback, 650ms edge page turning, target highlighting, release-to-commit saved ordering, cancellation, accessible move actions."
+  },
+  "compile": "passed",
+  "jvm_tests": {
+    "tests": 167,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 58,
+    "by_id": {
+      "DiscouragedApi": 1,
+      "PluralsCandidate": 2,
+      "AutoboxingStateCreation": 1,
+      "UnusedResources": 52,
+      "UseKtx": 2,
+      "ClickableViewAccessibility": 1
+    }
+  },
+  "logs": [
+    "app/build/reports/scenery-widgets-compile-tests.log",
+    "app/build/reports/scenery-widgets-lint.log"
+  ],
+  "apk_created": false,
+  "apk_installed": false,
+  "existing_apks": [
+    {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "modified": "2026-10-30T01:15:28.499086+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "modified": "2026-10-28T00:32:04.571452+05:30"
+    }
+  ],
+  "device_verification": "Not deployed; updated scenery, touch arbitration, page-turn timing and accessibility interactions require on-device validation.",
+  "git_diff_check": "passed"
+}

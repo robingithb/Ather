@@ -1,0 +1,8 @@
+<resources>
+    <string name="review_system">System</string>
+    <string name="review_back_settings">Back to settings</string>
+    <string name="review_3d_map">3D map preview</string>
+    <string name="review_back">Back</string>
+    <string name="review_preferences">Preferences</string>
+    <string name="review_about">About</string>
+</resources>

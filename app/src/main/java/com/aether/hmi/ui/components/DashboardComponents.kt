@@ -1,6 +1,8 @@
 package com.aether.hmi.ui.components
 
 import android.graphics.BitmapFactory
+import android.content.res.Resources
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,20 +16,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.aether.hmi.ui.theme.AetherColors
+import com.aether.hmi.ui.theme.LocalAetherPalette
+import com.aether.hmi.domain.AppTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -63,7 +72,22 @@ fun GlyphButton(
 }
 
 @Composable
-fun MediaArtwork(data: ByteArray?, modifier: Modifier = Modifier, @androidx.annotation.DrawableRes fallback: Int? = null) {
+fun MediaArtwork(data: ByteArray?, modifier: Modifier = Modifier, @androidx.annotation.DrawableRes fallback: Int? = null,
+    artworkUri: Uri? = null) {
+    val context = LocalContext.current
+    val resources = LocalResources.current
+    val midnight = LocalAetherPalette.current.theme == AppTheme.Midnight
+    val fallbackFilter = remember(midnight) {
+        if (midnight) ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) }) else null
+    }
+    // Local demo covers keep the source resolution and share metadata across every player.
+    val resourceArtwork = remember(context, resources, artworkUri) {
+        artworkUri?.takeIf { it.scheme == "android.resource" && it.authority == context.packageName }
+            ?.lastPathSegment?.toIntOrNull()?.takeIf { id ->
+                try { resources.getResourceTypeName(id) in setOf("drawable", "mipmap") }
+                catch (_: Resources.NotFoundException) { false }
+            }
+    }
     // ID3 artwork is decoded off the main thread and sampled to a small thumbnail.
     val bitmap by produceState<ImageBitmap?>(null, data) {
         value = withContext(Dispatchers.IO) {
@@ -81,8 +105,8 @@ fun MediaArtwork(data: ByteArray?, modifier: Modifier = Modifier, @androidx.anno
         .border(0.6.dp, AetherColors.Border, RoundedCornerShape(7.dp)), contentAlignment = Alignment.Center) {
         val image = bitmap
         if (image != null) Image(image, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
-        else if (fallback != null) Image(painterResource(fallback), null, contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize())
+        else if (resourceArtwork != null || fallback != null) Image(painterResource(resourceArtwork ?: requireNotNull(fallback)), null, contentScale = ContentScale.Crop,
+            colorFilter = if (resourceArtwork == null) fallbackFilter else null, modifier = Modifier.fillMaxSize())
         else AetherGlyph(Glyph.Music, color = AetherColors.TextSecondary)
     }
 }

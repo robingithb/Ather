@@ -1,0 +1,33 @@
+<resources>
+    <string name="home_add_widget">Add widgets</string>
+    <string name="home_add_widget_single">Add widget</string>
+    <string name="home_finish_editing">Done</string>
+    <string name="home_widget_library">Widget library</string>
+    <string name="home_widget_library_hint">Tap a card to add it to Home</string>
+    <string name="home_widget_navigation">Navigation</string>
+    <string name="home_widget_music">Music</string>
+    <string name="home_widget_climate">Climate</string>
+    <string name="home_widget_vehicle">Vehicle</string>
+    <string name="home_widget_energy">Battery &amp; range</string>
+    <string name="home_widget_clock">Clock</string>
+    <string name="home_widget_settings">Settings shortcut</string>
+    <string name="home_widget_remove">Remove</string>
+    <string name="home_widget_move_back">Move widget earlier</string>
+    <string name="home_widget_move_forward">Move widget later</string>
+    <string name="home_widget_move_previous_page">Move widget to previous page</string>
+    <string name="home_widget_move_next_page">Move widget to next page</string>
+    <string name="home_widget_swipe_hint">Swipe for more · Hold a widget to move it</string>
+    <string name="home_widget_library_swipe">Swipe for more widgets</string>
+    <string name="home_widget_hold_hint">Touch and hold a widget to move it</string>
+    <string name="home_widget_drag_hint">Hold near an edge to turn the page · Release to place</string>
+    <string name="home_widget_page">%1$d / %2$d</string>
+    <string name="home_widget_count">%1$d / %2$d widgets</string>
+    <string name="home_widget_limit">Home has %1$d widgets. Remove one to add another.</string>
+    <string name="home_widget_restore">Restore layout</string>
+    <string name="home_widget_auto">Auto climate</string>
+    <string name="home_widget_driver">Driver</string>
+    <string name="home_widget_passenger">Passenger</string>
+    <string name="home_widget_preferences">Themes, display and sound</string>
+    <string name="home_widget_energy_hint">Open vehicle and charging controls</string>
+    <string name="home_widget_climate_hint">Open full climate controls</string>
+</resources>

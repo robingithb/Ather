@@ -5,7 +5,7 @@ internal data class SceneryColor(val red: Float, val green: Float, val blue: Flo
     fun map(transform: (Float) -> Float) = SceneryColor(transform(red), transform(green), transform(blue))
 }
 
-internal enum class ScenerySurfaceMode { Midnight, NeutralTint, LightStudio }
+internal enum class ScenerySurfaceMode { Midnight, NeutralTint, Arctic }
 
 internal data class VehicleSceneryTheme(
     val mode: ScenerySurfaceMode,
@@ -17,9 +17,10 @@ internal data class VehicleSceneryTheme(
     val floor: SceneryColor,
 ) {
     fun showsSurface(name: String): Boolean = when (name) {
-        "AETHER_PANORAMA", "AETHER_FLOOR" -> mode == ScenerySurfaceMode.Midnight
-        "AETHER_NEUTRAL_PANORAMA", "AETHER_NEUTRAL_FLOOR" -> mode == ScenerySurfaceMode.NeutralTint
-        "AETHER_LIGHT_PANORAMA", "AETHER_LIGHT_FLOOR" -> mode == ScenerySurfaceMode.LightStudio
+        // Midnight now uses the neutral source too: its black theme must not reveal blue mountains.
+        "AETHER_PANORAMA", "AETHER_FLOOR" -> false
+        "AETHER_NEUTRAL_PANORAMA", "AETHER_NEUTRAL_FLOOR" -> mode != ScenerySurfaceMode.Arctic
+        "AETHER_LIGHT_PANORAMA", "AETHER_LIGHT_FLOOR" -> mode == ScenerySurfaceMode.Arctic
         else -> true
     }
 
@@ -32,27 +33,25 @@ internal data class VehicleSceneryTheme(
             val hue = accent.map { it / peak }
             val neutral = maxOf(hue.red, hue.green, hue.blue) - minOf(hue.red, hue.green, hue.blue) < .2f
             val mode = when {
-                light -> ScenerySurfaceMode.LightStudio
-                backgroundArgb == 0xFF020A14.toInt() -> ScenerySurfaceMode.Midnight
+                light -> ScenerySurfaceMode.Arctic
+                backgroundArgb == 0xFF030303.toInt() || backgroundArgb == 0xFF020A14.toInt() -> ScenerySurfaceMode.Midnight
                 else -> ScenerySurfaceMode.NeutralTint
             }
             val panorama = when (mode) {
-                ScenerySurfaceMode.LightStudio -> SceneryColor(.88f, .93f, .97f)
-                ScenerySurfaceMode.Midnight -> SceneryColor(.70f, .75f, .80f)
+                ScenerySurfaceMode.Arctic -> SceneryColor(.94f, .94f, .94f)
+                ScenerySurfaceMode.Midnight -> SceneryColor(.40f, .40f, .40f)
                 ScenerySurfaceMode.NeutralTint -> if (neutral) SceneryColor(.66f, .66f, .66f)
                     else hue.map { .30f + it * .40f }
             }
-            val floor = when (mode) {
-                ScenerySurfaceMode.LightStudio -> SceneryColor(.88f, .91f, .94f)
-                ScenerySurfaceMode.Midnight -> SceneryColor(.70f, .73f, .78f)
-                ScenerySurfaceMode.NeutralTint -> if (neutral) SceneryColor(.62f, .62f, .62f)
-                    else hue.map { .28f + it * .35f }
-            }
+            // One scene tint keeps the landscape and ground in the same theme family.
+            val floor = panorama
+            val restrained = mode == ScenerySurfaceMode.Midnight
             return VehicleSceneryTheme(mode,
-                // Keep these below white clipping: bright unlit factors previously erased the hue.
-                glow = hue.map { it * .18f },
-                ring = hue.map { .012f + it * .28f },
-                core = hue.map { .075f + it * .36f },
+                // Midnight's silver trim stays quiet; custom accents still retain their hue.
+                // Keep every theme below white clipping so the ring never loses its color.
+                glow = hue.map { it * if (restrained) .10f else .18f },
+                ring = hue.map { if (restrained) .01f + it * .20f else .012f + it * .28f },
+                core = hue.map { if (restrained) .055f + it * .26f else .075f + it * .36f },
                 rim = if (light) SceneryColor(.48f, .55f, .61f) else rgb(backgroundArgb).map { .025f + it * .18f },
                 panorama = panorama, floor = floor)
         }

@@ -8,11 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -61,10 +60,11 @@ internal fun ClimateSurface(
 ) {
     val palette = LocalAetherPalette.current
     val appearance = remember(palette) { climateAppearance(palette) }
+    val glowAlpha = .19f * palette.DecorativeGlowScale
     val shape = RoundedCornerShape(10.dp)
     Box(modifier.clip(shape)
         .background(Brush.linearGradient(listOf(appearance.surfaceTop, appearance.surfaceBottom)))
-        .then(if (selected) Modifier.background(Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = .19f), Color.Transparent))) else Modifier)
+        .then(if (selected) Modifier.background(Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = glowAlpha), Color.Transparent))) else Modifier)
         .border(if (selected) 1.1.dp else .65.dp, if (selected) AetherColors.Accent else AetherColors.Border, shape), content = content)
 }
 
@@ -75,15 +75,18 @@ internal fun ClimateStepButton(
     enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    diameter: Dp = 30.dp,
+    diameter: Dp = 48.dp,
+    accentColor: Color? = null,
 ) {
     Box(modifier.size(diameter).clip(CircleShape)
-        .background(Brush.verticalGradient(listOf(AetherColors.PanelRaised, AetherColors.PanelDeep)))
-        .border(.65.dp, AetherColors.Border, CircleShape)
+        .background(Brush.verticalGradient(listOf(
+            if (enabled && accentColor != null) accentColor.copy(alpha = .16f) else AetherColors.PanelRaised,
+            AetherColors.PanelDeep)))
+        .border(.8.dp, if (enabled && accentColor != null) accentColor.copy(alpha = .40f) else AetherColors.Border, CircleShape)
         .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
         .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
         AetherGlyph(if (plus) Glyph.Plus else Glyph.Minus, size = diameter * .43f,
-            color = if (enabled) AetherColors.TextPrimary else AetherColors.Muted.copy(alpha = .4f))
+            color = if (enabled) accentColor ?: AetherColors.TextPrimary else AetherColors.Muted.copy(alpha = .4f))
     }
 }
 
@@ -108,43 +111,29 @@ internal fun ZoneTemperatureCard(
     val value = climateTemperature(temperature)
     val accessibleValue = stringResource(R.string.climate_temperature, label, value)
     val enabled = state.available && temperature != null && !(passenger && state.sync)
-    val synced = passenger && state.sync
-    val diameter = if (compact) 24.dp else 30.dp
+    val diameter = if (compact) 48.dp else 76.dp
     ClimateSurface(modifier) {
-        Row(Modifier.fillMaxSize().padding(if (compact) 6.dp else 9.dp),
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (compact) 3.dp else 6.dp)) {
-            // The driver's rail sits on the right; the passenger's mirrors it on the left.
-            if (passenger) TemperatureRail(state, temperature, enabled, onAdjust, label, diameter)
-            Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceEvenly) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    ClimateGlyph(ClimateIcon.Person, size = if (compact) 12.dp else 15.dp)
-                    Text(label, fontSize = if (compact) 9.sp else 11.sp, lineHeight = if (compact) 11.sp else 13.sp,
-                        color = AetherColors.TextSecondary, maxLines = 1)
-                }
-                Text(value, modifier = Modifier.semantics { contentDescription = accessibleValue },
-                    fontSize = if (compact) 24.sp else 31.sp, lineHeight = if (compact) 29.sp else 36.sp,
-                    color = AetherColors.TextPrimary, fontWeight = FontWeight.SemiBold, maxLines = 1)
-                Text(if (synced) stringResource(R.string.climate_linked) else stringResource(R.string.climate_temperature_range,
-                    climateTemperature(state.minCelsius), climateTemperature(state.maxCelsius)),
-                    fontSize = if (compact) 8.sp else 10.sp, lineHeight = if (compact) 10.sp else 12.sp,
-                    color = if (synced) AetherColors.Accent else AetherColors.TextSecondary, maxLines = 1)
+        Column(Modifier.fillMaxWidth().padding(if (compact) 14.dp else 18.dp),
+            verticalArrangement = Arrangement.spacedBy(if (compact) 12.dp else 24.dp)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(label, Modifier.weight(1f), fontSize = if (compact) 15.sp else 18.sp,
+                    color = AetherColors.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (passenger && state.sync) Text(stringResource(R.string.climate_linked),
+                    fontSize = if (compact) 13.sp else 15.sp, color = AetherColors.Accent)
             }
-            if (!passenger) TemperatureRail(state, temperature, enabled, onAdjust, label, diameter)
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ClimateStepButton(false, stringResource(R.string.climate_decrease_zone, label),
+                    enabled && temperature > state.minCelsius, { onAdjust(-1) }, diameter = diameter)
+                Text(value, Modifier.weight(1f).semantics { contentDescription = accessibleValue },
+                    fontSize = if (compact) 30.sp else 38.sp, color = AetherColors.TextPrimary,
+                    fontWeight = FontWeight.SemiBold, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis)
+                ClimateStepButton(true, stringResource(R.string.climate_increase_zone, label),
+                    enabled && temperature < state.maxCelsius, { onAdjust(1) }, diameter = diameter)
+            }
         }
-    }
-}
-
-@Composable
-private fun TemperatureRail(state: ClimateState, temperature: Float?, enabled: Boolean, onAdjust: (Int) -> Unit, label: String, diameter: Dp) {
-    Column(Modifier.width(diameter).fillMaxHeight().clip(RoundedCornerShape(diameter / 2))
-        .background(AetherColors.PanelDeep).border(.6.dp, AetherColors.Border, RoundedCornerShape(diameter / 2)),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        ClimateStepButton(true, stringResource(R.string.climate_increase_zone, label), enabled && temperature != null && temperature < state.maxCelsius,
-            { onAdjust(1) }, diameter = diameter)
-        Box(Modifier.weight(1f).width(5.dp).padding(vertical = 1.dp).clip(CircleShape)
-            .background(Brush.verticalGradient(listOf(ClimateWarm, ClimateWarm, ClimateCool))))
-        ClimateStepButton(false, stringResource(R.string.climate_decrease_zone, label), enabled && temperature != null && temperature > state.minCelsius,
-            { onAdjust(-1) }, diameter = diameter)
     }
 }
 
@@ -174,20 +163,23 @@ internal fun ClimateToggleTile(
     glyph: Glyph? = null,
     showSwitch: Boolean = false,
 ) {
-    ClimateSurface(modifier.toggleable(selected, enabled = enabled, role = Role.Switch, onValueChange = { onToggle() }), selected) {
-        Row(Modifier.fillMaxSize().padding(horizontal = if (compact) 5.dp else 9.dp),
-            horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 7.dp), verticalAlignment = Alignment.CenterVertically) {
+    val target = if (compact) 48.dp else 76.dp
+    ClimateSurface(modifier.heightIn(min = target)
+        .toggleable(selected, enabled = enabled, role = Role.Switch, onValueChange = { onToggle() }), selected) {
+        Row(Modifier.fillMaxWidth().align(Alignment.Center).padding(horizontal = 12.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             val tint = if (!enabled) AetherColors.Muted else if (selected) AetherColors.Accent else AetherColors.TextSecondary
-            if (icon != null) ClimateGlyph(icon, size = if (compact) 18.dp else 24.dp, color = tint)
-            if (glyph != null) AetherGlyph(glyph, size = if (compact) 19.dp else 25.dp, color = tint)
-            Text(label, Modifier.weight(1f), color = if (selected) AetherColors.Accent else AetherColors.TextSecondary,
-                fontSize = if (compact) 9.sp else 11.sp, lineHeight = if (compact) 11.sp else 13.sp,
-                fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (icon != null) ClimateGlyph(icon, size = if (compact) 24.dp else 28.dp, color = tint)
+            if (glyph != null) AetherGlyph(glyph, size = if (compact) 24.dp else 28.dp, color = tint)
+            Text(label, Modifier.weight(1f), color = tint,
+                fontSize = if (compact) 14.sp else 17.sp,
+                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                maxLines = 2, overflow = TextOverflow.Ellipsis)
             if (showSwitch) {
-                Box(Modifier.width(if (compact) 23.dp else 29.dp).height(if (compact) 13.dp else 17.dp)
-                    .clip(CircleShape).background(if (selected) AetherColors.Accent else AetherColors.RailBorder),
+                Box(Modifier.width(30.dp).height(18.dp).clip(CircleShape)
+                    .background(if (selected) AetherColors.Accent else AetherColors.RailBorder),
                     contentAlignment = if (selected) Alignment.CenterEnd else Alignment.CenterStart) {
-                    Box(Modifier.padding(2.dp).size(if (compact) 9.dp else 13.dp)
+                    Box(Modifier.padding(2.dp).size(14.dp)
                         .background(if (selected) AetherColors.OnAccent else AetherColors.TextSecondary, CircleShape))
                 }
             }

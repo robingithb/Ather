@@ -10,14 +10,14 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -55,16 +55,14 @@ import com.aether.hmi.domain.VehicleSnapshot
 import com.aether.hmi.domain.VehicleState
 import com.aether.hmi.feature.climate.ClimateActions
 import com.aether.hmi.feature.climate.ClimateScreen
-import com.aether.hmi.feature.home.ClimateMediaBar
 import com.aether.hmi.feature.home.ClimateUpdate
-import com.aether.hmi.feature.home.DashboardDock
 import com.aether.hmi.feature.home.DashboardHeader
 import com.aether.hmi.feature.home.DashboardState
 import com.aether.hmi.feature.home.DashboardViewModel
 import com.aether.hmi.feature.home.HomeScreen
 import com.aether.hmi.feature.home.PlaybackActions
-import com.aether.hmi.feature.home.StatusChips
-import com.aether.hmi.feature.media.MediaLibrary
+import com.aether.hmi.feature.media.MediaScreen
+import com.aether.hmi.feature.media.MediaScreenActions
 import com.aether.hmi.feature.media.PlaybackState
 import com.aether.hmi.feature.media.PlaybackViewModel
 import com.aether.hmi.feature.media.QueueDialog
@@ -111,7 +109,9 @@ fun AetherApp(settings: AppSettings, onSettingsChange: (AppSettings) -> Unit) {
         vehicleActions = VehicleActions(dashboard::toggleVehiclePart, dashboard::setVehicleLocked,
             dashboard::setHeadlightMode, dashboard::setWindowPosition, dashboard::toggleParkingBrake, dashboard::setCharging,
             dashboard::setTurnSignal, dashboard::setVehicleGear, dashboard::setBrakeLights, dashboard::setAmbientLights),
-        settings = settings, onSettingsChange = onSettingsChange)
+        settings = settings, onSettingsChange = onSettingsChange,
+        mediaScreenActions = MediaScreenActions(playback::seek, playback::toggleShuffle,
+            playback::cycleRepeat, playback::startDemo, playback::retry, playback::playDemo))
     if (showQueue) QueueDialog(media, { showQueue = false }, {
         showQueue = false
         audioPicker.launch(arrayOf("audio/*"))
@@ -135,8 +135,8 @@ fun AetherShell(
     vehicleActions: VehicleActions = VehicleActions({}, {}, {}, { _, _ -> }, {}, {}),
     settings: AppSettings = AppSettings(),
     onSettingsChange: (AppSettings) -> Unit = {},
+    mediaScreenActions: MediaScreenActions = MediaScreenActions(),
 ) {
-    var highlightedIndicators by rememberSaveable { mutableIntStateOf(0) }
     val screenStates = rememberSaveableStateHolder()
     val colors = LocalAetherPalette.current
     Box(modifier.fillMaxSize().background(AetherColors.Background).drawWithCache {
@@ -144,55 +144,57 @@ fun AetherShell(
             center = Offset(size.width * 0.35f, size.height * 0.5f), radius = size.width * 0.8f)
         onDrawBehind { drawRect(ambient) }
     }) {
-        Row(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.displayCutout).padding(6.dp)) {
-            AetherNavigationRail(selectedTab, onTabSelected, now = state.now)
-            BoxWithConstraints(Modifier.weight(1f).fillMaxHeight().padding(start = 8.dp, end = 3.dp)) {
-                val compact = maxWidth < 680.dp || maxHeight < 350.dp
+        BoxWithConstraints(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).padding(8.dp)) {
+            val compactShell = maxHeight < 400.dp
+            val shellGap = if (compactShell) 4.dp else 8.dp
+            val content: @Composable (Modifier) -> Unit = { contentModifier ->
                 val screenLabel = stringResource(R.string.screen_label, stringResource(selectedTab.labelRes))
-                Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 8.dp)) {
-                    Box {
-                        DashboardHeader(state, compact = compact)
-                        if ((selectedTab == AetherTab.Climate || selectedTab == AetherTab.Vehicle) && climateUpdate != ClimateUpdate.Idle) {
-                            val feedback = stringResource(when (climateUpdate) {
-                                ClimateUpdate.Pending -> R.string.climate_updating
-                                ClimateUpdate.Confirmed -> R.string.climate_saved
-                                ClimateUpdate.Failed -> R.string.climate_failed
-                                ClimateUpdate.Idle -> R.string.unavailable_value
-                            })
-                            Text(feedback, color = if (climateUpdate == ClimateUpdate.Failed) AetherColors.Warning else AetherColors.TextSecondary,
-                                fontSize = 9.sp, lineHeight = 11.sp, modifier = Modifier.align(Alignment.Center)
-                                    .semantics { liveRegion = LiveRegionMode.Polite })
-                        }
-                    }
-                    Box(Modifier.weight(1f).semantics { paneTitle = screenLabel }) {
+                Column(contentModifier, verticalArrangement = Arrangement.spacedBy(shellGap)) {
+                    val feedback = if (selectedTab == AetherTab.Climate && climateUpdate != ClimateUpdate.Idle) stringResource(when (climateUpdate) {
+                        ClimateUpdate.Pending -> R.string.climate_updating
+                        ClimateUpdate.Confirmed -> R.string.climate_saved
+                        ClimateUpdate.Failed -> R.string.climate_failed
+                        ClimateUpdate.Idle -> R.string.unavailable_value
+                    }) else null
+                    DashboardHeader(state, compact = compactShell, feedback = feedback,
+                        feedbackWarning = climateUpdate == ClimateUpdate.Failed,
+                        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+                    Box(Modifier.weight(1f).fillMaxWidth().semantics { paneTitle = screenLabel }) {
                         when (selectedTab) {
-                            AetherTab.Home -> HomeScreen(state, media, onTabSelected, Modifier.fillMaxSize())
+                            AetherTab.Home -> HomeScreen(state, media, onTabSelected, Modifier.fillMaxSize(), playbackActions,
+                                widgets = settings.homeWidgets,
+                                onWidgetsChange = { onSettingsChange(settings.copy(homeWidgets = it)) },
+                                onAdjustTemperature = onAdjustTemperature, onClimateToggle = onClimateToggle)
                             AetherTab.Climate -> screenStates.SaveableStateProvider("climate") {
                                 ClimateScreen(state.snapshot.climate, climateActions, Modifier.fillMaxSize())
                             }
                             AetherTab.Vehicle -> screenStates.SaveableStateProvider("vehicle") {
                                 VehicleScreen(state.snapshot, vehicleActions, climateActions, Modifier.fillMaxSize())
                             }
-                            AetherTab.Media -> MediaLibrary(media, playbackActions.chooseAudio, onPlayIndex, Modifier.fillMaxSize())
+                            AetherTab.Media -> screenStates.SaveableStateProvider("media") {
+                                MediaScreen(media, position, playbackActions, mediaScreenActions, state.snapshot.climate,
+                                    onAdjustTemperature, onClimateToggle, { onTabSelected(AetherTab.Climate) },
+                                    onPlayIndex, Modifier.fillMaxSize())
+                            }
                             AetherTab.Settings -> screenStates.SaveableStateProvider("settings") {
                                 SettingsScreen(settings, onSettingsChange, state.connectivity, Modifier.fillMaxSize())
                             }
                         }
                     }
-                    if (selectedTab == AetherTab.Home) StatusChips(state, highlightedIndicators,
-                        { index -> highlightedIndicators = highlightedIndicators xor (1 shl index) })
-                    when (selectedTab) {
-                            AetherTab.Climate -> ClimateMediaBar(media, position, playbackActions)
-                            AetherTab.Settings, AetherTab.Vehicle -> Unit
-                        else -> DashboardDock(media, position, playbackActions,
-                            state.snapshot.climate, climateUpdate, onAdjustTemperature, onClimateToggle)
-                    }
                 }
+            }
+            // Every demo device is an infotainment display in landscape. Keep navigation
+            // in one stable location; individual screens adapt to the available content area.
+            Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(if (compactShell) 8.dp else 12.dp)) {
+                AetherNavigationRail(selectedTab, onTabSelected, now = state.now)
+                content(Modifier.weight(1f).fillMaxHeight())
             }
         }
     }
 }
 
+@Preview(name = "Home / 16:9 landscape", widthDp = 960, heightDp = 540)
+@Preview(name = "Home / head unit", widthDp = 1280, heightDp = 720)
 @Preview(name = "Home / landscape", widthDp = 880, heightDp = 400)
 @Preview(name = "Home / compact landscape", widthDp = 640, heightDp = 320)
 @Composable

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="media_now_playing">Now Playing</string>
+    <string name="media_songs">Songs</string>
+    <string name="media_albums">Albums</string>
+    <string name="media_artists">Artists</string>
+    <string name="media_playlists">Playlists</string>
+    <string name="media_usb">USB</string>
+    <string name="media_bluetooth">Bluetooth</string>
+    <string name="media_radio">Radio</string>
+    <string name="media_up_next">Up Next</string>
+    <string name="media_see_all">See all</string>
+    <string name="media_play_demo">Play demo</string>
+    <string name="media_empty_hint">Choose your music or listen to an original Aether demo.</string>
+    <string name="media_importing">Reading audio files…</string>
+    <string name="media_retry">Retry playback</string>
+    <string name="media_shuffle">Shuffle</string>
+    <string name="media_repeat_off">Repeat off</string>
+    <string name="media_repeat_all">Repeat all</string>
+    <string name="media_repeat_one">Repeat one</string>
+    <string name="media_seek">Playback position</string>
+    <string name="media_demo_picks">Demo picks</string>
+    <string name="media_queue_and_demos">Queue &amp; demo picks</string>
+    <string name="media_demo_recommendation">Demo · Tap to play</string>
+    <string name="media_play_mix">Play mix</string>
+    <string name="media_seek_accessible">%1$s of %2$s</string>
+    <string name="media_unknown_album">Unknown album</string>
+    <plurals name="media_track_count">
+        <item quantity="one">%1$d track</item>
+        <item quantity="other">%1$d tracks</item>
+    </plurals>
+    <string name="media_back">Back to library</string>
+    <string name="media_favorites">Favorites</string>
+    <string name="media_current_queue">Current queue</string>
+    <string name="media_no_favorites">Tap the heart on a track to add it to Favorites.</string>
+    <string name="media_library_hint">Your selected audio appears here. Choose files to build your library.</string>
+    <string name="media_open_bluetooth">Bluetooth settings</string>
+    <string name="media_settings_unavailable">System settings are unavailable on this device.</string>
+    <string name="media_enabled">On</string>
+    <string name="media_disabled">Off</string>
+    <string name="media_queue_tab">Queue</string>
+    <string name="media_player">Player</string>
+    <string name="media_library">Library</string>
+    <string name="media_more">More</string>
+    <string name="media_options">Playback options</string>
+    <string name="media_categories">Categories</string>
+</resources>

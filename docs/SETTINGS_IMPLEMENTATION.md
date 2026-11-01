@@ -1,6 +1,6 @@
 # Settings and global appearance
 
-The Settings destination provides four persistent themes: Midnight (navy/cyan), Arctic
+The Settings destination provides four persistent themes: Midnight (black/silver), Arctic
 (white/pale blue), Sport (charcoal/red), and Minimal (neutral slate). The supplied scenic
 images are used for the theme gallery and the matching Home hero. Theme changes publish
 through the application-owned settings repository and a composition-scoped palette, so
@@ -8,7 +8,8 @@ the navigation rail, panels, controls, dialogs, Home, Climate, Media and Vehicle
 without restarting playback or recreating the Activity.
 
 The gallery uses Android resources `theme_arctic`, `theme_sport`, and `theme_minimal` copied
-from the supplied pic2, pic3, and pic4 images. Midnight uses the existing Home hero.
+from the supplied pic2, pic3, and pic4 images. Midnight uses the generated
+`theme_midnight_black` artwork; see [black Midnight update](MIDNIGHT_THEME_UPDATE.md).
 
 ## Viewport and contrast fixes
 

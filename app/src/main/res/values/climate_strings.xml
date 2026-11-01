@@ -2,9 +2,6 @@
     <string name="climate_driver">Driver</string>
     <string name="climate_passenger">Passenger</string>
     <string name="climate_air_quality">Air Quality</string>
-    <string name="climate_air_good">Good</string>
-    <string name="climate_air_attention">Check air</string>
-    <string name="climate_cabin_filter">Cabin Filter</string>
     <string name="climate_filter_healthy">Healthy</string>
     <string name="climate_filter_attention">Check filter</string>
     <string name="climate_air_unknown">Not available</string>
@@ -28,8 +25,22 @@
     <string name="climate_increase_zone">Increase %1$s temperature</string>
     <string name="climate_decrease_zone">Decrease %1$s temperature</string>
     <string name="climate_linked">Linked</string>
-    <string name="climate_temperature_range">%1$s  |  %2$s</string>
     <string name="climate_demo_air_title">Demo cabin air</string>
     <string name="climate_demo_air_message">Cabin air quality and filter condition come from the mock vehicle repository. A phone does not provide these vehicle sensors.</string>
-    <string name="climate_air_percent">Cabin air quality %1$d%%</string>
+    <string name="climate_demo_air_summary">Simulated cabin data</string>
+    <string name="climate_more_controls">More climate controls</string>
+    <string name="climate_more_short">More</string>
+    <string name="climate_done_short">Done</string>
+    <string name="climate_return_temperatures">Return to temperature controls</string>
+    <string name="climate_flow_short">Flow</string>
+    <string name="climate_seats_short">Seats</string>
+    <string name="climate_air_short">Air</string>
+    <string name="climate_front_short">Front</string>
+    <string name="climate_rear_short">Rear</string>
+    <string name="climate_air_direction">Air direction</string>
+    <string name="climate_seat_comfort">Seat comfort</string>
+    <string name="climate_seat_heat">Heating</string>
+    <string name="climate_seat_cool">Cooling</string>
+    <string name="climate_level_value">%1$d / %2$d</string>
+    <string name="climate_filter_status">Cabin filter: %1$s</string>
 </resources>

@@ -1,29 +1,22 @@
 package com.aether.hmi.feature.vehicle
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -42,27 +34,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aether.hmi.R
-import com.aether.hmi.domain.ClimateControl
 import com.aether.hmi.domain.HeadlightMode
-import com.aether.hmi.domain.SeatComfort
-import com.aether.hmi.domain.SeatZone
 import com.aether.hmi.domain.TurnSignal
 import com.aether.hmi.domain.VehicleControlsState
 import com.aether.hmi.domain.VehicleGear
 import com.aether.hmi.domain.VehiclePart
 import com.aether.hmi.domain.VehicleSnapshot
 import com.aether.hmi.domain.VehicleWindow
-import com.aether.hmi.domain.vehicleAttention
 import com.aether.hmi.feature.climate.ClimateActions
-import com.aether.hmi.feature.climate.ClimateGlyph
-import com.aether.hmi.feature.climate.ClimateIcon
-import com.aether.hmi.feature.climate.ClimateStepButton
-import com.aether.hmi.feature.climate.ClimateWarm
-import com.aether.hmi.feature.climate.climateTemperature
-import com.aether.hmi.ui.components.AetherGlyph
-import com.aether.hmi.ui.components.Glyph
-import com.aether.hmi.ui.components.vehicleStatusColor
-import com.aether.hmi.ui.components.vehicleStatusText
+import com.aether.hmi.ui.components.PageAction
+import com.aether.hmi.ui.components.PageText
 import com.aether.hmi.ui.theme.AetherColors
 import kotlin.math.roundToInt
 
@@ -81,218 +62,232 @@ data class VehicleActions(
 
 private enum class VehicleSection(val label: Int, val icon: VehicleIcon) {
     Overview(R.string.vehicle_overview, VehicleIcon.Overview),
-    Doors(R.string.vehicle_doors, VehicleIcon.Door),
+    Access(R.string.vehicle_access, VehicleIcon.Door),
     Lights(R.string.vehicle_lights, VehicleIcon.Lights),
     Windows(R.string.vehicle_windows, VehicleIcon.Window),
-    Trunk(R.string.vehicle_trunk, VehicleIcon.Trunk),
     Charging(R.string.vehicle_charging, VehicleIcon.Plug),
+    Demo(R.string.vehicle_demo_controls, VehicleIcon.Lights),
 }
 
+private enum class VehicleView { Controls, Sections, Headlights, Signals, Gear }
+
+private data class VehicleGridEntry(
+    val key: String,
+    val label: String,
+    val value: String,
+    val icon: VehicleIcon,
+    val enabled: Boolean = true,
+    val selected: Boolean = false,
+    val onClick: () -> Unit = {},
+    val window: VehicleWindow? = null,
+    val accessibilityLabel: String = label,
+)
+
+/** The 3D stage and its controls each own exactly half the feature viewport. */
+@Suppress("UNUSED_PARAMETER") // Preserve the shell entry point; climate controls live on Climate.
 @Composable
 fun VehicleScreen(snapshot: VehicleSnapshot, actions: VehicleActions, climateActions: ClimateActions, modifier: Modifier = Modifier) {
     var section by rememberSaveable { mutableStateOf(VehicleSection.Overview) }
+    var view by rememberSaveable { mutableStateOf(VehicleView.Controls) }
     var focusedPart by rememberSaveable { mutableStateOf<VehiclePart?>(null) }
-    fun selectSection(next: VehicleSection) { section = next; focusedPart = null }
+    fun selectSection(next: VehicleSection) { section = next; focusedPart = null; view = VehicleView.Controls }
     fun togglePart(part: VehiclePart) {
         if (!snapshot.controls.available || (part == VehiclePart.ChargePort && snapshot.vehicle.charging == true)) return
         actions.onPartToggle(part)
         focusedPart = part
-        section = when (part) {
-            VehiclePart.Trunk -> VehicleSection.Trunk
-            VehiclePart.ChargePort -> VehicleSection.Charging
-            else -> VehicleSection.Doors
-        }
+        view = VehicleView.Controls
+        section = if (part == VehiclePart.ChargePort) VehicleSection.Charging else VehicleSection.Access
     }
     val focus = when (focusedPart) {
         VehiclePart.Bonnet -> VehicleSceneFocus.Bonnet
         VehiclePart.Sunroof -> VehicleSceneFocus.Sunroof
+        VehiclePart.Trunk -> VehicleSceneFocus.Trunk
         else -> when (section) {
             VehicleSection.Overview -> VehicleSceneFocus.Overview
-            VehicleSection.Doors -> VehicleSceneFocus.Doors
-            VehicleSection.Lights -> VehicleSceneFocus.Lights
+            VehicleSection.Access -> VehicleSceneFocus.Doors
+            VehicleSection.Lights, VehicleSection.Demo -> VehicleSceneFocus.Lights
             VehicleSection.Windows -> VehicleSceneFocus.Windows
-            VehicleSection.Trunk -> VehicleSceneFocus.Trunk
             VehicleSection.Charging -> VehicleSceneFocus.Charging
         }
     }
-    val focusedActions = actions.copy(onPartToggle = ::togglePart)
-    BoxWithConstraints(modifier) {
-        val compact = maxWidth < 650.dp || maxHeight < 280.dp
-        val gap = if (compact) 5.dp else 8.dp
-        val leftWeight = if (compact) .19f else .18f
-        val modelWeight = if (compact) .49f else .52f
-        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(gap)) {
-            Box(Modifier.weight(1f).fillMaxWidth()) {
-                VehicleModelStage(snapshot.controls, onPartTap = ::togglePart, modifier = Modifier.fillMaxSize(),
-                    focus = focus, charging = snapshot.vehicle.charging == true, batteryPercent = snapshot.vehicle.batteryPercent,
-                    contentLeftFraction = leftWeight, contentWidthFraction = modelWeight)
-                Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(gap)) {
-                    Column(Modifier.weight(leftWeight).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(if (compact) 3.dp else 4.dp)) {
-                        Column(Modifier.fillMaxWidth().padding(vertical = if (compact) 3.dp else 7.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text(stringResource(R.string.vehicle_control_title), fontSize = if (compact) 6.sp else 8.sp,
-                                lineHeight = if (compact) 8.sp else 10.sp, letterSpacing = 1.sp, color = AetherColors.TextSecondary, maxLines = 1)
-                            Text(stringResource(R.string.vehicle_my_vehicle), fontSize = if (compact) 18.sp else 24.sp,
-                                lineHeight = if (compact) 22.sp else 29.sp, fontWeight = FontWeight.SemiBold, color = AetherColors.TextPrimary, maxLines = 1)
-                            val attention = snapshot.vehicleAttention()
-                            Text(vehicleStatusText(attention, R.string.vehicle_everything_good),
-                                fontSize = if (compact) 8.sp else 10.sp, lineHeight = if (compact) 10.sp else 12.sp,
-                                color = vehicleStatusColor(attention, AetherColors.TextSecondary), maxLines = 2, overflow = TextOverflow.Ellipsis)
-                        }
-                        Column(Modifier.weight(1f).fillMaxWidth().selectableGroup(), verticalArrangement = Arrangement.spacedBy(if (compact) 3.dp else 4.dp)) {
-                            VehicleSection.entries.forEach { item ->
-                                val selected = section == item
-                            VehicleSurface(Modifier.weight(1f).fillMaxWidth().selectable(selected, role = Role.Tab, onClick = { selectSection(item) }), selected) {
-                                    Row(Modifier.fillMaxSize().padding(horizontal = if (compact) 5.dp else 7.dp),
-                                        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 7.dp)) {
-                                        VehicleGlyph(item.icon, size = if (compact) 14.dp else 19.dp,
-                                            color = if (selected) AetherColors.Accent else AetherColors.TextSecondary)
-                                        Text(stringResource(item.label), Modifier.weight(1f), color = AetherColors.TextPrimary,
-                                            fontSize = if (compact) 9.sp else 11.sp, lineHeight = if (compact) 11.sp else 13.sp, maxLines = 1)
-                                        AetherGlyph(Glyph.Chevron, size = if (compact) 8.dp else 11.dp, color = AetherColors.TextSecondary)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    Column(Modifier.weight(modelWeight).fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Spacer(Modifier.weight(1f).fillMaxWidth())
-                        Text(stringResource(R.string.vehicle_gesture_hint), Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                            color = AetherColors.TextSecondary, fontSize = if (compact) 7.sp else 9.sp,
-                            lineHeight = if (compact) 9.sp else 11.sp, textAlign = TextAlign.Center, maxLines = 1)
-                    }
-                    Box(Modifier.weight(if (compact) .32f else .30f).fillMaxHeight()) {
-                        when (section) {
-                            VehicleSection.Overview -> OverviewPanel(snapshot, compact, focusedActions, ::selectSection, Modifier.fillMaxSize())
-                            VehicleSection.Doors -> DoorsPanel(snapshot, compact, focusedActions, Modifier.fillMaxSize())
-                            VehicleSection.Lights -> LightsPanel(snapshot.controls, compact, actions, Modifier.fillMaxSize(), charging = snapshot.vehicle.charging == true)
-                            VehicleSection.Windows -> WindowsPanel(snapshot.controls, compact, actions, Modifier.fillMaxSize())
-                            VehicleSection.Trunk -> TrunkPanel(snapshot.controls, compact, focusedActions, Modifier.fillMaxSize())
-                            VehicleSection.Charging -> ChargingPanel(snapshot, compact, focusedActions, Modifier.fillMaxSize())
-                        }
-                    }
-                }
-            }
-            VehicleClimateDock(snapshot, climateActions, compact, Modifier.fillMaxWidth().height(if (compact) 45.dp else 55.dp))
-        }
-    }
-}
-
-@Composable
-private fun OverviewPanel(snapshot: VehicleSnapshot, compact: Boolean, actions: VehicleActions,
-    onSection: (VehicleSection) -> Unit, modifier: Modifier = Modifier) {
     val controls = snapshot.controls
     val unavailable = stringResource(R.string.unavailable_value)
-    val gap = if (compact) 4.dp else 6.dp
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(gap)) {
-        VehicleBatteryCard(snapshot.vehicle, compact, Modifier.fillMaxWidth().height(if (compact) 65.dp else 83.dp), { onSection(VehicleSection.Charging) })
-        Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(gap)) {
-            Column(Modifier.weight(.55f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(gap)) {
-                VehicleStatusTile(stringResource(R.string.vehicle_doors), if (controls.available) stringResource(if (controls.locked) R.string.vehicle_locked else R.string.vehicle_unlocked) else unavailable,
-                    if (controls.locked) VehicleIcon.Lock else VehicleIcon.Unlock, compact, Modifier.weight(1f).fillMaxWidth(),
-                    onClick = { onSection(VehicleSection.Doors) })
-                VehicleStatusTile(stringResource(R.string.vehicle_headlights), if (controls.available) stringResource(R.string.vehicle_light_state,
-                    headlightModeLabel(controls.headlightMode), stringResource(if (controls.headlightsOn) R.string.vehicle_light_on else R.string.vehicle_light_off)) else unavailable,
-                    VehicleIcon.Lights, compact, Modifier.weight(1f).fillMaxWidth(), selected = controls.available && controls.headlightsOn,
-                    onClick = { onSection(VehicleSection.Lights) })
-                VehicleStatusTile(stringResource(R.string.vehicle_parking_brake), if (controls.available) stringResource(if (controls.parkingBrakeEngaged) R.string.vehicle_brake_engaged else R.string.vehicle_brake_released) else unavailable,
-                    VehicleIcon.Brake, compact, Modifier.weight(1f).fillMaxWidth(), selected = controls.available && controls.parkingBrakeEngaged,
-                    enabled = controls.available, onClick = actions.onParkingBrakeToggle)
+    val open = stringResource(R.string.vehicle_open)
+    val closed = stringResource(R.string.vehicle_closed)
+    val on = stringResource(R.string.vehicle_light_on)
+    val off = stringResource(R.string.vehicle_light_off)
+    val focusedActions = actions.copy(onPartToggle = ::togglePart)
+    val battery = VehicleGridEntry("battery", stringResource(R.string.vehicle_battery),
+        stringResource(R.string.vehicle_energy_summary,
+            snapshot.vehicle.batteryPercent?.let { stringResource(R.string.battery_percent, it) } ?: unavailable,
+            snapshot.vehicle.rangeKm?.let { stringResource(R.string.range_km, it) } ?: unavailable),
+        VehicleIcon.Plug, onClick = { selectSection(VehicleSection.Charging) })
+    val lock = VehicleGridEntry("lock", stringResource(if (controls.locked) R.string.vehicle_unlock else R.string.vehicle_lock),
+        if (!controls.available) unavailable else stringResource(if (controls.locked) R.string.vehicle_locked else R.string.vehicle_unlocked),
+        if (controls.locked) VehicleIcon.Lock else VehicleIcon.Unlock, controls.available,
+        onClick = { actions.onLockedChange(!controls.locked) })
+    val partEntries = VehiclePart.entries.associateWith { part -> VehicleGridEntry(part.name, compactPartLabel(part),
+        if (!controls.available) unavailable else if (part in controls.openParts) open else closed,
+        if (part == VehiclePart.Trunk) VehicleIcon.Trunk else if (part == VehiclePart.ChargePort) VehicleIcon.Plug else VehicleIcon.Door,
+        controls.available && !(part == VehiclePart.ChargePort && snapshot.vehicle.charging == true),
+        controls.available && part in controls.openParts, onClick = { focusedActions.onPartToggle(part) }, accessibilityLabel = vehiclePartLabel(part)) }
+    val controlsEntries = when (section) {
+        VehicleSection.Overview -> listOf(battery, lock, partEntries.getValue(VehiclePart.Trunk))
+        VehicleSection.Access -> listOf(lock) + listOf(VehiclePart.FrontLeftDoor, VehiclePart.FrontRightDoor,
+            VehiclePart.RearLeftDoor, VehiclePart.RearRightDoor, VehiclePart.Trunk, VehiclePart.Bonnet, VehiclePart.Sunroof).map(partEntries::getValue)
+        VehicleSection.Lights -> listOf(
+            VehicleGridEntry("headlights", stringResource(R.string.vehicle_headlights), if (controls.available) headlightModeLabel(controls.headlightMode) else unavailable,
+                VehicleIcon.Lights, controls.available, controls.headlightsOn, { view = VehicleView.Headlights }),
+            VehicleGridEntry("ambient", stringResource(R.string.vehicle_ambient_lights), if (!controls.available) unavailable else if (controls.ambientLightsOn) on else off,
+                VehicleIcon.Lights, controls.available, controls.ambientLightsOn, { actions.onAmbientLights(!controls.ambientLightsOn) }),
+            VehicleGridEntry("demo", stringResource(R.string.vehicle_demo_controls), stringResource(R.string.vehicle_demo_controls_short),
+                VehicleIcon.Lights, onClick = { selectSection(VehicleSection.Demo) }),
+        )
+        VehicleSection.Windows -> VehicleWindow.entries.map { window ->
+            VehicleGridEntry(window.name, windowLabel(window), "", VehicleIcon.Window, window = window)
+        }
+        VehicleSection.Charging -> listOf(battery,
+            VehicleGridEntry("charging", stringResource(if (snapshot.vehicle.charging == true) R.string.vehicle_stop_charging else R.string.vehicle_start_charging),
+                if (!controls.available || snapshot.vehicle.charging == null) unavailable
+                else if (controls.gear != VehicleGear.Park) stringResource(R.string.vehicle_park_required)
+                else stringResource(if (snapshot.vehicle.charging == true) R.string.charging else R.string.vehicle_not_charging),
+                VehicleIcon.Plug, controls.available && snapshot.vehicle.charging != null && controls.gear == VehicleGear.Park,
+                snapshot.vehicle.charging == true, { actions.onChargingChange(snapshot.vehicle.charging != true) }),
+            partEntries.getValue(VehiclePart.ChargePort))
+        VehicleSection.Demo -> listOf(
+            VehicleGridEntry("signals", stringResource(R.string.vehicle_signals), if (controls.available) turnSignalLabel(controls.effectiveTurnSignal) else unavailable,
+                VehicleIcon.Lights, controls.available && controls.gear != VehicleGear.Park, onClick = { view = VehicleView.Signals }),
+            VehicleGridEntry("gear", stringResource(R.string.vehicle_gear), if (controls.available) gearLabel(controls.gear) else unavailable,
+                VehicleIcon.Overview, controls.available, onClick = { view = VehicleView.Gear }),
+            VehicleGridEntry("brake-lamps", stringResource(R.string.vehicle_brake_lights), if (!controls.available) unavailable else if (controls.brakeLightsOn) on else off,
+                VehicleIcon.Lights, controls.available, controls.brakeLightsOn, { actions.onBrakeLights(!controls.brakeLightsOn) }),
+            VehicleGridEntry("parking-brake", stringResource(R.string.vehicle_parking_brake),
+                stringResource(if (!controls.available) R.string.unavailable_value else if (controls.parkingBrakeEngaged) R.string.vehicle_brake_engaged else R.string.vehicle_brake_released),
+                VehicleIcon.Brake, controls.available, controls.parkingBrakeEngaged, actions.onParkingBrakeToggle),
+        )
+    }
+    val entries = when (view) {
+        VehicleView.Controls -> controlsEntries
+        VehicleView.Sections -> VehicleSection.entries.filter { it != VehicleSection.Demo }.map { item ->
+            VehicleGridEntry(item.name, stringResource(item.label), "", item.icon, selected = section == item,
+                onClick = { selectSection(item) })
+        }
+        VehicleView.Headlights -> HeadlightMode.entries.map { mode ->
+            VehicleGridEntry(mode.name, headlightModeLabel(mode), "", VehicleIcon.Lights, controls.available,
+                controls.headlightMode == mode, { actions.onHeadlightMode(mode); view = VehicleView.Controls })
+        }
+        VehicleView.Signals -> TurnSignal.entries.map { signal ->
+            VehicleGridEntry(signal.name, turnSignalLabel(signal), "", VehicleIcon.Lights,
+                controls.available && controls.gear != VehicleGear.Park, controls.effectiveTurnSignal == signal,
+                { actions.onTurnSignal(signal); view = VehicleView.Controls })
+        }
+        VehicleView.Gear -> VehicleGear.entries.map { gear ->
+            VehicleGridEntry(gear.name, gearLabel(gear), "", VehicleIcon.Overview,
+                controls.available && (snapshot.vehicle.charging != true || gear == VehicleGear.Park), controls.gear == gear,
+                { actions.onGear(gear); view = VehicleView.Controls })
+        }
+    }
+    fun back() {
+        if (view != VehicleView.Controls) view = VehicleView.Controls
+        else if (section == VehicleSection.Demo) selectSection(VehicleSection.Lights)
+        else view = VehicleView.Sections
+    }
+    BackHandler(enabled = view != VehicleView.Controls || section == VehicleSection.Demo, onBack = ::back)
+    BoxWithConstraints(modifier) {
+        val layout = vehicleControlGridLayout(maxWidth.value, maxHeight.value, entries.size,
+            windows = view == VehicleView.Controls && section == VehicleSection.Windows)
+        Row(Modifier.fillMaxSize()) {
+            // Equal weights and no intervening gap preserve the exact 50/50 split at every width.
+            Box(Modifier.weight(1f).fillMaxHeight()) {
+                VehicleModelStage(controls, onPartTap = ::togglePart, modifier = Modifier.fillMaxSize(), focus = focus,
+                    charging = snapshot.vehicle.charging == true, batteryPercent = snapshot.vehicle.batteryPercent)
+                if (layout.roomy) Text(stringResource(R.string.vehicle_gesture_hint),
+                    Modifier.align(Alignment.BottomCenter).padding(4.dp), color = AetherColors.TextSecondary,
+                    fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
-            VehicleDoorDiagram(controls, compact, actions.onPartToggle, Modifier.weight(.45f).fillMaxHeight())
-        }
-    }
-}
-
-@Composable
-private fun VehiclePanel(title: String, compact: Boolean, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    VehicleSurface(modifier) {
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (compact) 8.dp else 12.dp),
-            verticalArrangement = Arrangement.spacedBy(if (compact) 7.dp else 10.dp)) {
-            Text(title, color = AetherColors.TextPrimary, fontWeight = FontWeight.SemiBold,
-                fontSize = if (compact) 14.sp else 18.sp, lineHeight = if (compact) 17.sp else 21.sp)
-            content()
-        }
-    }
-}
-
-@Composable
-private fun DoorsPanel(snapshot: VehicleSnapshot, compact: Boolean, actions: VehicleActions, modifier: Modifier = Modifier) {
-    val controls = snapshot.controls
-    VehiclePanel(stringResource(R.string.vehicle_doors), compact, modifier) {
-        VehicleActionRow(stringResource(if (controls.locked) R.string.vehicle_unlock else R.string.vehicle_lock),
-            stringResource(if (controls.available) if (controls.locked) R.string.vehicle_locked else R.string.vehicle_unlocked else R.string.unavailable_value),
-            if (controls.locked) VehicleIcon.Lock else VehicleIcon.Unlock, controls.available, compact,
-            onClick = { actions.onLockedChange(!controls.locked) })
-        VehiclePart.entries.filter { it != VehiclePart.Trunk }.forEach { part ->
-            val open = part in controls.openParts
-            val label = vehiclePartLabel(part)
-            VehicleActionRow(label, stringResource(if (!controls.available) R.string.unavailable_value else if (open) R.string.vehicle_open else R.string.vehicle_closed),
-                if (part == VehiclePart.ChargePort) VehicleIcon.Plug else VehicleIcon.Door,
-                controls.available && !(part == VehiclePart.ChargePort && snapshot.vehicle.charging == true), compact,
-                selected = controls.available && open, onClick = { actions.onPartToggle(part) })
-        }
-        if (snapshot.vehicle.charging == true) VehicleHint(stringResource(R.string.vehicle_port_charging_locked), compact)
-        VehicleHint(stringResource(R.string.vehicle_doors_hint), compact)
-    }
-}
-
-@Composable
-private fun LightsPanel(controls: VehicleControlsState, compact: Boolean, actions: VehicleActions, modifier: Modifier = Modifier, charging: Boolean = false) {
-    VehiclePanel(stringResource(R.string.vehicle_headlights), compact, modifier) {
-        Text(if (controls.available) stringResource(R.string.vehicle_headlight_status,
-            stringResource(if (controls.headlightsOn) R.string.vehicle_light_on else R.string.vehicle_light_off))
-            else stringResource(R.string.vehicle_unavailable_controls),
-            color = AetherColors.TextSecondary, fontSize = if (compact) 10.sp else 12.sp, lineHeight = if (compact) 12.sp else 14.sp)
-        Row(Modifier.fillMaxWidth().selectableGroup(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            HeadlightMode.entries.forEach { mode ->
-                VehicleChoice(headlightModeLabel(mode), controls.available && controls.headlightMode == mode,
-                    controls.available, compact, { actions.onHeadlightMode(mode) }, Modifier.weight(1f))
+            Column(Modifier.weight(1f).fillMaxHeight().padding(layout.padding.dp),
+                verticalArrangement = Arrangement.spacedBy(layout.gap.dp)) {
+                Row(Modifier.fillMaxWidth().height(layout.headerHeight.dp), verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(layout.gap.dp)) {
+                    val menuAction = view == VehicleView.Controls && section != VehicleSection.Demo
+                    PageAction(stringResource(if (menuAction) R.string.vehicle_menu else R.string.vehicle_back), ::back,
+                        Modifier.width(if (layout.roomy) 100.dp else 76.dp).fillMaxHeight())
+                    PageText(stringResource(when (view) {
+                        VehicleView.Controls -> section.label
+                        VehicleView.Sections -> R.string.vehicle_controls_menu
+                        VehicleView.Headlights -> R.string.vehicle_headlights
+                        VehicleView.Signals -> R.string.vehicle_signals
+                        VehicleView.Gear -> R.string.vehicle_gear
+                    }), Modifier.weight(1f).fillMaxHeight(), maxFontSize = if (layout.roomy) 24f else 18f,
+                        minFontSize = 11f, fontWeight = FontWeight.SemiBold)
+                }
+                VehicleCardGrid(entries, controls, actions, layout, Modifier.weight(1f).fillMaxWidth())
             }
         }
-        VehicleHint(stringResource(R.string.vehicle_signal_status, if (controls.available)
-            turnSignalLabel(controls.effectiveTurnSignal) else stringResource(R.string.unavailable_value)), compact)
-        Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            TurnSignal.entries.chunked(2).forEach { pair ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    pair.forEach { signal ->
-                        VehicleChoice(turnSignalLabel(signal), controls.available && controls.effectiveTurnSignal == signal,
-                            controls.available && controls.gear != VehicleGear.Park, compact,
-                            { actions.onTurnSignal(signal) }, Modifier.weight(1f))
+    }
+}
+
+@Composable
+private fun VehicleCardGrid(entries: List<VehicleGridEntry>, controls: VehicleControlsState,
+    actions: VehicleActions, layout: VehicleControlGridLayout, modifier: Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(layout.gap.dp)) {
+        repeat(layout.rows) { row ->
+            Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(layout.gap.dp)) {
+                repeat(layout.columns) { column ->
+                    val entry = entries.getOrNull(row * layout.columns + column)
+                    Box(Modifier.weight(1f).fillMaxHeight()) {
+                        if (entry != null) key(entry.key) {
+                            if (entry.window != null) VehicleWindowControl(controls, entry.window, actions, layout.roomy, Modifier.fillMaxSize())
+                            else VehicleStatusTile(entry.label, entry.value, entry.icon, Modifier.fillMaxSize(),
+                                entry.selected, entry.enabled, layout.roomy, contentLabel = entry.accessibilityLabel, onClick = entry.onClick)
+                        }
                     }
                 }
             }
         }
-        if (controls.available && controls.gear == VehicleGear.Park) {
-            VehicleHint(stringResource(R.string.vehicle_park_hazard_active), compact)
-            VehicleHint(stringResource(R.string.vehicle_park_signal_hint), compact)
-        }
-        VehicleHint(stringResource(R.string.vehicle_gear), compact)
-        Row(Modifier.fillMaxWidth().selectableGroup(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            VehicleGear.entries.forEach { gear ->
-                val label = stringResource(when (gear) {
-                    VehicleGear.Park -> R.string.vehicle_gear_park
-                    VehicleGear.Drive -> R.string.vehicle_gear_drive
-                    VehicleGear.Reverse -> R.string.vehicle_gear_reverse
-                })
-                VehicleChoice(label, controls.available && controls.gear == gear,
-                    controls.available && (!charging || gear == VehicleGear.Park), compact,
-                    { actions.onGear(gear) }, Modifier.weight(1f))
-            }
-        }
-        if (controls.reverseLightsOn) VehicleHint(stringResource(R.string.vehicle_reverse_white_active), compact)
-        if (charging) VehicleHint(stringResource(R.string.vehicle_gear_charging_locked), compact)
-        if (charging) VehicleHint(stringResource(R.string.vehicle_signal_charging_hint), compact)
-        VehicleActionRow(stringResource(R.string.vehicle_brake_lights),
-            stringResource(if (!controls.available) R.string.unavailable_value else if (controls.brakeLightsOn) R.string.vehicle_light_on else R.string.vehicle_light_off),
-            VehicleIcon.Lights, controls.available, compact, selected = controls.available && controls.brakeLightsOn,
-            onClick = { actions.onBrakeLights(!controls.brakeLightsOn) })
-        VehicleActionRow(stringResource(R.string.vehicle_ambient_lights),
-            stringResource(if (!controls.available) R.string.unavailable_value else if (controls.ambientLightsOn) R.string.vehicle_light_on else R.string.vehicle_light_off),
-            VehicleIcon.Lights, controls.available, compact, selected = controls.available && controls.ambientLightsOn,
-            onClick = { actions.onAmbientLights(!controls.ambientLightsOn) })
-        VehicleHint(stringResource(R.string.vehicle_lights_hint), compact)
     }
 }
+
+@Composable
+private fun VehicleWindowControl(controls: VehicleControlsState, window: VehicleWindow, actions: VehicleActions,
+    roomy: Boolean, modifier: Modifier) {
+    val reading = controls.windowOpenPercent[window].takeIf { controls.available }
+    var draft by remember(window) { mutableFloatStateOf(0f) }
+    var dragging by remember(window) { mutableStateOf(false) }
+    val value = if (dragging) draft else reading?.toFloat() ?: 0f
+    val label = windowLabel(window)
+    val description = if (reading != null) stringResource(R.string.vehicle_window_position, label, value.roundToInt())
+        else stringResource(R.string.vehicle_part_state, label, stringResource(R.string.unavailable_value))
+    VehicleSurface(modifier) {
+        Column(Modifier.fillMaxSize().padding(horizontal = if (roomy) 10.dp else 4.dp, vertical = 2.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            val readingText = if (reading != null) stringResource(R.string.vehicle_window_percent, value.roundToInt())
+                else stringResource(R.string.unavailable_value)
+            PageText("$label\n$readingText", Modifier.weight(1f).fillMaxWidth(),
+                maxFontSize = if (roomy) 18f else 14f, minFontSize = 10f, maxLines = 2,
+                textAlign = TextAlign.Center, fontWeight = FontWeight.Medium)
+            Slider(value = value, onValueChange = { draft = it; dragging = true }, valueRange = 0f..100f,
+                onValueChangeFinished = { dragging = false; actions.onWindowPosition(window, draft.roundToInt()) }, enabled = reading != null,
+                modifier = Modifier.fillMaxWidth().height(if (roomy) 64.dp else 48.dp).semantics { contentDescription = description },
+                colors = SliderDefaults.colors(thumbColor = AetherColors.Accent, activeTrackColor = AetherColors.Accent, inactiveTrackColor = AetherColors.Border))
+        }
+    }
+}
+
+@Composable
+private fun windowLabel(window: VehicleWindow): String = stringResource(when (window) {
+    VehicleWindow.FrontLeft -> R.string.vehicle_front_left_window
+    VehicleWindow.FrontRight -> R.string.vehicle_front_right_window
+    VehicleWindow.RearLeft -> R.string.vehicle_rear_left_window
+    VehicleWindow.RearRight -> R.string.vehicle_rear_right_window
+})
+
+@Composable
+private fun gearLabel(gear: VehicleGear): String = stringResource(when (gear) {
+    VehicleGear.Park -> R.string.vehicle_gear_park
+    VehicleGear.Drive -> R.string.vehicle_gear_drive
+    VehicleGear.Reverse -> R.string.vehicle_gear_reverse
+})
 
 @Composable
 private fun turnSignalLabel(signal: TurnSignal): String = stringResource(when (signal) {
@@ -303,173 +298,13 @@ private fun turnSignalLabel(signal: TurnSignal): String = stringResource(when (s
 })
 
 @Composable
-private fun VehicleChoice(label: String, selected: Boolean, enabled: Boolean, compact: Boolean,
-    onClick: () -> Unit, modifier: Modifier = Modifier) {
-    VehicleSurface(modifier.height(if (compact) 28.dp else 34.dp)
-        .selectable(selected, enabled = enabled, role = Role.RadioButton, onClick = onClick), selected) {
-        Text(label, Modifier.align(Alignment.Center).padding(horizontal = 2.dp), fontSize = if (compact) 9.sp else 11.sp,
-            lineHeight = if (compact) 11.sp else 13.sp,
-            color = if (selected) AetherColors.Accent else if (!enabled) AetherColors.Muted.copy(alpha = .55f) else AetherColors.TextSecondary,
-            maxLines = 1)
-    }
-}
-
-@Composable
-private fun WindowsPanel(controls: VehicleControlsState, compact: Boolean, actions: VehicleActions, modifier: Modifier = Modifier) {
-    VehiclePanel(stringResource(R.string.vehicle_windows), compact, modifier) {
-        VehicleWindow.entries.forEach { window ->
-            val label = stringResource(when (window) {
-                VehicleWindow.FrontLeft -> R.string.vehicle_front_left_window
-                VehicleWindow.FrontRight -> R.string.vehicle_front_right_window
-                VehicleWindow.RearLeft -> R.string.vehicle_rear_left_window
-                VehicleWindow.RearRight -> R.string.vehicle_rear_right_window
-            })
-            val reading = controls.windowOpenPercent[window].takeIf { controls.available }
-            var draft by remember(window) { mutableFloatStateOf(0f) }
-            var dragging by remember(window) { mutableStateOf(false) }
-            val position = if (dragging) draft else reading?.toFloat() ?: 0f
-            val description = if (reading != null) stringResource(R.string.vehicle_window_position, label, position.roundToInt())
-                else stringResource(R.string.vehicle_part_state, label, stringResource(R.string.unavailable_value))
-            Column {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(label, Modifier.weight(1f), color = AetherColors.TextSecondary, fontSize = if (compact) 10.sp else 12.sp,
-                        lineHeight = if (compact) 12.sp else 14.sp)
-                    Text(if (reading != null) stringResource(R.string.vehicle_window_percent, position.roundToInt()) else stringResource(R.string.unavailable_value),
-                        color = AetherColors.Accent, fontSize = if (compact) 10.sp else 12.sp, lineHeight = if (compact) 12.sp else 14.sp)
-                }
-                Slider(value = position, onValueChange = { draft = it; dragging = true }, valueRange = 0f..100f,
-                    onValueChangeFinished = {
-                        val committed = draft.roundToInt()
-                        dragging = false
-                        actions.onWindowPosition(window, committed)
-                    }, enabled = reading != null,
-                    modifier = Modifier.fillMaxWidth().height(if (compact) 29.dp else 35.dp).semantics { contentDescription = description },
-                    colors = SliderDefaults.colors(thumbColor = AetherColors.Accent, activeTrackColor = AetherColors.Accent,
-                        inactiveTrackColor = AetherColors.Border))
-            }
-        }
-        VehicleHint(stringResource(R.string.vehicle_window_model_hint), compact)
-    }
-}
-
-@Composable
-private fun TrunkPanel(controls: VehicleControlsState, compact: Boolean, actions: VehicleActions, modifier: Modifier = Modifier) {
-    val open = VehiclePart.Trunk in controls.openParts
-    VehiclePanel(stringResource(R.string.vehicle_trunk), compact, modifier) {
-        VehicleGlyph(VehicleIcon.Trunk, size = if (compact) 44.dp else 64.dp,
-            color = if (open) AetherColors.Accent else AetherColors.TextSecondary)
-        VehicleActionRow(stringResource(if (open) R.string.vehicle_close_part else R.string.vehicle_open_part, stringResource(R.string.vehicle_trunk)),
-            stringResource(if (!controls.available) R.string.unavailable_value else if (open) R.string.vehicle_open else R.string.vehicle_closed),
-            VehicleIcon.Trunk, controls.available, compact, selected = open, onClick = { actions.onPartToggle(VehiclePart.Trunk) })
-        VehicleHint(stringResource(R.string.vehicle_trunk_hint), compact)
-    }
-}
-
-@Composable
-private fun ChargingPanel(snapshot: VehicleSnapshot, compact: Boolean, actions: VehicleActions, modifier: Modifier = Modifier) {
-    val charging = snapshot.vehicle.charging
-    val parked = snapshot.controls.gear == VehicleGear.Park
-    VehiclePanel(stringResource(R.string.vehicle_charging), compact, modifier) {
-        VehicleBatteryCard(snapshot.vehicle, compact, modifier = Modifier.fillMaxWidth().height(if (compact) 68.dp else 86.dp))
-        VehicleActionRow(stringResource(if (charging == true) R.string.vehicle_stop_charging else R.string.vehicle_start_charging),
-            stringResource(when (charging) { true -> R.string.charging; false -> R.string.vehicle_not_charging; null -> R.string.unavailable_value }),
-            VehicleIcon.Plug, snapshot.controls.available && charging != null && parked, compact, selected = charging == true,
-            onClick = { actions.onChargingChange(charging != true) })
-        val portOpen = VehiclePart.ChargePort in snapshot.controls.openParts
-        VehicleActionRow(stringResource(R.string.vehicle_charge_port),
-            stringResource(if (!snapshot.controls.available) R.string.unavailable_value else if (portOpen) R.string.vehicle_open else R.string.vehicle_closed),
-            VehicleIcon.Plug, snapshot.controls.available && charging != true, compact,
-            selected = snapshot.controls.available && portOpen, onClick = { actions.onPartToggle(VehiclePart.ChargePort) })
-        if (!parked) VehicleHint(stringResource(R.string.vehicle_charging_park_required), compact)
-        if (charging == true) {
-            VehicleHint(stringResource(R.string.vehicle_battery_view_active), compact)
-            VehicleHint(stringResource(R.string.vehicle_port_charging_locked), compact)
-        } else VehicleHint(stringResource(R.string.vehicle_battery_view_hint), compact)
-        VehicleHint(stringResource(R.string.vehicle_charging_hint), compact)
-    }
-}
-
-@Composable
-private fun VehicleActionRow(label: String, value: String, icon: VehicleIcon, enabled: Boolean, compact: Boolean,
-    selected: Boolean = false, onClick: () -> Unit) {
-    VehicleStatusTile(label, value, icon, compact, Modifier.fillMaxWidth().height(if (compact) 33.dp else 42.dp),
-        selected = selected, enabled = enabled, onClick = onClick)
-}
-
-@Composable
-private fun VehicleHint(text: String, compact: Boolean) {
-    Text(text, color = AetherColors.TextSecondary, fontSize = if (compact) 9.sp else 11.sp,
-        lineHeight = if (compact) 12.sp else 15.sp)
-}
-
-@Composable
-private fun VehicleClimateDock(snapshot: VehicleSnapshot, actions: ClimateActions, compact: Boolean, modifier: Modifier = Modifier) {
-    val state = snapshot.climate
-    VehicleSurface(modifier) {
-        Row(Modifier.fillMaxSize().padding(horizontal = if (compact) 7.dp else 12.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(if (compact) 5.dp else 9.dp), verticalAlignment = Alignment.CenterVertically) {
-            listOf(false, true).forEach { passenger ->
-                if (passenger) {
-                    val auto = stringResource(R.string.auto_mode)
-                    VehicleDockControl(auto, state.auto, state.available, compact, { actions.onToggle(ClimateControl.Auto) },
-                        Modifier.width(if (compact) 30.dp else 42.dp)) {
-                        ClimateGlyph(ClimateIcon.Fan, size = if (compact) 16.dp else 21.dp,
-                            color = if (state.auto) AetherColors.Accent else AetherColors.TextSecondary)
-                    }
-                }
-                val value = if (passenger) state.passengerCelsius else state.driverCelsius
-                val label = stringResource(if (passenger) R.string.climate_passenger else R.string.climate_driver)
-                val enabled = state.available && value != null && !(passenger && state.sync)
-                val adjust = if (passenger) actions.onAdjustPassenger else actions.onAdjustDriver
-                Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 8.dp),
-                    verticalAlignment = Alignment.CenterVertically) {
-                    ClimateStepButton(false, stringResource(R.string.climate_decrease_zone, label), enabled && value > state.minCelsius,
-                        { adjust(-1) }, diameter = if (compact) 27.dp else 34.dp)
-                    Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(climateTemperature(value), color = AetherColors.TextPrimary,
-                            fontSize = if (compact) 16.sp else 21.sp, lineHeight = if (compact) 19.sp else 24.sp, maxLines = 1)
-                        Text(label, color = if (passenger && state.sync) AetherColors.Accent else AetherColors.TextSecondary,
-                            fontSize = if (compact) 8.sp else 10.sp, lineHeight = if (compact) 10.sp else 12.sp, maxLines = 1)
-                    }
-                    ClimateStepButton(true, stringResource(R.string.climate_increase_zone, label), enabled && value < state.maxCelsius,
-                        { adjust(1) }, diameter = if (compact) 27.dp else 34.dp)
-                }
-            }
-            Spacer(Modifier.height(if (compact) 28.dp else 38.dp).width(.7.dp).background(AetherColors.Border))
-            val heatLabel = stringResource(R.string.vehicle_driver_heat, state.driverHeatingLevel, state.maxSeatLevel)
-            VehicleDockControl(stringResource(R.string.vehicle_heat), state.driverHeatingLevel > 0, state.available, compact,
-                { actions.onSeatLevel(SeatZone.Driver, SeatComfort.Heating) }, Modifier.width(if (compact) 29.dp else 39.dp), heatLabel) {
-                ClimateGlyph(ClimateIcon.HeatSeat, size = if (compact) 17.dp else 22.dp,
-                    color = if (state.driverHeatingLevel > 0) ClimateWarm else AetherColors.TextSecondary)
-            }
-            val coolLabel = stringResource(R.string.vehicle_driver_cool, state.driverCoolingLevel, state.maxSeatLevel)
-            VehicleDockControl(stringResource(R.string.vehicle_cool), state.driverCoolingLevel > 0, state.available, compact,
-                { actions.onSeatLevel(SeatZone.Driver, SeatComfort.Cooling) }, Modifier.width(if (compact) 29.dp else 39.dp), coolLabel) {
-                ClimateGlyph(ClimateIcon.CoolSeat, size = if (compact) 17.dp else 22.dp,
-                    color = if (state.driverCoolingLevel > 0) AetherColors.Accent else AetherColors.TextSecondary)
-            }
-            listOf(ClimateControl.FrontDefrost to Glyph.Front, ClimateControl.RearDefrost to Glyph.Rear).forEach { (control, glyph) ->
-                val label = stringResource(if (control == ClimateControl.FrontDefrost) R.string.vehicle_front else R.string.vehicle_rear)
-                val description = stringResource(if (control == ClimateControl.FrontDefrost) R.string.front_defrost else R.string.rear_defrost)
-                VehicleDockControl(label, state.isEnabled(control), state.available, compact, { actions.onToggle(control) },
-                    Modifier.width(if (compact) 29.dp else 39.dp), description) {
-                    AetherGlyph(glyph, size = if (compact) 17.dp else 22.dp,
-                        color = if (state.isEnabled(control)) AetherColors.Accent else AetherColors.TextSecondary)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun VehicleDockControl(label: String, selected: Boolean, enabled: Boolean, compact: Boolean, onClick: () -> Unit,
-    modifier: Modifier = Modifier, description: String = label, icon: @Composable () -> Unit) {
-    VehicleSurface(modifier.fillMaxHeight().toggleable(selected, enabled = enabled, role = Role.Switch, onValueChange = { onClick() })
-        .semantics { contentDescription = description }, selected) {
-        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            icon()
-            Text(label, color = if (selected) AetherColors.Accent else AetherColors.TextSecondary,
-                fontSize = if (compact) 7.sp else 9.sp, lineHeight = if (compact) 9.sp else 11.sp, maxLines = 1)
-        }
-    }
-}
+private fun compactPartLabel(part: VehiclePart): String = stringResource(when (part) {
+    VehiclePart.FrontLeftDoor -> R.string.vehicle_front_left_window
+    VehiclePart.FrontRightDoor -> R.string.vehicle_front_right_window
+    VehiclePart.RearLeftDoor -> R.string.vehicle_rear_left_window
+    VehiclePart.RearRightDoor -> R.string.vehicle_rear_right_window
+    VehiclePart.Trunk -> R.string.vehicle_trunk
+    VehiclePart.Bonnet -> R.string.vehicle_bonnet
+    VehiclePart.Sunroof -> R.string.vehicle_sunroof
+    VehiclePart.ChargePort -> R.string.vehicle_charge_port
+})

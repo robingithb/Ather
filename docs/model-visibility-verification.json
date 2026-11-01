@@ -1,0 +1,46 @@
+{
+  "verified_at": "2026-11-02T00:49:58.888852+05:30",
+  "status": "source_and_automated_checks_complete",
+  "changes": [
+    "Removed all four theme-colored edge masks above the native vehicle scene.",
+    "Arctic uses an icy blue backdrop and darker matte slate ground; initial and runtime material colors agree."
+  ],
+  "compile": "passed",
+  "jvm_tests": {
+    "tests": 164,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 58,
+    "by_id": {
+      "DiscouragedApi": 1,
+      "PluralsCandidate": 2,
+      "AutoboxingStateCreation": 1,
+      "UnusedResources": 52,
+      "UseKtx": 2,
+      "ClickableViewAccessibility": 1
+    }
+  },
+  "logs": [
+    "app/build/reports/model-visibility-compile-tests.log",
+    "app/build/reports/model-visibility-lint.log"
+  ],
+  "adb": "Samsung SM-G990E connected; existing Vehicle haze inspected; original Home screen restored.",
+  "apk_created": false,
+  "apk_installed": false,
+  "visual_device_verification": "Updated source not deployed; updated rendering awaits device confirmation.",
+  "existing_apks": [
+    {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "modified": "2026-10-30T01:15:28.499086+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "modified": "2026-10-28T00:32:04.571452+05:30"
+    }
+  ],
+  "git_diff_check": "passed"
+}
