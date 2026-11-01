@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.view.TextureView
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,8 +32,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.MotionDurationScale
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -145,7 +143,8 @@ private fun VehicleModelSurface(
             holder.detach()
         }
     }
-    BoxWithConstraints(modifier) {
+    // Preserve the original scene colors and detail; soften its boundary geometrically.
+    BoxWithConstraints(modifier.clip(RoundedCornerShape(16.dp))) {
         val contentOffset = maxWidth*contentLeftFraction
         val contentWidth = maxWidth*contentWidthFraction
         AndroidView(factory = { context ->
@@ -177,14 +176,6 @@ private fun VehicleModelSurface(
         }, onRelease = { attached ->
             holder.detach(attached)
         }, modifier = Modifier.fillMaxSize().semantics { contentDescription = description; customActions = partActions + cameraActions })
-        // Fade the shared scene into the existing shell rather than showing a rectangular image card.
-        Canvas(Modifier.fillMaxSize()) {
-            val base = colors.Background
-            drawRect(Brush.horizontalGradient(0f to base, .15f to base.copy(alpha=.6f), .28f to Color.Transparent,
-                .70f to Color.Transparent, 1f to base.copy(alpha=.82f)))
-            drawRect(Brush.verticalGradient(0f to base.copy(alpha=.75f), .15f to Color.Transparent,
-                .78f to Color.Transparent, 1f to base))
-        }
         Box(Modifier.offset(x=contentOffset).width(contentWidth).fillMaxSize()) {
         when (val current = status) {
             is VehicleModelStatus.Loading -> Column(Modifier.align(Alignment.Center).background(colors.Background.copy(alpha = .85f), RoundedCornerShape(12.dp)).padding(14.dp),

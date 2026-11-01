@@ -16,6 +16,10 @@ import androidx.compose.ui.unit.dp
 import com.aether.hmi.ui.theme.AetherColors
 
 enum class Glyph(val path: String, val filled: Boolean = false) {
+    Clock("M22,12 A10,10 0,1 1,2,12 A10,10 0,1 1,22,12 M12,5 L12,12 L17,15"),
+    Car("M4,10 L7,4 L17,4 L20,10 M3,10 Q12,7 21,10 L21,19 L3,19 Z M6,19 L6,22 M18,19 L18,22 M6,13 L9,13 M15,13 L18,13"),
+    Settings("M9,2 L15,2 L16,5 L19,5 L22,10 L20,12 L22,15 L19,20 L16,19 L15,22 L9,22 L8,19 L5,20 L2,15 L4,12 L2,9 L5,4 L8,5 Z M16,12 A4,4 0,1 1,8,12 A4,4 0,1 1,16,12"),
+    Fan("M11,11 C4,12 2,8 5,4 C8,1 12,3 11,11 Z M13,11 C12,4 16,2 20,5 C23,8 21,12 13,11 Z M13,13 C20,12 22,16 19,20 C16,23 12,21 13,13 Z M11,13 C12,20 8,22 4,19 C1,16 3,12 11,13 Z", true),
     OverviewCamera("M3,6 L7,6 L9,3 L15,3 L17,6 L21,6 L21,21 L3,21 Z M16,13 A4,4 0,1 1,8,13 A4,4 0,1 1,16,13"),
     Arrow("M12,2 L22,22 L12,17 L2,22 Z", true),
     Gps("M22,2 L15,23 L11,13 L1,9 Z", true),

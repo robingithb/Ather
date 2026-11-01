@@ -127,8 +127,8 @@ internal class FilamentVehicleRenderer(
     private var stageWidth = 1f
     private var stageBottomInset = 0f
     private var scenery: VehicleScenery? = null
-    private var themeAccent = 0xFF00DFFF.toInt()
-    private var themeBackground = 0xFF020A14.toInt()
+    private var themeAccent = 0xFFE3E3E3.toInt()
+    private var themeBackground = 0xFF030303.toInt()
     private var themeIsLight = false
     private var surfaceDefinitions: Map<String, List<SurfaceDefaults>> = emptyMap()
     private var activeMaterialVariant = 0

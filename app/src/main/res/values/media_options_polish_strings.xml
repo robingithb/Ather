@@ -1,0 +1,18 @@
+<resources>
+    <string name="media_options_playback">Playback</string>
+    <string name="media_options_sources">Audio sources</string>
+    <string name="media_options_favorite">Favorite</string>
+    <string name="media_options_favorite_hint">Save this track</string>
+    <string name="media_options_shuffle_hint">Play in random order</string>
+    <string name="media_options_on">On</string>
+    <string name="media_options_off">Off</string>
+    <string name="media_options_repeat">Repeat</string>
+    <string name="media_options_repeat_all">All</string>
+    <string name="media_options_repeat_one">One</string>
+    <string name="media_options_repeat_off_hint">Play queue once</string>
+    <string name="media_options_repeat_all_hint">Repeat queue</string>
+    <string name="media_options_repeat_one_hint">Repeat this track</string>
+    <string name="media_options_import_hint">Browse this device or a USB drive</string>
+    <string name="media_options_output">Audio output</string>
+    <string name="media_options_output_hint">Speakers and Bluetooth settings</string>
+</resources>

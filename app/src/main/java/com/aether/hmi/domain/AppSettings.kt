@@ -15,6 +15,7 @@ data class AppSettings(
     val map3D: Boolean = true,
     val ambientColor: Long = 0xFF00DFFF,
     val accentColor: Long? = null,
+    val homeWidgets: List<HomeWidget> = HomeWidgets.defaults,
 ) {
     /** Validate values at the storage boundary as old/corrupt preferences can outlive app versions. */
     fun normalized(): AppSettings = copy(
@@ -24,6 +25,7 @@ data class AppSettings(
         routeType = routeType.takeIf { it in routeTypes } ?: "Balanced",
         ambientColor = ambientColor.takeIf(::validOpaqueColor) ?: 0xFF00DFFF,
         accentColor = accentColor?.takeIf(::validOpaqueColor),
+        homeWidgets = HomeWidgets.normalize(homeWidgets),
     )
 
     companion object {

@@ -23,6 +23,28 @@ class AetherPaletteTest {
         }
     }
 
+    @Test fun `Midnight is near black with neutral readable silver trim distinct from slate Minimal`() {
+        val midnight = themePalette(AppTheme.Midnight)
+        val minimal = themePalette(AppTheme.Minimal)
+        for (color in listOf(midnight.Background, midnight.Panel, midnight.PanelDeep, midnight.PanelRaised,
+            midnight.Rail, midnight.Border, midnight.RailBorder, midnight.Accent, midnight.AccentSoft,
+            midnight.TextPrimary, midnight.TextSecondary, midnight.Muted, midnight.OnAccent)) {
+            assertEquals(color.red, color.green, 0f)
+            assertEquals(color.green, color.blue, 0f)
+        }
+        assertTrue(midnight.Background.luminance() < .002f)
+        assertTrue(midnight.Background.luminance() < minimal.Background.luminance())
+        assertTrue(midnight.PanelRaised.luminance() < minimal.PanelRaised.luminance())
+        for (surface in listOf(midnight.Background, midnight.Panel, midnight.PanelDeep,
+            midnight.PanelRaised, midnight.Rail, midnight.AccentSoft)) {
+            for (ink in listOf(midnight.TextPrimary, midnight.TextSecondary, midnight.Muted, midnight.Accent)) {
+                assertTrue("Midnight small text on $surface", contrast(ink, surface) >= 4.5f)
+            }
+        }
+        assertEquals(Color(0xFF16DB9A), midnight.Good)
+        assertEquals(Color(0xFFFFAC3C), midnight.Warning)
+    }
+
     @Test fun `Arctic uses a white surface and dark text while other themes remain dark`() {
         val arctic = themePalette(AppTheme.Arctic)
         assertTrue(arctic.isLight)

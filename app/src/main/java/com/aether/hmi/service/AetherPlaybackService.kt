@@ -14,13 +14,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /** One player and session in the app's default process, shared by every destination. */
 class AetherPlaybackService : MediaSessionService() {
     private var session: MediaSession? = null
+    private var restoring = true
     private val settingsScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun onCreate() {
@@ -49,18 +53,33 @@ class AetherPlaybackService : MediaSessionService() {
                 }
             }).build()
         val store = PlaylistStore(this)
-        val saved = store.restore()
-        if (saved.items.isNotEmpty()) {
-            player.setMediaItems(saved.items, saved.index.coerceIn(saved.items.indices), saved.positionMs)
-            player.prepare()
-        }
         player.addListener(object : Player.Listener {
             override fun onEvents(player: Player, events: Player.Events) {
-                if (events.containsAny(Player.EVENT_TIMELINE_CHANGED, Player.EVENT_MEDIA_METADATA_CHANGED,
+                if (!restoring && events.containsAny(Player.EVENT_TIMELINE_CHANGED, Player.EVENT_MEDIA_METADATA_CHANGED,
                         Player.EVENT_MEDIA_ITEM_TRANSITION, Player.EVENT_IS_PLAYING_CHANGED,
-                        Player.EVENT_POSITION_DISCONTINUITY)) store.save(player)
+                        Player.EVENT_POSITION_DISCONTINUITY, Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED,
+                        Player.EVENT_REPEAT_MODE_CHANGED)) store.save(player)
             }
         })
+        settingsScope.launch {
+            val saved = withContext(Dispatchers.IO) { store.restore() }
+            // A user may start a demo or select a document while restoration is reading a provider.
+            if (player.mediaItemCount == 0 && saved.items.isNotEmpty()) {
+                player.shuffleModeEnabled = saved.shuffleEnabled
+                player.repeatMode = saved.repeatMode
+                player.setMediaItems(saved.items, saved.index.coerceIn(saved.items.indices), saved.positionMs)
+                player.prepare()
+            }
+            restoring = false
+            store.save(player)
+        }
+        settingsScope.launch {
+            while (isActive) {
+                delay(5_000)
+                // Save the playhead between transitions, without doing work while paused.
+                if (!restoring && player.isPlaying) store.save(player)
+            }
+        }
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = session
@@ -75,7 +94,7 @@ class AetherPlaybackService : MediaSessionService() {
     override fun onDestroy() {
         settingsScope.cancel()
         session?.let {
-            PlaylistStore(this).save(it.player)
+            if (!restoring || it.player.mediaItemCount > 0) PlaylistStore(this).save(it.player)
             it.player.release()
             it.release()
         }

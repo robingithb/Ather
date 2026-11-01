@@ -1,0 +1,25 @@
+{
+  "created_at": "2026-11-02",
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "path": "/home/robin/AndroidStudioProjects/AetherHMI/app/src/main/res/drawable-nodpi/vehicle_arctic_panorama.png",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "purpose": "Arctic snow mountain panorama",
+      "prompt": "Use case: photorealistic-natural. Asset type: wide panoramic background texture for a native automotive 3D scene. Create a photoreal white Arctic snow mountain landscape in soft overcast daylight. Wide 2:1 composition, pale winter sky occupying the upper third, distant continuous snow-covered mountain peaks across the middle, and an uninterrupted level snowfield occupying the bottom third. Bright white snow with delicate cool grey-blue shadow detail, softly lit, realistic photographic depth and clear readable mountain forms. The mountains meet the snowfield naturally around 60 percent image height. Left and right sides should join with visually similar sky, mountain scale and snowfield height when used as a repeating cylinder panorama. The snowfield and sky use neutral snowy whites, not saturated cyan. No foreground stage, circular platform, ring, car, people, trees, buildings, water, roadway, sunlight flare, text, borders, vignette, or artificial blur."
+    },
+    {
+      "path": "/home/robin/AndroidStudioProjects/AetherHMI/app/src/main/res/drawable-nodpi/vehicle_arctic_ground.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "purpose": "Matching Arctic snow ground albedo",
+      "prompt": "Use case: photorealistic-natural. Asset type: seamless square albedo ground texture for an Arctic automotive 3D scene. Create a perfectly top-down orthographic material scan of gently compacted fresh white snow. Fine realistic snow crystals and subtle shallow wind ripples, very low relief, softly lit with uniform diffuse overcast daylight. Neutral snow-white and faint cool grey tones, all four edges seamless and tileable, even brightness across image, no baked shadows or directional reflections. This must pair naturally with a white snow mountain panorama. No horizon, perspective, mountains, stage, circular ring, vehicle, tracks, footprints, debris, dark rocks, text, vignette, lighting gradient or watermark."
+    }
+  ],
+  "inspection": "Both generated images inspected visually before integration. Original generated images retained; final copies live in Android nodpi resources."
+}

@@ -33,16 +33,19 @@ data class AetherPalette(
     val Muted: Color,
     val AccentSoft: Color,
     val OnAccent: Color,
-)
+) {
+    /** Keep Midnight's decorative halos quiet while selection outlines remain crisp. */
+    val DecorativeGlowScale: Float get() = if (theme == AppTheme.Midnight) .3f else 1f
+}
 
 /** A pure palette function also usable by renderers after capturing it in composition. */
 fun themePalette(theme: AppTheme, accentColor: Long? = null): AetherPalette {
     val base = when (theme) {
         AppTheme.Midnight -> AetherPalette(theme, false,
-            Color(0xFF020A14), Color(0xFF071B2B), Color(0xFF000D17), Color(0xFF103044),
-            Color(0xFF00080D), Color(0xFF12364A), Color(0xFF00DFFF),
-            Color(0xFFF2F7FF), Color(0xFFB8D1EF), Color(0xFF16DB9A), Color(0xFFFFAC3C),
-            Color(0xFF1C536F), Color(0xFF758CA1), Color(0xFF003047), Color(0xFF00101B))
+            Color(0xFF030303), Color(0xFF101010), Color(0xFF080808), Color(0xFF1D1D1D),
+            Color(0xFF000000), Color(0xFF303030), Color(0xFFE3E3E3),
+            Color(0xFFF5F5F5), Color(0xFFC2C2C2), Color(0xFF16DB9A), Color(0xFFFFAC3C),
+            Color(0xFF424242), Color(0xFFA1A1A1), Color(0xFF303030), Color(0xFF0A0A0A))
         AppTheme.Arctic -> AetherPalette(theme, true,
             Color(0xFFF5F9FC), Color(0xFFFFFFFF), Color(0xFFE7F0F6), Color(0xFFDDECF5),
             Color(0xFFEDF4F8), Color(0xFFC3D5E3), Color(0xFF006C9A),
@@ -101,6 +104,7 @@ val LocalAetherPalette = staticCompositionLocalOf { themePalette(AppTheme.Midnig
 
 /** Existing UI consumes composition-scoped tokens, so changing settings updates every screen. */
 object AetherColors {
+    val DecorativeGlowScale: Float @Composable @ReadOnlyComposable get() = LocalAetherPalette.current.DecorativeGlowScale
     val Background: Color @Composable @ReadOnlyComposable get() = LocalAetherPalette.current.Background
     val Panel: Color @Composable @ReadOnlyComposable get() = LocalAetherPalette.current.Panel
     val PanelDeep: Color @Composable @ReadOnlyComposable get() = LocalAetherPalette.current.PanelDeep

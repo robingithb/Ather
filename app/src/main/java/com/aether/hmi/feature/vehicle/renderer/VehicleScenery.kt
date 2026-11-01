@@ -31,7 +31,8 @@ import org.json.JSONObject
 /** Static world geometry: the native camera moves the scenery, platform and vehicle together. */
 internal class VehicleScenery(private val engine: Engine, private val scene: Scene, materials: UbershaderProvider) {
     data class Data(val glb: ByteBuffer, val panorama: ByteBuffer, val floorPng: ByteBuffer,
-        val neutralPanorama: ByteBuffer, val neutralFloor: ByteBuffer)
+        val neutralPanorama: ByteBuffer, val neutralFloor: ByteBuffer,
+        val arcticPanorama: ByteBuffer, val arcticFloor: ByteBuffer)
     private val assets = AssetLoader(engine, materials, EntityManager.get())
     private val resources = ResourceLoader(engine)
     private var asset: FilamentAsset? = null
@@ -41,8 +42,8 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
     private var showBatteryGauge = false
     private var batteryFraction: Float? = null
     private val themeMaterials = mutableMapOf<String, List<MaterialInstance>>()
-    private var themeAccent = 0xFF00DFFF.toInt()
-    private var themeBackground = 0xFF020A14.toInt()
+    private var themeAccent = 0xFFE3E3E3.toInt()
+    private var themeBackground = 0xFF030303.toInt()
     private var themeIsLight = false
     private val themedRenderables = mutableMapOf<String, Int>()
     private var completedLoad = false
@@ -121,6 +122,8 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
         resources.addResourceData(floorImageUri, data.floorPng)
         resources.addResourceData(neutralImageUri, data.neutralPanorama)
         resources.addResourceData(neutralFloorImageUri, data.neutralFloor)
+        resources.addResourceData(arcticImageUri, data.arcticPanorama)
+        resources.addResourceData(arcticFloorImageUri, data.arcticFloor)
         val loaded = requireNotNull(assets.createAsset(data.glb)) { "Invalid generated scenery" }
         asset = loaded
         loaded.renderableEntities.forEach { configureShadows(loaded, it) }
@@ -196,13 +199,17 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
         private const val floorImageUri = "aether_ground.png"
         private const val neutralImageUri = "aether_scenery_neutral.png"
         private const val neutralFloorImageUri = "aether_ground_neutral.png"
+        private const val arcticImageUri = "aether_arctic_scenery.png"
+        private const val arcticFloorImageUri = "aether_arctic_ground.png"
         /** CPU-only preparation; call on Dispatchers.IO before begin() on the native thread. */
         @SuppressLint("ResourceType") // nodpi PNG is an uncompiled binary; read original encoded bytes for glTF.
         fun read(resources: Resources): Data {
             val png = resources.openRawResource(R.drawable.vehicle_stage).use { it.readBytes() }
             val floorPng = resources.openRawResource(R.drawable.vehicle_ground).use { it.readBytes() }
             return Data(direct(buildGlb()), direct(png), direct(floorPng),
-                direct(neutralPng(png)), direct(neutralPng(floorPng)))
+                direct(neutralPng(png)), direct(neutralPng(floorPng)),
+                direct(resources.openRawResource(R.drawable.vehicle_arctic_panorama).use { it.readBytes() }),
+                direct(resources.openRawResource(R.drawable.vehicle_arctic_ground).use { it.readBytes() }))
         }
 
         /** A neutral source lets red/slate factors recolor the scenery without a residual blue cast.
@@ -345,14 +352,12 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
             val panorama = material("Aether panorama", array(.7,.75,.8,1), true).apply {
                 getJSONObject("pbrMetallicRoughness").put("baseColorTexture", obj("index" to 0))
             }
-            val floor = material("Aether wet stone", array(.70,.73,.78,1), false).apply {
+            val floor = material("Aether matte stone", array(.7,.75,.8,1), false).apply {
                 getJSONObject("pbrMetallicRoughness").apply {
                     put("baseColorTexture", obj("index" to 1))
-                    put("metallicFactor", .15)
-                    put("roughnessFactor", .22)
+                    put("metallicFactor", 0)
+                    put("roughnessFactor", .85)
                 }
-                put("extensions", obj("KHR_materials_clearcoat" to obj("clearcoatFactor" to 1.0,
-                    "clearcoatRoughnessFactor" to .10)))
             }
             val rim = material("Aether dark platform rim", array(.025,.040,.065,1), false).apply {
                 getJSONObject("pbrMetallicRoughness").put("metallicFactor", .65).put("roughnessFactor", .18)
@@ -365,11 +370,13 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
                 put("name", "Aether neutral stone")
                 getJSONObject("pbrMetallicRoughness").put("baseColorTexture", obj("index" to 3))
             }
-            // Arctic uses genuinely light untextured studio surfaces. Multiplying the dark
-            // mountain/stone PNG by white cannot produce a pale setting.
-            val lightPanorama = material("Aether light studio backdrop", array(.88,.93,.97,1), true)
-            val lightFloor = material("Aether light studio floor", array(.88,.91,.94,1), false).apply {
-                getJSONObject("pbrMetallicRoughness").put("metallicFactor", 0).put("roughnessFactor", .72)
+            // Arctic has its own snow mountain panorama and matching snow albedo texture.
+            val lightPanorama = material("Aether Arctic snow mountains", array(.94,.94,.94,1), true).apply {
+                getJSONObject("pbrMetallicRoughness").put("baseColorTexture", obj("index" to 4))
+            }
+            val lightFloor = material("Aether Arctic snow ground", array(.94,.94,.94,1), false).apply {
+                getJSONObject("pbrMetallicRoughness").put("baseColorTexture", obj("index" to 5))
+                    .put("metallicFactor", 0).put("roughnessFactor", .92)
             }
             val document = obj("asset" to obj("version" to "2.0", "generator" to "AETHER native scenery"), "scene" to 0,
                 "scenes" to array(obj("nodes" to JSONArray((0 until nodes.length()).toList()))), "nodes" to nodes, "meshes" to meshes,
@@ -381,15 +388,18 @@ internal class VehicleScenery(private val engine: Engine, private val scene: Sce
                     material("Aether battery level track", array(.035,.045,.050,1), true),
                     material("Aether battery level fill", array(.045,.68,.19,1), true),
                     neutralPanorama, neutralFloor, lightPanorama, lightFloor),
-                "extensionsUsed" to array("KHR_materials_unlit", "KHR_materials_clearcoat"),
+                "extensionsUsed" to array("KHR_materials_unlit"),
                 "images" to array(obj("uri" to imageUri, "mimeType" to "image/png"),
                     obj("uri" to floorImageUri, "mimeType" to "image/png"),
                     obj("uri" to neutralImageUri, "mimeType" to "image/png"),
-                    obj("uri" to neutralFloorImageUri, "mimeType" to "image/png")),
+                    obj("uri" to neutralFloorImageUri, "mimeType" to "image/png"),
+                    obj("uri" to arcticImageUri, "mimeType" to "image/png"),
+                    obj("uri" to arcticFloorImageUri, "mimeType" to "image/png")),
                 "samplers" to array(obj("magFilter" to 9729, "minFilter" to 9987, "wrapS" to 33648, "wrapT" to 33071),
                     obj("magFilter" to 9729, "minFilter" to 9987, "wrapS" to 10497, "wrapT" to 10497)),
                 "textures" to array(obj("sampler" to 0, "source" to 0), obj("sampler" to 1, "source" to 1),
-                    obj("sampler" to 0, "source" to 2), obj("sampler" to 1, "source" to 3)),
+                    obj("sampler" to 0, "source" to 2), obj("sampler" to 1, "source" to 3),
+                    obj("sampler" to 0, "source" to 4), obj("sampler" to 1, "source" to 5)),
                 "bufferViews" to views, "accessors" to accessors,
                 "buffers" to array(obj("byteLength" to binary.size())))
             // Android JSONObject escapes '/', but cgltf's MIME dispatch expects literal "image/png".

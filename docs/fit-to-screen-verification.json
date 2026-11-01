@@ -1,0 +1,91 @@
+{
+  "verified_at": "2026-11-01T23:43:16.474811+05:30",
+  "result": "passed",
+  "requirement": "Every landscape demo page fits the viewport without scrolling; original animated climate cabin remains visible.",
+  "gradle_tasks": [
+    ":app:compileDebugKotlin",
+    ":app:testDebugUnitTest",
+    ":app:lintDebug"
+  ],
+  "jvm_tests": {
+    "tests": 153,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "compiler_warnings": [],
+  "lint": {
+    "errors": 0,
+    "warnings": 41,
+    "by_id": {
+      "DiscouragedApi": 1,
+      "AutoboxingStateCreation": 1,
+      "UnusedResources": 37,
+      "UseKtx": 2,
+      "ClickableViewAccessibility": 1
+    }
+  },
+  "scroll_audit": {
+    "kotlin_sources_checked": 70,
+    "matching_files": [],
+    "scope": "entire app/src/main/java"
+  },
+  "orientation": "sensorLandscape; merged manifest verified",
+  "animation": {
+    "cabin_composed_on_all_sizes": true,
+    "original_airflow_overlay_retained": true,
+    "overlay_source_sha256": "51988c5c1bfabfcde10ac3faf142a9ae3cc817be08fc1c6ca6d49ed94b92bf10"
+  },
+  "layout_verification": {
+    "method": "finite geometry tests, source constraint review and compiled landscape previews",
+    "sizes_full_window_dp": [
+      [
+        640,
+        320
+      ],
+      [
+        780,
+        360
+      ],
+      [
+        960,
+        540
+      ],
+      [
+        1280,
+        720
+      ]
+    ],
+    "enlarged_fonts_tested": true,
+    "preview_rendered": false,
+    "new_on_device_layout_verified": false
+  },
+  "adb": {
+    "device": "Samsung SM-G990E, RZCT902Y60B",
+    "state": "connected",
+    "physical_pixels": [
+      1080,
+      2340
+    ],
+    "density_dpi": 480
+  },
+  "apk_created": false,
+  "apk_installed": false,
+  "existing_apks": [
+    {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "modified": "2026-10-30T01:15:28.499086+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "modified": "2026-10-28T00:32:04.571452+05:30"
+    }
+  ],
+  "log": "app/build/reports/fit-page-final-build.log",
+  "git_diff_check": "passed",
+  "limitations": [
+    "New page appearance and running animations require deployment for physical-device confirmation.",
+    "Compact demo controls are smaller than spacious head-unit controls.",
+    "Vehicle commands remain simulated."
+  ]
+}

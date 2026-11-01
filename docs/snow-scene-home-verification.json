@@ -1,0 +1,62 @@
+{
+  "verified_at": "2026-11-02T01:38:03.141320+05:30",
+  "status": "source_and_automated_checks_complete",
+  "requirements": {
+    "floors": "All themes share the panorama tint with a matte, non-metallic floor, with clearcoat removed from scenery floors.",
+    "arctic": "New white snow mountain panorama and corresponding snow ground image; neutral white theme factor.",
+    "scene_boundary": "Artificial composited feather removed; native scene detail preserved in a 16dp rounded viewport.",
+    "widget_drag": "Lifted widget animates to 72% scale around the grabbed point; full slot dimensions restored on drop.",
+    "widget_slots": "Two equal slots per page at every size, including library previews; empty slots contain a centered transparent Add widget action."
+  },
+  "compile": "passed",
+  "jvm_tests": {
+    "tests": 169,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 58,
+    "by_id": {
+      "DiscouragedApi": 1,
+      "PluralsCandidate": 2,
+      "AutoboxingStateCreation": 1,
+      "UnusedResources": 52,
+      "UseKtx": 2,
+      "ClickableViewAccessibility": 1
+    }
+  },
+  "logs": [
+    "app/build/reports/snow-scene-home-compile-tests.log",
+    "app/build/reports/snow-scene-home-lint.log"
+  ],
+  "assets": [
+    {
+      "path": "/home/robin/AndroidStudioProjects/AetherHMI/app/src/main/res/drawable-nodpi/vehicle_arctic_panorama.png",
+      "sha256": "0e7370985e456e0a6a77170c33c851c9f0afd1f4d28bf5503539434f06aa6eb5",
+      "bytes": 1973105
+    },
+    {
+      "path": "/home/robin/AndroidStudioProjects/AetherHMI/app/src/main/res/drawable-nodpi/vehicle_arctic_ground.png",
+      "sha256": "2e52682356018ceb0da43deeff3eff77bb3a7d5e8dabc265eb215aefc71ce368",
+      "bytes": 2911522
+    }
+  ],
+  "asset_generation_record": "docs/assets/arctic-snow-generation.json",
+  "apk_created": false,
+  "apk_installed": false,
+  "existing_apks": [
+    {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "modified": "2026-10-30T01:15:28.499086+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "modified": "2026-10-28T00:32:04.571452+05:30"
+    }
+  ],
+  "device_verification": "Not deployed. New assets visually inspected in isolation; updated native scene and drag animation still require on-device confirmation.",
+  "git_diff_check": "passed",
+  "verification_note": "The initial verification session ended without a final test result during memory pressure. The complete compile/test run was retried successfully; lint then passed separately."
+}

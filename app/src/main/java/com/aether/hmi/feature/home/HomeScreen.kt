@@ -1,286 +1,189 @@
 package com.aether.hmi.feature.home
 
 import android.text.format.DateFormat
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.aether.hmi.R
-import com.aether.hmi.domain.AppTheme
-import com.aether.hmi.domain.CabinAir
-import com.aether.hmi.domain.DataSource
-import com.aether.hmi.domain.Greeting
-import com.aether.hmi.domain.NetworkTransport
-import com.aether.hmi.domain.RoutePreview
-import com.aether.hmi.domain.VehicleAttentionSeverity
-import com.aether.hmi.domain.VehicleSnapshot
-import com.aether.hmi.domain.greetingAt
-import com.aether.hmi.domain.vehicleAttention
+import com.aether.hmi.domain.*
 import com.aether.hmi.feature.media.PlaybackState
-import com.aether.hmi.ui.components.AetherGlyph
-import com.aether.hmi.ui.components.DashboardSurface
-import com.aether.hmi.ui.components.Glyph
-import com.aether.hmi.ui.components.MediaArtwork
-import com.aether.hmi.ui.components.VehicleStatusBadge
-import com.aether.hmi.ui.components.vehicleStatusColor
-import com.aether.hmi.ui.components.vehicleStatusText
+import com.aether.hmi.ui.components.*
 import com.aether.hmi.ui.navigation.AetherTab
 import com.aether.hmi.ui.theme.AetherColors
-import com.aether.hmi.ui.theme.LocalAetherPalette
 import java.text.NumberFormat
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun DashboardHeader(state: DashboardState, modifier: Modifier = Modifier, compact: Boolean = false) {
-    Row(modifier.fillMaxWidth().height(if (compact) 16.dp else 24.dp), verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(stringResource(when (state.snapshot.vehicle.source) {
-            DataSource.Demo -> R.string.demo_vehicle
-            DataSource.Live -> R.string.live_vehicle
-            DataSource.Unavailable -> R.string.vehicle_unavailable
-        }), color = AetherColors.TextSecondary, fontSize = 10.sp, lineHeight = 12.sp)
-        Spacer(Modifier.weight(1f))
+fun DashboardHeader(state: DashboardState, modifier: Modifier = Modifier, compact: Boolean = false,
+    feedback: String? = null, feedbackWarning: Boolean = false) {
+    val context = LocalContext.current
+    val source = stringResource(when (state.snapshot.vehicle.source) {
+        DataSource.Demo -> R.string.demo_vehicle
+        DataSource.Live -> R.string.live_vehicle
+        DataSource.Unavailable -> R.string.vehicle_unavailable
+    })
+    Row(modifier.fillMaxWidth().height(if (compact) 24.dp else 28.dp), verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        PageText(if (feedback == null) source else "$source · $feedback", Modifier.weight(1f).fillMaxHeight(),
+            color = if (feedbackWarning) AetherColors.Warning else AetherColors.TextSecondary, maxFontSize = 14f)
+        state.snapshot.vehicle.outsideCelsius?.let { PageText(temperatureText(it.toFloat()), Modifier.width(54.dp).fillMaxHeight(), maxFontSize = 14f) }
         AetherGlyph(if (state.connectivity.transport == NetworkTransport.Mobile) Glyph.Signal else Glyph.Wifi,
-            size = 16.dp, color = if (state.connectivity.online) AetherColors.TextPrimary else AetherColors.Muted)
-        Text(stringResource(networkLabel(state.connectivity.transport)), fontSize = 12.sp, lineHeight = 14.sp, color = AetherColors.TextSecondary)
-        state.snapshot.vehicle.outsideCelsius?.let { outside ->
-            Text(temperatureText(outside.toFloat()), color = AetherColors.TextPrimary, fontSize = 12.sp)
-        }
+            size = 18.dp, color = if (state.connectivity.online) AetherColors.TextSecondary else AetherColors.Muted)
+        PageText(DateFormat.format(if (DateFormat.is24HourFormat(context)) "HH:mm" else "h:mm a", state.now.toInstant().toEpochMilli()).toString(),
+            Modifier.width(80.dp).fillMaxHeight(), maxFontSize = 16f)
     }
 }
 
+/** Personal widgets share finite landscape pages; customization stays alongside the preview. */
 @Composable
-fun HomeScreen(
-    state: DashboardState,
-    playback: PlaybackState,
-    onNavigate: (AetherTab) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun HomeScreen(state: DashboardState, playback: PlaybackState, onNavigate: (AetherTab) -> Unit,
+    modifier: Modifier = Modifier, playbackActions: PlaybackActions = PlaybackActions(),
+    widgets: List<HomeWidget> = HomeWidgets.defaults, onWidgetsChange: (List<HomeWidget>) -> Unit = {},
+    onAdjustTemperature: (Int) -> Unit = {}, onClimateToggle: (ClimateControl) -> Unit = {}) {
     var showRoute by rememberSaveable { mutableStateOf(false) }
+    var editing by rememberSaveable { mutableStateOf(false) }
+    var anchor by rememberSaveable { mutableIntStateOf(0) }
     BoxWithConstraints(modifier) {
-        val compact = maxWidth < 700.dp || maxHeight < 180.dp
-        val gap = if (compact) 4.dp else 8.dp
-        Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(gap)) {
-            Hero(greetingAt(state.now), compact, Modifier.weight(if (compact) 0.54f else 0.59f).fillMaxHeight())
-            BoxWithConstraints(Modifier.weight(if (compact) 0.46f else 0.41f).fillMaxHeight()) {
-                val showIcons = maxWidth >= 265.dp
-                Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(gap)) {
-                    NavigationCard(state, showIcons, { showRoute = true },
-                        Modifier.fillMaxWidth().weight(0.34f))
-                    VehicleCard(state.snapshot, showIcons, { onNavigate(AetherTab.Vehicle) },
-                        Modifier.fillMaxWidth().weight(0.30f))
-                    Row(Modifier.fillMaxWidth().weight(0.36f), horizontalArrangement = Arrangement.spacedBy(gap)) {
-                        ClimateCard(state, { onNavigate(AetherTab.Climate) }, Modifier.weight(1f).fillMaxHeight())
-                        MediaCard(playback, { onNavigate(AetherTab.Media) }, Modifier.weight(1f).fillMaxHeight())
+        val fit = HomePageGeometry.fit(maxWidth.value, maxHeight.value)
+        val capacity = HomeWidgetLayout.pageCapacity
+        val editWidth = minOf(maxWidth * .38f, 340.dp)
+        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(fit.gap.dp)) {
+            Row(Modifier.fillMaxWidth().height(fit.header.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(Modifier.weight(1f).fillMaxHeight()) {
+                    PageText(stringResource(when (greetingAt(state.now)) {
+                        Greeting.Morning -> R.string.greeting_morning
+                        Greeting.Afternoon -> R.string.greeting_afternoon
+                        Greeting.Evening -> R.string.greeting_evening
+                        Greeting.Night -> R.string.greeting_night
+                    }), Modifier.weight(1.2f).fillMaxWidth(), maxFontSize = 30f, minFontSize = 16f, fontWeight = FontWeight.SemiBold)
+                    val attention = state.snapshot.vehicleAttention()
+                    PageText(vehicleStatusText(attention), Modifier.weight(1f).fillMaxWidth(), color = vehicleStatusColor(attention), maxFontSize = 16f)
+                }
+                PageAction(stringResource(if (editing) R.string.home_finish_editing else R.string.home_add_widget),
+                    { editing = !editing }, Modifier.width(if (editing) 100.dp else 148.dp).fillMaxHeight(),
+                    selected = editing, glyph = if (editing) Glyph.Check else Glyph.Plus)
+            }
+            Row(Modifier.fillMaxWidth().height(fit.cards.dp), horizontalArrangement = Arrangement.spacedBy(fit.gap.dp)) {
+                // Both slots keep equal widths as the preview resizes alongside the library.
+                key(capacity) {
+                    HomeWidgetPager(widgets, capacity, anchor, { anchor = it }, onWidgetsChange,
+                        Modifier.weight(1f).fillMaxHeight(), onAdd = { editing = true }) { widget, tile ->
+                        Column(tile, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Box(Modifier.fillMaxWidth().weight(1f)) {
+                                when (widget.kind) {
+                                    HomeWidgetKind.Navigation -> RouteOverview(state, { showRoute = true }, Modifier.fillMaxSize())
+                                    HomeWidgetKind.Music -> NowPlayingOverview(playback, playbackActions, { onNavigate(AetherTab.Media) }, Modifier.fillMaxSize())
+                                    else -> HomeStatusWidget(widget.kind, state, onNavigate, onAdjustTemperature, onClimateToggle, Modifier.fillMaxSize())
+                                }
+                            }
+                            if (editing) Row(Modifier.fillMaxWidth().height(32.dp)) {
+                                val index = widgets.indexOfFirst { it.id == widget.id }
+                                PageAction(stringResource(R.string.home_widget_remove), {
+                                    onWidgetsChange(widgets.filterNot { it.id == widget.id }); anchor = index.coerceAtMost((widgets.size - 2).coerceAtLeast(0))
+                                }, Modifier.weight(1f).fillMaxHeight())
+                            }
+                        }
                     }
+                }
+                if (editing) HomeWidgetLibrary(widgets.size, { kind ->
+                    val updated = HomeWidgets.add(widgets, kind)
+                    onWidgetsChange(updated)
+                    anchor = updated.lastIndex.coerceAtLeast(0)
+                }, { onWidgetsChange(HomeWidgets.defaults); anchor = 0 }, Modifier.width(editWidth).fillMaxHeight())
+            }
+        }
+    }
+    if (showRoute) Dialog(onDismissRequest = { showRoute = false }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        DashboardSurface(Modifier.fillMaxWidth(.88f).fillMaxHeight(.86f)) {
+            BoxWithConstraints(Modifier.fillMaxSize().padding(16.dp)) {
+                val actionHeight = (maxHeight * .20f).coerceAtMost(56.dp)
+                Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    PageText(stringResource(R.string.demo_route), Modifier.fillMaxWidth().weight(.65f), maxFontSize = 26f, fontWeight = FontWeight.SemiBold)
+                    state.snapshot.route?.let {
+                        PageText(it.destination, Modifier.fillMaxWidth().weight(.6f), maxFontSize = 24f)
+                        PageText(routeText(it, state), Modifier.fillMaxWidth().weight(.6f), maxFontSize = 18f)
+                    }
+                    PageText(stringResource(R.string.route_preview_explanation), Modifier.fillMaxWidth().weight(1f),
+                        color = AetherColors.TextSecondary, maxFontSize = 18f, maxLines = 4)
+                    PageAction(stringResource(R.string.close), { showRoute = false }, Modifier.fillMaxWidth().height(actionHeight))
                 }
             }
         }
     }
-    if (showRoute) {
-        val route = state.snapshot.route
-        AlertDialog(onDismissRequest = { showRoute = false }, title = { Text(stringResource(R.string.demo_route)) },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    if (route != null) { Text(route.destination); Text(routeText(route, state)) }
-                    Text(stringResource(R.string.route_preview_explanation))
-                }
-            }, confirmButton = { TextButton(onClick = { showRoute = false }) { Text(stringResource(R.string.close)) } })
+}
+
+@Composable
+private fun RouteOverview(state: DashboardState, onClick: () -> Unit, modifier: Modifier) {
+    DashboardSurface(modifier, onClick) {
+        Image(painterResource(R.drawable.navigation_road), null, contentScale = ContentScale.Crop, modifier = Modifier.matchParentSize())
+        Box(Modifier.matchParentSize().background(Brush.verticalGradient(listOf(AetherColors.Panel.copy(alpha = .75f), AetherColors.PanelDeep.copy(alpha = .96f)))))
+        Column(Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            PageText(stringResource(R.string.demo_route), Modifier.fillMaxWidth().weight(.6f), color = AetherColors.TextSecondary, maxFontSize = 18f)
+            Box(Modifier.fillMaxWidth().weight(.6f), contentAlignment = Alignment.CenterStart) { AetherGlyph(Glyph.Arrow, size = 28.dp) }
+            PageText(state.snapshot.route?.destination ?: stringResource(R.string.route_unavailable), Modifier.fillMaxWidth().weight(1f),
+                maxFontSize = 30f, minFontSize = 16f, fontWeight = FontWeight.SemiBold, maxLines = 2)
+            PageText(state.snapshot.route?.let { routeText(it, state) } ?: stringResource(R.string.route_unavailable),
+                Modifier.fillMaxWidth().weight(.7f), color = AetherColors.TextSecondary, maxFontSize = 18f, maxLines = 2)
+        }
     }
 }
 
 @Composable
-private fun Hero(greeting: Greeting, compact: Boolean, modifier: Modifier) {
-    val palette = LocalAetherPalette.current
-    val image = when (palette.theme) {
-        AppTheme.Midnight -> R.drawable.home_hero
-        AppTheme.Arctic -> R.drawable.theme_arctic
-        AppTheme.Sport -> R.drawable.theme_sport
-        AppTheme.Minimal -> R.drawable.theme_minimal
-    }
+private fun NowPlayingOverview(state: PlaybackState, actions: PlaybackActions, onOpen: () -> Unit, modifier: Modifier) {
     DashboardSurface(modifier) {
-        Image(painterResource(image), stringResource(R.string.hero_description),
-            contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
-        Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(
-            AetherColors.Background.copy(alpha = if (palette.isLight) .88f else .70f),
-            AetherColors.Background.copy(alpha = .10f), Color.Transparent), endY = Float.POSITIVE_INFINITY)))
-        Column(Modifier.padding(if (compact) 12.dp else 20.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(stringResource(when (greeting) {
-                Greeting.Morning -> R.string.greeting_morning
-                Greeting.Afternoon -> R.string.greeting_afternoon
-                Greeting.Evening -> R.string.greeting_evening
-                Greeting.Night -> R.string.greeting_night
-            }), color = AetherColors.TextPrimary, fontWeight = FontWeight.Bold,
-                fontSize = if (compact) 23.sp else 29.sp, lineHeight = if (compact) 27.sp else 34.sp,
-                maxLines = 2, overflow = TextOverflow.Ellipsis)
-            Text(stringResource(R.string.ready_for_road), color = AetherColors.TextSecondary,
-                fontSize = if (compact) 13.sp else 17.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
-    }
-}
-
-@Composable
-private fun NavigationCard(state: DashboardState, showIcons: Boolean, onClick: () -> Unit, modifier: Modifier) {
-    DashboardSurface(modifier, onClick) {
-        Image(painterResource(R.drawable.navigation_road), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
-        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(AetherColors.Panel, AetherColors.PanelDeep.copy(alpha = .9f), AetherColors.PanelDeep.copy(alpha = .62f)))))
-        Row(Modifier.fillMaxSize().padding(horizontal = 10.dp, vertical = if (showIcons) 5.dp else 4.dp), verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            if (showIcons) IconBadge { AetherGlyph(Glyph.Arrow, size = 28.dp) }
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-                SmallLabel(stringResource(R.string.demo_route))
-                Text(state.snapshot.route?.destination ?: stringResource(R.string.route_unavailable),
-                    color = AetherColors.TextPrimary, fontSize = if (showIcons) 17.sp else 14.sp,
-                    lineHeight = if (showIcons) 20.sp else 16.sp,
-                    fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                state.snapshot.route?.let { route ->
-                    Text(routeText(route, state), color = AetherColors.TextSecondary, fontSize = 10.sp,
-                        lineHeight = 12.sp, maxLines = if (showIcons) 1 else 2, overflow = TextOverflow.Ellipsis)
+        BoxWithConstraints(Modifier.fillMaxSize().padding(10.dp)) {
+            val geometry = HomeTransportGeometry.fit(maxWidth.value, maxHeight.value)
+            val control = geometry.control.dp
+            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                PageAction(stringResource(R.string.tab_media), onOpen, Modifier.fillMaxWidth().weight(.75f), glyph = Glyph.Chevron)
+                PageText(state.title ?: stringResource(if (state.hasMedia) R.string.unknown_title else R.string.nothing_playing),
+                    Modifier.fillMaxWidth().weight(1f), maxFontSize = 28f, minFontSize = 14f, fontWeight = FontWeight.Medium, maxLines = 2)
+                val status = if (state.error || !state.connected || state.buffering) stringResource(when {
+                    state.error -> R.string.playback_error
+                    !state.connected -> R.string.playback_connecting
+                    else -> R.string.playback_buffering
+                }) else if (state.hasMedia) state.artist ?: stringResource(R.string.unknown_artist) else stringResource(R.string.choose_audio_hint)
+                PageText(status, Modifier.fillMaxWidth().weight(.7f), color = if (state.error) AetherColors.Warning else AetherColors.TextSecondary,
+                    maxFontSize = 17f, maxLines = 2)
+                Row(Modifier.fillMaxWidth().height(control), horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically) {
+                    HomeTransportButton(Glyph.Previous, stringResource(R.string.previous_track), actions.previous, control, state.canPrevious)
+                    HomeTransportButton(if (state.playing) Glyph.Pause else Glyph.Play,
+                        stringResource(if (!state.hasMedia) R.string.choose_audio else if (state.playing) R.string.pause else R.string.play),
+                        if (state.hasMedia) actions.toggle else onOpen, control, state.connected, true)
+                    HomeTransportButton(Glyph.Next, stringResource(R.string.next_track), actions.next, control, state.canNext)
                 }
             }
-            AetherGlyph(Glyph.Chevron, size = 12.dp, color = AetherColors.TextPrimary)
         }
     }
 }
 
 @Composable
-private fun VehicleCard(snapshot: VehicleSnapshot, showIcons: Boolean, onClick: () -> Unit, modifier: Modifier) {
-    val state = snapshot.vehicle
-    val attention = snapshot.vehicleAttention()
-    DashboardSurface(modifier, onClick) {
-        Row(Modifier.fillMaxSize().padding(horizontal = 10.dp, vertical = if (showIcons) 5.dp else 3.dp), verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            if (showIcons) IconBadge { Icon(painterResource(R.drawable.ic_vehicle), null, tint = AetherColors.TextSecondary,
-                modifier = Modifier.size(29.dp)) }
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-                SmallLabel(stringResource(if (state.source == DataSource.Demo) R.string.vehicle_demo_title else R.string.tab_vehicle))
-                Text(vehicleStatusText(attention), fontSize = if (showIcons) 16.sp else 13.sp,
-                    lineHeight = if (showIcons) 19.sp else 15.sp, color = vehicleStatusColor(attention),
-                    fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                val format = numberFormat(0)
-                Text(stringResource(R.string.vehicle_summary,
-                    state.rangeKm?.let { stringResource(R.string.range_km, format.format(it)) } ?: stringResource(R.string.unavailable_value),
-                    state.batteryPercent?.let { stringResource(R.string.battery_percent, it) } ?: stringResource(R.string.unavailable_value)),
-                    color = AetherColors.TextSecondary, fontSize = 10.sp, lineHeight = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            }
-            if (showIcons || attention.severity != VehicleAttentionSeverity.Good) {
-                VehicleStatusBadge(attention, Modifier.size(if (showIcons) 22.dp else 17.dp))
-            }
-            AetherGlyph(Glyph.Chevron, size = 12.dp, color = AetherColors.TextPrimary)
-        }
+private fun HomeTransportButton(glyph: Glyph, label: String, onClick: () -> Unit,
+    size: androidx.compose.ui.unit.Dp, enabled: Boolean, selected: Boolean = false) {
+    Box(Modifier.size(size).background(if (selected) AetherColors.AccentSoft else AetherColors.Panel, CircleShape)
+        .clickable(enabled, role = Role.Button, onClick = onClick).semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
+        AetherGlyph(glyph, size = size * .45f, color = if (enabled) AetherColors.TextPrimary else AetherColors.Muted)
     }
-}
-
-@Composable
-private fun ClimateCard(state: DashboardState, onClick: () -> Unit, modifier: Modifier) {
-    val climate = state.snapshot.climate
-    DashboardSurface(modifier, onClick) {
-        BoxWithConstraints(Modifier.fillMaxSize()) {
-            val compact = maxWidth < 145.dp
-            Row(Modifier.fillMaxSize().padding(horizontal = if (compact) 5.dp else 7.dp, vertical = 3.dp),
-                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)) {
-                DashboardSurface(Modifier.width(if (compact) 27.dp else 34.dp).height(if (compact) 36.dp else 48.dp)) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Icon(painterResource(R.drawable.ic_climate_filled), null, tint = AetherColors.Accent,
-                            modifier = Modifier.size(if (compact) 23.dp else 31.dp))
-                    }
-                }
-                Column(Modifier.weight(1f)) {
-                    Text(stringResource(R.string.tab_climate), color = AetherColors.TextPrimary,
-                        fontSize = if (compact) 9.sp else 11.sp, lineHeight = 12.sp, maxLines = 1)
-                    Text(temperatureText(climate.driverCelsius), fontSize = if (compact) 17.sp else 23.sp,
-                        lineHeight = if (compact) 20.sp else 26.sp, fontWeight = FontWeight.Medium,
-                        color = AetherColors.TextPrimary, maxLines = 1)
-                    Text(stringResource(R.string.climate_summary,
-                        stringResource(if (climate.auto) R.string.auto_mode else R.string.manual_mode),
-                        stringResource(if (climate.cabinAir == CabinAir.Clean) R.string.cabin_clean else R.string.cabin_unknown)),
-                        color = AetherColors.TextSecondary, fontSize = if (compact) 7.sp else 8.sp,
-                        lineHeight = 10.sp, letterSpacing = 0.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
-                AetherGlyph(Glyph.Chevron, size = if (compact) 8.dp else 10.dp, color = AetherColors.TextPrimary)
-            }
-        }
-    }
-}
-
-@Composable
-private fun MediaCard(state: PlaybackState, onClick: () -> Unit, modifier: Modifier) {
-    DashboardSurface(modifier, onClick) {
-        BoxWithConstraints(Modifier.fillMaxSize()) {
-            val compact = maxWidth < 145.dp
-            Row(Modifier.fillMaxSize().padding(horizontal = if (compact) 5.dp else 7.dp, vertical = 3.dp),
-                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)) {
-                MediaArtwork(state.artwork, Modifier.width(if (compact) 27.dp else 34.dp)
-                    .height(if (compact) 36.dp else 48.dp), fallback = R.drawable.home_album_placeholder)
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(stringResource(R.string.tab_media), color = AetherColors.TextPrimary,
-                        fontSize = if (compact) 9.sp else 11.sp, lineHeight = 12.sp, maxLines = 1)
-                    Text(state.title ?: stringResource(if (state.hasMedia) R.string.unknown_title else R.string.nothing_playing),
-                        fontSize = if (compact) 9.sp else 10.sp, lineHeight = 12.sp, letterSpacing = 0.sp, fontWeight = FontWeight.Medium,
-                        color = AetherColors.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(if (state.hasMedia) state.artist ?: stringResource(R.string.unknown_artist) else stringResource(R.string.choose_audio),
-                        fontSize = if (compact) 8.sp else 10.sp, lineHeight = 11.sp, letterSpacing = 0.sp,
-                        color = AetherColors.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
-                AetherGlyph(Glyph.Chevron, size = if (compact) 8.dp else 10.dp, color = AetherColors.TextPrimary)
-            }
-        }
-    }
-}
-
-@Composable
-private fun IconBadge(content: @Composable () -> Unit) {
-    DashboardSurface(Modifier.size(46.dp)) { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { content() } }
-}
-
-@Composable
-private fun SmallLabel(text: String) {
-    Text(text, color = AetherColors.TextPrimary, fontSize = 11.sp, lineHeight = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-}
-
-@StringRes
-private fun networkLabel(transport: NetworkTransport): Int = when (transport) {
-    NetworkTransport.Wifi -> R.string.network_wifi
-    NetworkTransport.Mobile -> R.string.network_mobile
-    NetworkTransport.Ethernet -> R.string.network_ethernet
-    NetworkTransport.Other -> R.string.network_other
-    NetworkTransport.None -> R.string.network_none
 }
 
 @Composable
