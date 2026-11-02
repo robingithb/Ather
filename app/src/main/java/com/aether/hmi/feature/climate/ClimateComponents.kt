@@ -2,7 +2,6 @@ package com.aether.hmi.feature.climate
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -24,8 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -40,8 +38,10 @@ import com.aether.hmi.R
 import com.aether.hmi.domain.ClimateState
 import com.aether.hmi.ui.components.AetherGlyph
 import com.aether.hmi.ui.components.Glyph
+import com.aether.hmi.ui.components.aetherRaised
+import com.aether.hmi.ui.components.aetherRaisedClickable
+import com.aether.hmi.ui.components.aetherRaisedToggleable
 import com.aether.hmi.ui.theme.AetherColors
-import com.aether.hmi.ui.theme.LocalAetherPalette
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -58,14 +58,8 @@ internal fun ClimateSurface(
     selected: Boolean = false,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val palette = LocalAetherPalette.current
-    val appearance = remember(palette) { climateAppearance(palette) }
-    val glowAlpha = .19f * palette.DecorativeGlowScale
     val shape = RoundedCornerShape(10.dp)
-    Box(modifier.clip(shape)
-        .background(Brush.linearGradient(listOf(appearance.surfaceTop, appearance.surfaceBottom)))
-        .then(if (selected) Modifier.background(Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = glowAlpha), Color.Transparent))) else Modifier)
-        .border(if (selected) 1.1.dp else .65.dp, if (selected) AetherColors.Accent else AetherColors.Border, shape), content = content)
+    Box(modifier.aetherRaised(shape = shape, selected = selected, elevation = 2.dp), content = content)
 }
 
 @Composable
@@ -78,12 +72,9 @@ internal fun ClimateStepButton(
     diameter: Dp = 48.dp,
     accentColor: Color? = null,
 ) {
-    Box(modifier.size(diameter).clip(CircleShape)
-        .background(Brush.verticalGradient(listOf(
-            if (enabled && accentColor != null) accentColor.copy(alpha = .16f) else AetherColors.PanelRaised,
-            AetherColors.PanelDeep)))
-        .border(.8.dp, if (enabled && accentColor != null) accentColor.copy(alpha = .40f) else AetherColors.Border, CircleShape)
-        .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+    Box(modifier.size(diameter)
+        .aetherRaisedClickable(onClick = onClick, shape = CircleShape, enabled = enabled,
+            background = accentColor?.takeIf { enabled }?.let { lerp(AetherColors.PanelRaised, it, .12f) })
         .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
         AetherGlyph(if (plus) Glyph.Plus else Glyph.Minus, size = diameter * .43f,
             color = if (enabled) accentColor ?: AetherColors.TextPrimary else AetherColors.Muted.copy(alpha = .4f))
@@ -164,8 +155,8 @@ internal fun ClimateToggleTile(
     showSwitch: Boolean = false,
 ) {
     val target = if (compact) 48.dp else 76.dp
-    ClimateSurface(modifier.heightIn(min = target)
-        .toggleable(selected, enabled = enabled, role = Role.Switch, onValueChange = { onToggle() }), selected) {
+    Box(modifier.heightIn(min = target)
+        .aetherRaisedToggleable(selected, enabled = enabled, role = Role.Switch, onValueChange = { onToggle() })) {
         Row(Modifier.fillMaxWidth().align(Alignment.Center).padding(horizontal = 12.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             val tint = if (!enabled) AetherColors.Muted else if (selected) AetherColors.Accent else AetherColors.TextSecondary

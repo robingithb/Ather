@@ -5,10 +5,8 @@ import android.content.Intent
 import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,6 +31,9 @@ import com.aether.hmi.feature.home.PlaybackActions
 import com.aether.hmi.ui.components.DashboardSurface
 import com.aether.hmi.ui.components.AetherGlyph
 import com.aether.hmi.ui.components.Glyph
+import com.aether.hmi.ui.components.aetherRaisedClickable
+import com.aether.hmi.ui.components.aetherRaisedSelectable
+import com.aether.hmi.ui.components.aetherRaisedToggleable
 import com.aether.hmi.ui.theme.AetherColors
 
 @Composable
@@ -110,8 +111,8 @@ private fun MediaStateOption(label: String, hint: String, checked: Boolean, onCl
     val color = if (!enabled) AetherColors.Muted else if (checked) AetherColors.Accent else AetherColors.TextPrimary
     BoxWithConstraints(modifier) {
         val showHint = maxHeight >= 56.dp
-        Row(Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp)).background(if (checked) AetherColors.AccentSoft else AetherColors.Panel)
-            .toggleable(checked, enabled = enabled, role = Role.Switch, onValueChange = { onClick() })
+        Row(Modifier.fillMaxSize().aetherRaisedToggleable(checked, { onClick() },
+            shape = RoundedCornerShape(10.dp), enabled = enabled, elevation = 3.dp, role = Role.Switch)
             .semantics { contentDescription = "$label, $hint"; stateDescription = status }.padding(horizontal = 9.dp, vertical = 5.dp),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
             icon(color)
@@ -143,15 +144,15 @@ private fun MediaRepeatOptions(current: Int, onCycle: () -> Unit, enabled: Boole
             MediaFitText(stringResource(descriptions[currentIndex]), color = AetherColors.TextSecondary,
                 maxFontSize = 11f, maxLines = 2, modifier = Modifier.weight(1f).fillMaxHeight())
         }
-        Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(Modifier.fillMaxWidth().weight(1f).selectableGroup(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             listOf(R.string.media_options_off, R.string.media_options_repeat_all, R.string.media_options_repeat_one).forEachIndexed { index, label ->
                 val description = stringResource(descriptions[index])
-                Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(7.dp))
-                    .background(if (index == currentIndex) AetherColors.AccentSoft else AetherColors.PanelDeep)
-                    .border(.7.dp, if (index == currentIndex) AetherColors.Accent else AetherColors.Border, RoundedCornerShape(7.dp))
-                    .clickable(enabled = enabled, role = Role.RadioButton) {
+                Box(Modifier.weight(1f).fillMaxHeight()
+                    .aetherRaisedSelectable(index == currentIndex, onClick = {
                         repeat((index - currentIndex + modes.size) % modes.size) { onCycle() }
-                    }.semantics { selected = index == currentIndex; contentDescription = description }, contentAlignment = Alignment.Center) {
+                    }, shape = RoundedCornerShape(7.dp),
+                        enabled = enabled, elevation = 3.dp, role = Role.RadioButton)
+                    .semantics { contentDescription = description }, contentAlignment = Alignment.Center) {
                     MediaFitText(stringResource(label), maxFontSize = 14f,
                         color = if (!enabled) AetherColors.Muted else if (index == currentIndex) AetherColors.Accent else AetherColors.TextSecondary,
                         modifier = Modifier.fillMaxSize(), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
@@ -164,8 +165,8 @@ private fun MediaRepeatOptions(current: Int, onCycle: () -> Unit, enabled: Boole
 @Composable
 private fun MediaSourceOption(label: String, hint: String, onClick: () -> Unit, enabled: Boolean,
     modifier: Modifier, icon: MediaIcon) {
-    Column(modifier.clip(RoundedCornerShape(10.dp)).background(AetherColors.Panel)
-        .clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(10.dp),
+    Column(modifier.aetherRaisedClickable(onClick, shape = RoundedCornerShape(10.dp),
+        enabled = enabled, elevation = 4.dp).padding(10.dp),
         verticalArrangement = Arrangement.spacedBy(3.dp)) {
         Row(Modifier.fillMaxWidth().weight(.65f), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(9.dp)) {
@@ -248,9 +249,9 @@ private fun MediaModal(title: String, onDismiss: () -> Unit, roomy: Boolean, ite
 @Composable
 private fun MediaOptionRow(label: String, onClick: () -> Unit, height: Dp, detail: String? = null,
     selected: Boolean = false, enabled: Boolean = true) {
-    Row(Modifier.fillMaxWidth().height(height).padding(vertical = 2.dp).clip(RoundedCornerShape(12.dp))
-        .background(if (selected) AetherColors.AccentSoft else AetherColors.PanelDeep)
-        .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+    Row(Modifier.fillMaxWidth().height(height).padding(vertical = 2.dp)
+        .aetherRaisedClickable(onClick, shape = RoundedCornerShape(12.dp),
+            selected = selected, enabled = enabled, elevation = 3.dp)
         .semantics { this.selected = selected }.padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         MediaFitText(label, modifier = Modifier.weight(1f).fillMaxHeight(), maxFontSize = 17f, maxLines = 2,

@@ -1,0 +1,64 @@
+{
+  "verified_at": "2026-11-02T21:52:08.205805+05:30",
+  "status": "source_and_automated_checks_complete",
+  "changes": {
+    "shared": "Theme-aware shaded faces, native elevation shadows, over-content bevels, pressed depression with shared interaction sources.",
+    "coverage": [
+      "Home",
+      "Vehicle",
+      "Climate",
+      "Media",
+      "Settings",
+      "navigation rail"
+    ],
+    "layout": "Existing dimensions, finite pages and touch sizes preserved.",
+    "preserved": [
+      "transparent Add widget slots",
+      "two Home slots per page",
+      "72% widget drag preview",
+      "car scene/assets",
+      "original climate animation"
+    ],
+    "interaction": "Button, switch, radio and tab semantics preserved; disabled controls have zero shadow.",
+    "contrast": "Standard face gradients enforce readable primary/secondary/accent labels, including Arctic custom-accent cases."
+  },
+  "compile": "passed",
+  "compiler_warnings": [],
+  "jvm_tests": {
+    "tests": 171,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 58,
+    "by_id": {
+      "DiscouragedApi": 1,
+      "PluralsCandidate": 2,
+      "AutoboxingStateCreation": 1,
+      "UnusedResources": 52,
+      "UseKtx": 2,
+      "ClickableViewAccessibility": 1
+    }
+  },
+  "logs": [
+    "app/build/reports/ui-depth-compile-tests.log",
+    "app/build/reports/ui-depth-lint.log"
+  ],
+  "review": "Independent read-only review found no blocking findings. Home perimeter shadows remain clipped by the existing pager viewport; bevels remain visible.",
+  "apk_created": false,
+  "apk_installed": false,
+  "existing_apks": [
+    {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "modified": "2026-11-02T01:48:37.565178+05:30"
+    },
+    {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "modified": "2026-10-28T00:32:04.571452+05:30"
+    }
+  ],
+  "device_verification": "Updated source not deployed; native depth appearance and pressed feedback still require on-device confirmation.",
+  "git_diff_check": "passed"
+}

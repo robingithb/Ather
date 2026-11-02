@@ -6,12 +6,13 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,7 +31,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -48,10 +48,8 @@ fun DashboardSurface(
 ) {
     val shape = RoundedCornerShape(11.dp)
     Box(
-        modifier.clip(shape)
-            .background(Brush.linearGradient(listOf(AetherColors.Panel.copy(alpha = 0.92f), AetherColors.PanelDeep)))
-            .border(0.7.dp, AetherColors.Border, shape)
-            .then(if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier),
+        if (onClick == null) modifier.aetherRaised(shape, elevation = 3.dp)
+        else modifier.aetherRaisedClickable(onClick, shape, elevation = 4.dp),
         content = content,
     )
 }
@@ -65,8 +63,12 @@ fun GlyphButton(
     enabled: Boolean = true,
     color: Color = AetherColors.TextPrimary,
 ) {
+    val interaction = remember { MutableInteractionSource() }
     IconButton(onClick = onClick, enabled = enabled,
-        modifier = modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp).semantics { contentDescription = label }) {
+        interactionSource = interaction,
+        modifier = modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)
+            .aetherRaised(CircleShape, enabled = enabled, elevation = 4.dp, interactionSource = interaction)
+            .semantics { contentDescription = label }) {
         AetherGlyph(glyph, color = if (enabled) color else AetherColors.Muted.copy(alpha = 0.4f))
     }
 }

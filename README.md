@@ -1,5 +1,7 @@
 AETHER — Automotive HMI
 
+Current source update (2 November 2026, UI depth): shared raised controls add native elevation shadows, shaded faces, fine bevel highlights and a subtle pressed depression across Home, Vehicle, Climate, Media and Settings. Layout and touch dimensions stay unchanged. See [2.5D UI depth and verification scope](docs/UI_DEPTH_UPDATE.md). No APK is created or installed for verification.
+
 Current source update (2 November 2026, snow/slots): Arctic has new snow mountain and ground assets; every scenery floor shares its backdrop tint and uses a matte material. A rounded scene viewport replaces the artificial edge fade. Home always keeps two slots per page with transparent Add widget actions in vacant slots, and drag previews shrink then restore on drop. See [Snow scene and Home slots](docs/SNOW_SCENE_AND_HOME_SLOTS_UPDATE.md) for implementation and verification scope.
 
 Current source update (2 November 2026, gestures/scenery): Home widget pages and the library support horizontal swiping; long-press dragging moves widgets within and between pages with saved order. Arctic uses image-based mountain/stone scenery, and the vehicle scene has a narrow feather at its edges. See [Home gestures and scenic stage](docs/HOME_GESTURES_AND_SCENERY_UPDATE.md) for behavior and verification limits. No APK is created or installed.

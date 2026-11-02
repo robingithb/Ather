@@ -4,9 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -18,9 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
@@ -67,6 +63,10 @@ import com.aether.hmi.domain.SeatComfort
 import com.aether.hmi.domain.SeatZone
 import com.aether.hmi.ui.components.AetherGlyph
 import com.aether.hmi.ui.components.Glyph
+import com.aether.hmi.ui.components.aetherRaised
+import com.aether.hmi.ui.components.aetherRaisedClickable
+import com.aether.hmi.ui.components.aetherRaisedSelectable
+import com.aether.hmi.ui.components.aetherRaisedToggleable
 import com.aether.hmi.ui.theme.AetherColors
 import com.aether.hmi.ui.theme.LocalAetherPalette
 import kotlin.math.cos
@@ -142,9 +142,8 @@ private fun ModernZoneTemperature(state: ClimateState, passenger: Boolean, onAdj
     val text = AetherColors.TextPrimary
     val accent = lerp(cool, warm, fraction)
     val shape = RoundedCornerShape(22.dp)
-    Box(modifier.clip(shape).background(Brush.verticalGradient(listOf(AetherColors.PanelRaised, AetherColors.PanelDeep)))
-        .background(Brush.radialGradient(listOf(accent.copy(alpha = .10f), Color.Transparent)))
-        .border(.7.dp, AetherColors.Border, shape)) {
+    Box(modifier.aetherRaised(shape = shape, elevation = 3.dp)
+        .background(Brush.radialGradient(listOf(accent.copy(alpha = .10f), Color.Transparent)))) {
         Column(Modifier.fillMaxSize().padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(Modifier.fillMaxWidth().height(28.dp), verticalAlignment = Alignment.CenterVertically,
@@ -222,8 +221,9 @@ private fun FittedFanControl(state: ClimateState, onAdjust: (Int) -> Unit, targe
 private fun PrimaryClimateButton(label: String, selected: Boolean, enabled: Boolean, onClick: () -> Unit, modifier: Modifier,
     icon: ClimateIcon? = null, glyph: Glyph? = null, accessibilityLabel: String = label, isSwitch: Boolean = true) {
     val tint = if (!enabled) AetherColors.Muted else if (selected) AetherColors.Accent else AetherColors.TextSecondary
-    ClimateSurface(modifier.then(if (isSwitch) Modifier.toggleable(selected, enabled = enabled, role = Role.Switch, onValueChange = { onClick() })
-        else Modifier.clickable(enabled = enabled, role = Role.Button, onClick = onClick)).semantics { contentDescription = accessibilityLabel }, selected) {
+    Box(modifier.then(if (isSwitch) Modifier.aetherRaisedToggleable(selected, enabled = enabled, role = Role.Switch, onValueChange = { onClick() })
+        else Modifier.aetherRaisedClickable(onClick = onClick, selected = selected, enabled = enabled))
+        .semantics { contentDescription = accessibilityLabel }) {
         Column(Modifier.fillMaxSize().padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             if (icon != null) ClimateGlyph(icon, size = 24.dp, color = tint)
             if (glyph != null) AetherGlyph(glyph, size = 24.dp, color = tint)
@@ -265,10 +265,9 @@ private fun ClimateControlDeck(state: ClimateState, actions: ClimateActions, mod
                     listOf(R.string.climate_flow_short, R.string.climate_seats_short, R.string.climate_air_short).forEachIndexed { index, label ->
                         val selected = page == index
                         val shape = RoundedCornerShape(12.dp)
-                        Box(Modifier.weight(1f).fillMaxHeight().clip(shape)
-                            .background(if (selected) AetherColors.Accent.copy(alpha = .13f) else Color.Transparent)
-                            .border(if (selected) 1.dp else .5.dp, if (selected) AetherColors.Accent.copy(alpha = .55f) else AetherColors.Border, shape)
-                            .selectable(selected, role = Role.Tab, onClick = { page = index }), contentAlignment = Alignment.Center) {
+                        Box(Modifier.weight(1f).fillMaxHeight()
+                            .aetherRaisedSelectable(selected, onClick = { page = index }, shape = shape, role = Role.Tab,
+                                elevation = 3.dp), contentAlignment = Alignment.Center) {
                             FittedClimateText(stringResource(label), Modifier.fillMaxSize().padding(horizontal = 4.dp), maxSize = 18.sp,
                                 color = if (selected) AetherColors.Accent else AetherColors.TextSecondary,
                                 weight = if (selected) FontWeight.SemiBold else FontWeight.Normal)
@@ -312,7 +311,7 @@ private fun ClimateAirflowPage(state: ClimateState, actions: ClimateActions, gap
 @Composable
 private fun DeckToggle(label: String, selected: Boolean, enabled: Boolean, onClick: () -> Unit, icon: ClimateIcon, modifier: Modifier) {
     val tint = if (!enabled) AetherColors.Muted else if (selected) AetherColors.Accent else AetherColors.TextSecondary
-    ClimateSurface(modifier.toggleable(selected, enabled = enabled, role = Role.Switch, onValueChange = { onClick() }), selected) {
+    Box(modifier.aetherRaisedToggleable(selected, enabled = enabled, role = Role.Switch, onValueChange = { onClick() })) {
         Row(Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically) {
             ClimateGlyph(icon, size = 22.dp, color = tint)
@@ -331,7 +330,7 @@ private fun AirflowChoice(state: ClimateState, mode: AirflowMode, onAirflow: (Ai
         AirflowMode.Defrost -> R.string.climate_defrost
     })
     val tint = if (selected) AetherColors.Accent else AetherColors.TextSecondary
-    ClimateSurface(modifier.selectable(selected, enabled = state.available, role = Role.RadioButton, onClick = { onAirflow(mode) }), selected) {
+    Box(modifier.aetherRaisedSelectable(selected, enabled = state.available, role = Role.RadioButton, onClick = { onAirflow(mode) })) {
         Row(Modifier.fillMaxSize().padding(horizontal = 4.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically) {
             if (mode == AirflowMode.Defrost) AetherGlyph(Glyph.Front, size = 20.dp, color = tint)
@@ -352,7 +351,8 @@ private fun ClimateSeatsPage(state: ClimateState, onCycle: (SeatZone, SeatComfor
     Column(modifier, verticalArrangement = Arrangement.spacedBy(gap)) {
         Row(Modifier.fillMaxWidth().height(if (compact) 40.dp else 48.dp).selectableGroup(), horizontalArrangement = Arrangement.spacedBy(gap)) {
             SeatZone.entries.forEach { zone ->
-                ClimateSurface(Modifier.weight(1f).fillMaxHeight().selectable(selectedZone == zone, role = Role.Tab, onClick = { selectedZone = zone }), selectedZone == zone) {
+                Box(Modifier.weight(1f).fillMaxHeight()
+                    .aetherRaisedSelectable(selectedZone == zone, onClick = { selectedZone = zone }, role = Role.Tab, elevation = 3.dp)) {
                     FittedClimateText(stringResource(if (zone == SeatZone.Driver) R.string.climate_driver else R.string.climate_passenger),
                         Modifier.fillMaxSize().padding(horizontal = 6.dp), maxSize = 18.sp,
                         color = if (selectedZone == zone) AetherColors.Accent else AetherColors.TextSecondary)
@@ -372,7 +372,8 @@ private fun ClimateSeatsPage(state: ClimateState, onCycle: (SeatZone, SeatComfor
 private fun SeatLevelControl(label: String, level: Int, maximum: Int, heating: Boolean, enabled: Boolean, onClick: () -> Unit, modifier: Modifier) {
     val description = stringResource(if (heating) R.string.climate_heat_level else R.string.climate_cool_level, label, level, maximum)
     val color = if (heating) ClimateWarm else ClimateCool
-    ClimateSurface(modifier.clickable(enabled = enabled, role = Role.Button, onClick = onClick).semantics { contentDescription = description }, level > 0) {
+    Box(modifier.aetherRaisedClickable(onClick = onClick, selected = level > 0, enabled = enabled)
+        .semantics { contentDescription = description }) {
         Column(Modifier.fillMaxSize().padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
             ClimateGlyph(if (heating) ClimateIcon.HeatSeat else ClimateIcon.CoolSeat, size = 24.dp,
                 color = if (level > 0) color else AetherColors.TextSecondary)

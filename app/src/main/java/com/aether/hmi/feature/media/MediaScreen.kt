@@ -1,8 +1,6 @@
 package com.aether.hmi.feature.media
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -14,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,7 +21,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +29,8 @@ import com.aether.hmi.R
 import com.aether.hmi.domain.ClimateControl
 import com.aether.hmi.domain.ClimateState
 import com.aether.hmi.feature.home.PlaybackActions
+import com.aether.hmi.ui.components.aetherRaisedClickable
+import com.aether.hmi.ui.components.aetherRaisedSelectable
 import com.aether.hmi.ui.theme.AetherColors
 import kotlinx.coroutines.flow.StateFlow
 
@@ -87,12 +86,12 @@ fun MediaScreen(
         val hasFeedback = state.error || state.importing || !state.connected || state.buffering
         val feedbackHeight = minOf(if (state.error) 48.dp else 28.dp, maxHeight * .2f)
         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(gap)) {
-                Row(Modifier.fillMaxWidth().height(navHeight), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(Modifier.fillMaxWidth().height(navHeight).selectableGroup(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     MediaDestination.entries.forEach { item ->
                         val selected = destination == item
-                        Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(12.dp))
-                            .background(if (selected) AetherColors.AccentSoft else AetherColors.Panel)
-                            .selectable(selected, role = Role.Tab, onClick = { destination = item })
+                        Box(Modifier.weight(1f).fillMaxHeight()
+                            .aetherRaisedSelectable(selected, { destination = item }, shape = RoundedCornerShape(12.dp),
+                                elevation = 4.dp, role = Role.Tab)
                             .padding(horizontal = 6.dp), contentAlignment = Alignment.Center) {
                             MediaFitText(stringResource(item.label), color = if (selected) AetherColors.Accent else AetherColors.TextSecondary,
                                 maxFontSize = if (narrow) 12f else 16f,
@@ -101,8 +100,7 @@ fun MediaScreen(
                         }
                     }
                     Box(Modifier.width(if (compact) 64.dp else 80.dp).fillMaxHeight()
-                        .clip(RoundedCornerShape(12.dp)).background(AetherColors.Panel)
-                        .clickable(role = Role.Button, onClick = { showOptions = true }), contentAlignment = Alignment.Center) {
+                        .aetherRaisedClickable({ showOptions = true }, shape = RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
                         MediaFitText(stringResource(R.string.media_more), color = AetherColors.TextSecondary, maxFontSize = 15f,
                             modifier = Modifier.fillMaxSize(), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                     }

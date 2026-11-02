@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -27,6 +26,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.aether.hmi.ui.components.PageText
+import com.aether.hmi.ui.components.aetherRaisedSelectable
 import com.aether.hmi.R
 import com.aether.hmi.ui.navigation.AetherTab
 import com.aether.hmi.ui.theme.AetherColors
@@ -59,8 +59,9 @@ internal fun AetherNavigationRail(
 @Composable
 private fun NavigationItem(tab: AetherTab, selected: Boolean, onClick: () -> Unit, modifier: Modifier, roomy: Boolean) {
     val tint = if (selected) AetherColors.Accent else AetherColors.TextSecondary
-    Column(modifier.clip(RoundedCornerShape(12.dp)).background(if (selected) AetherColors.AccentSoft else AetherColors.Rail)
-        .selectable(selected, role = Role.Tab, onClick = onClick).padding(horizontal = 6.dp, vertical = 4.dp),
+    Column(modifier.aetherRaisedSelectable(selected, onClick, RoundedCornerShape(12.dp),
+        elevation = if (selected) 4.dp else 1.5.dp, background = if (selected) null else AetherColors.Rail,
+        role = Role.Tab).padding(horizontal = 6.dp, vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)) {
         Icon(painterResource(if (tab == AetherTab.Climate && selected) R.drawable.ic_climate_filled else tab.iconRes),
             null, Modifier.size(if (roomy) 28.dp else 21.dp), tint = tint)

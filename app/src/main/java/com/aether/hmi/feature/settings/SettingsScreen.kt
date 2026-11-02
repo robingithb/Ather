@@ -10,11 +10,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
@@ -161,7 +158,8 @@ internal fun SoundPreferences(settings: AppSettings, onChange: (AppSettings) -> 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun PreferenceSlider(label: String, value: Float, modifier: Modifier, enabled: Boolean = true, onChange: (Float) -> Unit) {
-    Row(modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(AetherColors.Panel).padding(horizontal = 12.dp),
+    Row(modifier.fillMaxWidth().aetherRaised(shape = RoundedCornerShape(12.dp), enabled = enabled,
+        elevation = 2.dp).padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         PageText(label, Modifier.weight(.44f).fillMaxHeight(), maxFontSize = 18f, minFontSize = 12f, maxLines = 2,
             color = if (enabled) AetherColors.TextPrimary else AetherColors.Muted)
@@ -178,13 +176,14 @@ private fun PreferenceSlider(label: String, value: Float, modifier: Modifier, en
 
 @Composable
 private fun PreferenceSwitch(label: String, checked: Boolean, modifier: Modifier, onChange: (Boolean) -> Unit) {
-    Row(modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(AetherColors.Panel)
-        .toggleable(checked, role = Role.Switch, onValueChange = onChange).padding(horizontal = 12.dp),
+    Row(modifier.fillMaxWidth().aetherRaisedToggleable(checked, onChange,
+        shape = RoundedCornerShape(12.dp), elevation = 3.dp, role = Role.Switch).padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         PageText(label, Modifier.weight(1f).fillMaxHeight(), maxFontSize = 18f, maxLines = 2)
         Box(Modifier.width(36.dp).height(22.dp).clip(CircleShape).background(if (checked) AetherColors.Accent else AetherColors.Border).padding(3.dp),
             contentAlignment = if (checked) Alignment.CenterEnd else Alignment.CenterStart) {
-            Box(Modifier.size(16.dp).clip(CircleShape).background(if (checked) AetherColors.OnAccent else AetherColors.TextSecondary))
+            Box(Modifier.size(16.dp).aetherRaised(shape = CircleShape, elevation = 2.dp,
+                background = if (checked) AetherColors.OnAccent else AetherColors.TextSecondary))
         }
     }
 }
@@ -226,10 +225,9 @@ private fun ThemeChoices(settings: AppSettings, onChange: (AppSettings) -> Unit,
     Row(modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         themes.forEach { (theme, label, image) ->
             val selected = settings.theme == theme
-            Column(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(12.dp))
-                .background(if (selected) AetherColors.AccentSoft else AetherColors.Panel)
-                .border(if (selected) 1.5.dp else .7.dp, if (selected) AetherColors.Accent else AetherColors.Border, RoundedCornerShape(12.dp))
-                .selectable(selected, role = Role.RadioButton, onClick = { onChange(settings.copy(theme = theme, accentColor = null)) })
+            Column(Modifier.weight(1f).fillMaxHeight()
+                .aetherRaisedSelectable(selected, { onChange(settings.copy(theme = theme, accentColor = null)) },
+                    shape = RoundedCornerShape(12.dp), elevation = 4.dp, role = Role.RadioButton)
                 .padding(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Box(Modifier.fillMaxWidth().weight(.65f).clip(RoundedCornerShape(7.dp))) {
                     Image(painterResource(image), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
@@ -255,11 +253,11 @@ private fun ColorChoices(settings: AppSettings, accent: Boolean, onChange: (AppS
         else {
             val (value, label) = colors[index]
             val selected = (if (accent) settings.accentColor else settings.ambientColor) == value
-            Column(tile.clip(RoundedCornerShape(10.dp)).background(if (selected) AetherColors.AccentSoft else AetherColors.Panel)
-                .selectable(selected, role = Role.RadioButton, onClick = { onChange(if (accent) settings.copy(accentColor = value) else settings.copy(ambientColor = value)) })
+            Column(tile.aetherRaisedSelectable(selected, { onChange(if (accent) settings.copy(accentColor = value) else settings.copy(ambientColor = value)) },
+                shape = RoundedCornerShape(10.dp), elevation = 3.dp, role = Role.RadioButton)
                 .padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Box(Modifier.fillMaxWidth().weight(.55f), contentAlignment = Alignment.Center) {
-                    Box(Modifier.size(20.dp).clip(CircleShape).background(Color(value)))
+                    Box(Modifier.size(20.dp).aetherRaised(shape = CircleShape, elevation = 2.dp, background = Color(value)))
                 }
                 PageText(stringResource(label), Modifier.weight(.45f).fillMaxWidth(), maxFontSize = 18f, minFontSize = 10f,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center)

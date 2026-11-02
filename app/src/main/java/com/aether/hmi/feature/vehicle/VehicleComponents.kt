@@ -1,8 +1,5 @@
 package com.aether.hmi.feature.vehicle
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -15,11 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.selected
@@ -29,24 +22,22 @@ import com.aether.hmi.R
 import com.aether.hmi.domain.HeadlightMode
 import com.aether.hmi.domain.VehiclePart
 import com.aether.hmi.ui.components.PageText
+import com.aether.hmi.ui.components.aetherRaised
+import com.aether.hmi.ui.components.aetherRaisedClickable
 import com.aether.hmi.ui.theme.AetherColors
 
 @Composable
 internal fun VehicleSurface(modifier: Modifier = Modifier, selected: Boolean = false, content: @Composable BoxScope.() -> Unit) {
     val shape = RoundedCornerShape(10.dp)
-    val glowAlpha = .20f * AetherColors.DecorativeGlowScale
-    Box(modifier.clip(shape)
-        .background(Brush.linearGradient(listOf(AetherColors.Panel.copy(alpha = .95f), AetherColors.PanelDeep.copy(alpha = .95f))))
-        .then(if (selected) Modifier.background(Brush.radialGradient(listOf(AetherColors.Accent.copy(alpha = glowAlpha), Color.Transparent))) else Modifier)
-        .border(if (selected) 1.dp else .6.dp, if (selected) AetherColors.Accent else AetherColors.Border, shape), content = content)
+    Box(modifier.aetherRaised(shape = shape, selected = selected, elevation = 2.dp), content = content)
 }
 
 @Composable
 internal fun VehicleStatusTile(label: String, value: String, icon: VehicleIcon, modifier: Modifier = Modifier,
     selected: Boolean = false, enabled: Boolean = true, roomy: Boolean = false, contentLabel: String = label, onClick: () -> Unit) {
     val description = if (value.isEmpty()) contentLabel else "$contentLabel: $value"
-    VehicleSurface(modifier.clickable(enabled = enabled, role = Role.Button, onClick = onClick)
-        .semantics { contentDescription = description; this.selected = selected }, selected) {
+    Box(modifier.aetherRaisedClickable(onClick = onClick, selected = selected, enabled = enabled)
+        .semantics { contentDescription = description; this.selected = selected }) {
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val dense = maxHeight < 64.dp
             val showIcon = maxHeight >= if (roomy) 112.dp else 88.dp

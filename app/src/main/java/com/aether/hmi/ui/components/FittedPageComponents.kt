@@ -1,7 +1,5 @@
 package com.aether.hmi.ui.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -15,9 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -45,9 +41,7 @@ fun PageText(text: String, modifier: Modifier = Modifier, color: Color = AetherC
 @Composable
 fun PageAction(label: String, onClick: () -> Unit, modifier: Modifier = Modifier,
     enabled: Boolean = true, selected: Boolean = false, glyph: Glyph? = null) {
-    Row(modifier.clip(RoundedCornerShape(10.dp))
-        .background(if (selected) AetherColors.AccentSoft else AetherColors.Panel)
-        .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+    Row(modifier.aetherRaisedClickable(onClick, RoundedCornerShape(10.dp), selected, enabled)
         .semantics { contentDescription = label }.padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         if (glyph != null) AetherGlyph(glyph, size = 20.dp, color = if (enabled) AetherColors.Accent else AetherColors.Muted)

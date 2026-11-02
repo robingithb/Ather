@@ -77,8 +77,8 @@ internal fun HomeWidgetLibrary(count: Int, onAdd: (HomeWidgetKind) -> Unit, onRe
                                     val index = libraryPage * 4 + row * 2 + col
                                     val kind = HomeWidgetKind.entries.getOrNull(index)
                                     if (kind == null) PageAction(stringResource(R.string.home_widget_restore), onReset, Modifier.weight(1f).fillMaxHeight())
-                                    else Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(8.dp)).background(AetherColors.PanelRaised)
-                                        .clickable(enabled = count < HomeWidgets.limit, role = Role.Button, onClick = { onAdd(kind) })) {
+                                    else Box(Modifier.weight(1f).fillMaxHeight().aetherRaisedClickable({ onAdd(kind) },
+                                        shape = RoundedCornerShape(8.dp), enabled = count < HomeWidgets.limit, elevation = 4.dp)) {
                                         PageText(stringResource(homeWidgetLabel(kind)), Modifier.fillMaxSize().padding(horizontal = 5.dp),
                                             maxFontSize = 16f, minFontSize = 10f, maxLines = 2, textAlign = TextAlign.Center,
                                             color = if (count < HomeWidgets.limit) AetherColors.TextPrimary else AetherColors.Muted)
@@ -119,8 +119,8 @@ internal fun HomeAddWidgetSlot(onAdd: () -> Unit, modifier: Modifier) {
 
 @Composable
 internal fun HomeWidgetIconAction(glyph: Glyph, label: String, onClick: () -> Unit, modifier: Modifier, enabled: Boolean = true) {
-    Box(modifier.clip(RoundedCornerShape(9.dp)).background(AetherColors.PanelRaised)
-        .clickable(enabled = enabled, role = Role.Button, onClick = onClick).semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
+    Box(modifier.aetherRaisedClickable(onClick, RoundedCornerShape(9.dp), enabled = enabled, elevation = 4.dp)
+        .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
         AetherGlyph(glyph, size = 22.dp, color = if (enabled) AetherColors.Accent else AetherColors.Muted)
     }
 }

@@ -3,7 +3,6 @@ package com.aether.hmi.feature.home
 import android.text.format.DateFormat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
@@ -16,7 +15,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -180,8 +178,8 @@ private fun NowPlayingOverview(state: PlaybackState, actions: PlaybackActions, o
 @Composable
 private fun HomeTransportButton(glyph: Glyph, label: String, onClick: () -> Unit,
     size: androidx.compose.ui.unit.Dp, enabled: Boolean, selected: Boolean = false) {
-    Box(Modifier.size(size).background(if (selected) AetherColors.AccentSoft else AetherColors.Panel, CircleShape)
-        .clickable(enabled, role = Role.Button, onClick = onClick).semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
+    Box(Modifier.size(size).aetherRaisedClickable(onClick, CircleShape, selected, enabled,
+        elevation = if (selected) 7.dp else 4.dp).semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
         AetherGlyph(glyph, size = size * .45f, color = if (enabled) AetherColors.TextPrimary else AetherColors.Muted)
     }
 }

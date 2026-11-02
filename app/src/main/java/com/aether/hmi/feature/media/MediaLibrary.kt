@@ -1,6 +1,5 @@
 package com.aether.hmi.feature.media
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -22,10 +21,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +35,7 @@ import com.aether.hmi.R
 import com.aether.hmi.ui.components.AetherGlyph
 import com.aether.hmi.ui.components.DashboardSurface
 import com.aether.hmi.ui.components.Glyph
+import com.aether.hmi.ui.components.aetherRaisedClickable
 import com.aether.hmi.ui.theme.AetherColors
 
 @Composable
@@ -132,16 +130,16 @@ private fun MediaPageControls(page: MediaPageWindow, onPrevious: () -> Unit, onN
     val position = stringResource(R.string.media_page_description, page.pageIndex + 1, page.pageCount)
     Row(modifier, verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-        Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(6.dp))
-            .clickable(enabled = page.hasPrevious, role = Role.Button, onClick = onPrevious)
+        Box(Modifier.weight(1f).fillMaxHeight()
+            .aetherRaisedClickable(onPrevious, shape = RoundedCornerShape(6.dp), enabled = page.hasPrevious, elevation = 3.dp)
             .semantics { contentDescription = previous }, contentAlignment = Alignment.Center) {
             AetherGlyph(Glyph.Previous, color = if (page.hasPrevious) AetherColors.Accent else AetherColors.Muted, size = 16.dp)
         }
         MediaFitText(stringResource(R.string.media_page_counter, page.pageIndex + 1, page.pageCount),
             color = AetherColors.TextSecondary, maxFontSize = 15f, textAlign = TextAlign.Center,
             modifier = Modifier.weight(1f).fillMaxHeight().semantics { contentDescription = position })
-        Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(6.dp))
-            .clickable(enabled = page.hasNext, role = Role.Button, onClick = onNext)
+        Box(Modifier.weight(1f).fillMaxHeight()
+            .aetherRaisedClickable(onNext, shape = RoundedCornerShape(6.dp), enabled = page.hasNext, elevation = 3.dp)
             .semantics { contentDescription = next }, contentAlignment = Alignment.Center) {
             AetherGlyph(Glyph.Next, color = if (page.hasNext) AetherColors.Accent else AetherColors.Muted, size = 16.dp)
         }
@@ -150,8 +148,8 @@ private fun MediaPageControls(page: MediaPageWindow, onPrevious: () -> Unit, onN
 
 @Composable
 internal fun MediaPageAction(label: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
-    Box(modifier.clip(RoundedCornerShape(10.dp))
-        .clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(horizontal = 8.dp),
+    Box(modifier.aetherRaisedClickable(onClick, shape = RoundedCornerShape(10.dp), enabled = enabled,
+        elevation = 4.dp).padding(horizontal = 8.dp),
         contentAlignment = Alignment.Center) {
         MediaFitText(label, color = if (enabled) AetherColors.Accent else AetherColors.Muted,
             maxFontSize = 16f, textAlign = TextAlign.Center, maxLines = 2, modifier = Modifier.fillMaxSize())

@@ -1,7 +1,6 @@
 package com.aether.hmi.feature.media
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -42,6 +40,7 @@ import com.aether.hmi.ui.components.AetherGlyph
 import com.aether.hmi.ui.components.DashboardSurface
 import com.aether.hmi.ui.components.Glyph
 import com.aether.hmi.ui.components.MediaArtwork
+import com.aether.hmi.ui.components.aetherRaisedClickable
 import com.aether.hmi.ui.theme.AetherColors
 import kotlinx.coroutines.flow.StateFlow
 
@@ -106,7 +105,8 @@ internal fun MediaControl(label: String, onClick: () -> Unit, enabled: Boolean =
     selected: Boolean? = null, size: Dp = 56.dp, content: @Composable (Color) -> Unit) {
     val active = stringResource(R.string.media_enabled)
     val inactive = stringResource(R.string.media_disabled)
-    Box(Modifier.size(size).clip(CircleShape).clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+    Box(Modifier.size(size).aetherRaisedClickable(onClick, shape = CircleShape,
+        selected = selected == true, enabled = enabled, elevation = 4.dp)
         .semantics {
             contentDescription = label
             if (selected != null) stateDescription = if (selected) active else inactive
@@ -118,11 +118,8 @@ internal fun MediaControl(label: String, onClick: () -> Unit, enabled: Boolean =
 @Composable
 private fun MediaPlayControl(state: PlaybackState, playback: PlaybackActions, size: Dp) {
     val label = stringResource(if (state.playing) R.string.pause else R.string.play)
-    val accent = AetherColors.Accent
-    Box(Modifier.size(size).clip(CircleShape)
-        .background(Brush.radialGradient(listOf(AetherColors.PanelDeep, AetherColors.Panel, AetherColors.AccentSoft)))
-        .border(1.8.dp, accent, CircleShape)
-        .clickable(enabled = state.connected && state.hasMedia, role = Role.Button, onClick = playback.toggle)
+    Box(Modifier.size(size).aetherRaisedClickable(playback.toggle, shape = CircleShape,
+        selected = true, enabled = state.connected && state.hasMedia, elevation = 8.dp)
         .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
         if (state.buffering) CircularProgressIndicator(Modifier.size(size * .45f), strokeWidth = 2.dp)
         else AetherGlyph(if (state.playing) Glyph.Pause else Glyph.Play, color = AetherColors.TextPrimary, size = size * .46f)
